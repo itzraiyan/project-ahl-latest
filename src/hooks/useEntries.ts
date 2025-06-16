@@ -41,7 +41,13 @@ export const useEntries = () => {
         return;
       }
 
-      setEntries(data || []);
+      // Type cast the data to ensure status field matches our Entry type
+      const typedEntries: Entry[] = (data || []).map(entry => ({
+        ...entry,
+        status: entry.status as Entry["status"]
+      }));
+
+      setEntries(typedEntries);
     } catch (error) {
       console.error('Error:', error);
     } finally {
@@ -67,7 +73,13 @@ export const useEntries = () => {
         return;
       }
 
-      setEntries(prev => [data, ...prev]);
+      // Type cast the returned data
+      const typedEntry: Entry = {
+        ...data,
+        status: data.status as Entry["status"]
+      };
+
+      setEntries(prev => [typedEntry, ...prev]);
       toast({
         title: "Success",
         description: "Entry added successfully"

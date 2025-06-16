@@ -141,8 +141,8 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         <Label htmlFor="coverUrl" className="text-white">Cover Image URL</Label>
         <Input
           id="coverUrl"
-          value={formData.coverUrl}
-          onChange={(e) => setFormData(prev => ({ ...prev, coverUrl: e.target.value }))}
+          value={formData.cover_url}
+          onChange={(e) => setFormData(prev => ({ ...prev, cover_url: e.target.value }))}
           placeholder="https://example.com/cover.jpg"
           className="bg-gray-800 border-gray-700 text-white"
         />
@@ -170,8 +170,8 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
           <Input
             id="releaseDate"
             type="date"
-            value={formData.releaseDate}
-            onChange={(e) => setFormData(prev => ({ ...prev, releaseDate: e.target.value }))}
+            value={formData.release_date}
+            onChange={(e) => setFormData(prev => ({ ...prev, release_date: e.target.value }))}
             className="bg-gray-800 border-gray-700 text-white"
           />
         </div>
