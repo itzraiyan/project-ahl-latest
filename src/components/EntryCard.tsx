@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Star, Edit, Trash2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -144,9 +143,9 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                 {entry.author}
               </p>
 
-              {/* Actions - Always visible with proper spacing */}
+              {/* Actions - Fixed positioning */}
               {!isReadOnly && (
-                <div className="flex gap-2 mt-auto px-1">
+                <div className="flex gap-2 mt-auto">
                   <Button
                     variant="outline"
                     size="sm"
@@ -166,7 +165,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                       e.stopPropagation();
                       setShowDeleteConfirm(true);
                     }}
-                    className="border-red-400/60 text-red-200 bg-black/70 hover:bg-red-900/70 hover:border-red-400/80 px-2 py-1 h-7 backdrop-blur-sm mr-1"
+                    className="border-red-400/60 text-red-200 bg-black/70 hover:bg-red-900/70 hover:border-red-400/80 px-2 py-1 h-7 backdrop-blur-sm"
                   >
                     <Trash2 className="w-3 h-3" />
                   </Button>
