@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import type { Entry } from "@/pages/Index";
+import type { Entry } from "@/hooks/useEntries";
 
 interface EntryCardProps {
   entry: Entry;
@@ -46,12 +46,12 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly }: EntryCardProp
 
   return (
     <>
-      <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-colors group">
+      <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-colors group cursor-pointer">
         <CardContent className="p-4">
           {/* Cover Image */}
-          <div className="aspect-[3/4] mb-3 relative overflow-hidden rounded-md bg-gray-700">
+          <div className="aspect-[3/4] mb-3 relative overflow-hidden rounded-md bg-gray-700" onClick={() => setShowDetails(true)}>
             <img
-              src={entry.coverUrl}
+              src={entry.cover_url}
               alt={entry.title}
               className="w-full h-full object-cover"
               onError={(e) => {
@@ -63,7 +63,6 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly }: EntryCardProp
               <Button
                 variant="secondary"
                 size="sm"
-                onClick={() => setShowDetails(true)}
                 className="opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <Eye className="w-4 h-4" />
@@ -137,10 +136,10 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly }: EntryCardProp
               <p className="text-sm text-gray-400">Author</p>
               <p className="text-white">{entry.author}</p>
             </div>
-            {entry.releaseDate && (
+            {entry.release_date && (
               <div>
                 <p className="text-sm text-gray-400">Release Date</p>
-                <p className="text-white">{new Date(entry.releaseDate).toLocaleDateString()}</p>
+                <p className="text-white">{new Date(entry.release_date).toLocaleDateString()}</p>
               </div>
             )}
             {entry.source && (

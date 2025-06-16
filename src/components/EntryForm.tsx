@@ -7,11 +7,11 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { X, Star } from "lucide-react";
-import type { Entry } from "@/pages/Index";
+import type { Entry } from "@/hooks/useEntries";
 
 interface EntryFormProps {
   entry?: Entry;
-  onSubmit: (entry: Entry | Omit<Entry, "id" | "createdAt" | "updatedAt">) => void;
+  onSubmit: (entry: Entry | Omit<Entry, "id" | "created_at" | "updated_at">) => void;
   onCancel: () => void;
 }
 
@@ -19,12 +19,12 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
   const [formData, setFormData] = useState({
     title: "",
     author: "",
-    coverUrl: "",
+    cover_url: "",
     tags: [] as string[],
     status: "Plan to Read" as Entry["status"],
     rating: undefined as number | undefined,
     notes: "",
-    releaseDate: "",
+    release_date: "",
     synopsis: "",
     source: ""
   });
@@ -35,12 +35,12 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
       setFormData({
         title: entry.title,
         author: entry.author,
-        coverUrl: entry.coverUrl,
+        cover_url: entry.cover_url,
         tags: [...entry.tags],
         status: entry.status,
         rating: entry.rating,
         notes: entry.notes || "",
-        releaseDate: entry.releaseDate || "",
+        release_date: entry.release_date || "",
         synopsis: entry.synopsis || "",
         source: entry.source || ""
       });
