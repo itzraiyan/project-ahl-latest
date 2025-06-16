@@ -1,19 +1,18 @@
 
 import { useState, useEffect } from "react";
-import { Search, Plus, Filter } from "lucide-react";
+import { Search, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { EntryCard } from "@/components/EntryCard";
 import { EntryForm } from "@/components/EntryForm";
 import { AuthButton } from "@/components/AuthButton";
-import { StatusTabs } from "@/components/StatusTabs";
+import { SectionHeader } from "@/components/SectionHeader";
 import { useEntries, type Entry } from "@/hooks/useEntries";
 
 const Index = () => {
   const [user, setUser] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeTab, setActiveTab] = useState("reading");
   const [isAddingEntry, setIsAddingEntry] = useState(false);
   const [editingEntry, setEditingEntry] = useState<Entry | null>(null);
   
@@ -34,23 +33,25 @@ const Index = () => {
     setUser(authStatus === "authenticated" ? { name: "Raiyan" } : null);
   };
 
-  const statusMap: Record<string, string> = {
-    "reading": "Reading",
-    "planning": "Plan to Read", 
-    "completed": "Completed",
-    "paused": "Paused",
-    "dropped": "Dropped",
-    "rereading": "Rereading"
-  };
+  const statuses = [
+    { key: "Reading", title: "Reading", color: "bg-blue-500" },
+    { key: "Completed", title: "Completed", color: "bg-green-500" },
+    { key: "Dropped", title: "Dropped", color: "bg-red-500" },
+    { key: "Plan to Read", title: "Plan to Read", color: "bg-gray-500" },
+    { key: "Paused", title: "Paused", color: "bg-yellow-500" },
+    { key: "Rereading", title: "Rereading", color: "bg-purple-500" }
+  ];
 
-  const filteredEntries = entries.filter(entry => {
-    const matchesSearch = entry.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         entry.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         entry.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
-    const matchesStatus = entry.status === statusMap[activeTab];
-    
-    return matchesSearch && matchesStatus;
-  });
+  const getFilteredEntries = (status: string) => {
+    return entries.filter(entry => {
+      const matchesSearch = entry.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           entry.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           entry.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
+      const matchesStatus = entry.status === status;
+      
+      return matchesSearch && matchesStatus;
+    });
+  };
 
   const handleAddEntry = (entry: Omit<Entry, "id" | "created_at" | "updated_at">) => {
     addEntry(entry);
@@ -61,16 +62,6 @@ const Index = () => {
     updateEntry(updatedEntry);
     setEditingEntry(null);
   };
-
-  const getStatusCounts = () => {
-    const counts: Record<string, number> = {};
-    entries.forEach(entry => {
-      counts[entry.status] = (counts[entry.status] || 0) + 1;
-    });
-    return counts;
-  };
-
-  const statusCounts = getStatusCounts();
 
   if (isLoading) {
     return (
@@ -83,7 +74,7 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-gray-950 text-white">
       {/* Header */}
-      <header className="border-b border-gray-800 bg-gray-900">
+      <header className="border-b border-gray-800 bg-gray-900 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-blue-400">
@@ -99,7 +90,7 @@ const Index = () => {
       {/* Main Content */}
       <main className="container mx-auto px-4 py-6">
         {/* Search and Add Entry */}
-        <div className="mb-6 space-y-4">
+        <div className="mb-8 space-y-4">
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
@@ -132,39 +123,51 @@ const Index = () => {
           </div>
         </div>
 
-        {/* Status Tabs */}
-        <StatusTabs
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          statusCounts={statusCounts}
-        >
-          {/* Entries Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredEntries.map((entry) => (
-              <EntryCard
-                key={entry.id}
-                entry={entry}
-                onEdit={setEditingEntry}
-                onDelete={deleteEntry}
-                isReadOnly={!user}
-              />
-            ))}
-          </div>
-
-          {filteredEntries.length === 0 && (
-            <div className="text-center py-16">
-              <p className="text-gray-400 text-lg">No entries found in this category.</p>
-              {user && (
-                <Button 
-                  className="mt-4 bg-blue-600 hover:bg-blue-700"
-                  onClick={() => setIsAddingEntry(true)}
-                >
-                  Add Your First Entry
-                </Button>
-              )}
-            </div>
-          )}
-        </StatusTabs>
+        {/* Sections */}
+        <div className="space-y-12">
+          {statuses.map((status) => {
+            const sectionEntries = getFilteredEntries(status.key);
+            
+            // Only show sections that have entries or when user is logged in
+            if (sectionEntries.length === 0 && !user) return null;
+            
+            return (
+              <section key={status.key} className="space-y-6">
+                <SectionHeader 
+                  title={status.title}
+                  count={sectionEntries.length}
+                  color={status.color}
+                />
+                
+                {sectionEntries.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {sectionEntries.map((entry) => (
+                      <EntryCard
+                        key={entry.id}
+                        entry={entry}
+                        onEdit={setEditingEntry}
+                        onDelete={deleteEntry}
+                        isReadOnly={!user}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-gray-400">No entries in this section.</p>
+                    {user && (
+                      <Button 
+                        className="mt-4 bg-blue-600 hover:bg-blue-700"
+                        onClick={() => setIsAddingEntry(true)}
+                      >
+                        Add Your First Entry
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </section>
+            );
+          })}
+        </div>
       </main>
 
       {/* Edit Dialog */}

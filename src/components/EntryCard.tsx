@@ -44,84 +44,96 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly }: EntryCardProp
     );
   };
 
+  const getProgressText = () => {
+    // For now, we'll show "1/1" for completed items, "?" for others
+    // This can be enhanced later with actual chapter/volume tracking
+    if (entry.status === "Completed") {
+      return "1/1";
+    } else if (entry.status === "Reading") {
+      return "1/?";
+    }
+    return null;
+  };
+
   return (
     <>
-      <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-colors group cursor-pointer">
-        <CardContent className="p-4">
+      <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-all duration-200 group cursor-pointer hover:scale-105">
+        <CardContent className="p-0">
           {/* Cover Image */}
-          <div className="aspect-[3/4] mb-3 relative overflow-hidden rounded-md bg-gray-700" onClick={() => setShowDetails(true)}>
+          <div className="aspect-[3/4] relative overflow-hidden rounded-t-md bg-gray-700" onClick={() => setShowDetails(true)}>
             <img
               src={entry.cover_url}
               alt={entry.title}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = "/placeholder.svg";
               }}
             />
-            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity flex items-center justify-center">
+            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-200 flex items-center justify-center">
               <Button
                 variant="secondary"
                 size="sm"
-                className="opacity-0 group-hover:opacity-100 transition-opacity"
+                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
               >
                 <Eye className="w-4 h-4" />
               </Button>
             </div>
-          </div>
-
-          {/* Status Badge */}
-          <Badge className={`${statusColors[entry.status]} text-white text-xs mb-2`}>
-            {entry.status}
-          </Badge>
-
-          {/* Title */}
-          <h3 className="font-semibold text-white text-sm mb-1 line-clamp-2 leading-tight">
-            {entry.title}
-          </h3>
-
-          {/* Author */}
-          <p className="text-gray-400 text-xs mb-2">{entry.author}</p>
-
-          {/* Rating */}
-          {entry.rating && renderStars(entry.rating)}
-
-          {/* Tags */}
-          <div className="flex flex-wrap gap-1 mt-2 mb-3">
-            {entry.tags.slice(0, 3).map((tag, index) => (
-              <Badge key={index} variant="outline" className="text-xs border-gray-600 text-gray-300">
-                {tag}
-              </Badge>
-            ))}
-            {entry.tags.length > 3 && (
-              <Badge variant="outline" className="text-xs border-gray-600 text-gray-300">
-                +{entry.tags.length - 3}
-              </Badge>
+            
+            {/* Progress Badge */}
+            {getProgressText() && (
+              <div className="absolute top-2 right-2">
+                <Badge className="bg-black bg-opacity-70 text-white text-xs">
+                  {getProgressText()}
+                </Badge>
+              </div>
             )}
           </div>
 
-          {/* Actions */}
-          {!isReadOnly && (
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onEdit(entry)}
-                className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-700"
-              >
-                <Edit className="w-3 h-3 mr-1" />
-                Edit
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowDeleteConfirm(true)}
-                className="border-red-600 text-red-400 hover:bg-red-900"
-              >
-                <Trash2 className="w-3 h-3" />
-              </Button>
+          {/* Content */}
+          <div className="p-4">
+            {/* Title */}
+            <h3 className="font-semibold text-white text-sm mb-2 line-clamp-2 leading-tight min-h-[2.5rem]">
+              {entry.title}
+            </h3>
+
+            {/* Author */}
+            <p className="text-gray-400 text-xs mb-3">{entry.author}</p>
+
+            {/* Rating */}
+            <div className="mb-3 min-h-[1rem]">
+              {entry.rating && renderStars(entry.rating)}
             </div>
-          )}
+
+            {/* Actions */}
+            {!isReadOnly && (
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEdit(entry);
+                  }}
+                  className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-700"
+                >
+                  <Edit className="w-3 h-3 mr-1" />
+                  Edit
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowDeleteConfirm(true);
+                  }}
+                  className="border-red-600 text-red-400 hover:bg-red-900"
+                >
+                  <Trash2 className="w-3 h-3" />
+                </Button>
+              </div>
+            )}
+          </div>
         </CardContent>
       </Card>
 
