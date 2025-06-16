@@ -46,7 +46,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
         {[...Array(10)].map((_, i) => (
           <Star
             key={i}
-            className={`w-4 h-4 ${
+            className={`w-5 h-5 ${
               i < rating ? starColor : "text-gray-600"
             }`}
           />
@@ -99,7 +99,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
             />
             
             {/* Hover overlay - lighter transparency */}
-            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-opacity duration-200 flex items-center justify-center">
+            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-200 flex items-center justify-center">
               <Button
                 variant="secondary"
                 size="sm"
@@ -111,7 +111,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
             </div>
 
             {/* Bottom overlay with title and info - lighter gradient */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/60 to-transparent p-3 pt-6">
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent p-3 pt-8">
               {/* Score and Progress on the same line */}
               <div className="flex justify-between items-center mb-2">
                 {/* Score (left) */}
@@ -135,18 +135,18 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
               </div>
 
               {/* Title */}
-              <h3 className="font-semibold text-white text-sm leading-tight">
+              <h3 className="font-semibold text-white text-sm leading-tight mb-1">
                 {truncateTitle(entry.title)}
               </h3>
 
               {/* Author */}
-              <p className="text-gray-200 text-xs mt-1 opacity-90">
+              <p className="text-gray-200 text-xs mb-3 opacity-90">
                 {entry.author}
               </p>
 
-              {/* Actions - More visible */}
+              {/* Actions - Always visible and better positioned */}
               {!isReadOnly && (
-                <div className="flex gap-2 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <div className="flex gap-2 mt-auto">
                   <Button
                     variant="outline"
                     size="sm"
@@ -154,7 +154,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                       e.stopPropagation();
                       onEdit(entry);
                     }}
-                    className="flex-1 border-white/30 text-white bg-black/60 hover:bg-black/80 hover:border-white/50 text-xs px-2 py-1 h-7"
+                    className="flex-1 border-white/40 text-white bg-black/70 hover:bg-black/90 hover:border-white/60 text-xs px-2 py-1 h-7 backdrop-blur-sm"
                   >
                     <Edit className="w-3 h-3 mr-1" />
                     Edit
@@ -166,7 +166,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                       e.stopPropagation();
                       setShowDeleteConfirm(true);
                     }}
-                    className="border-red-400/50 text-red-300 bg-black/60 hover:bg-red-900/60 hover:border-red-400 px-2 py-1 h-7"
+                    className="border-red-400/60 text-red-200 bg-black/70 hover:bg-red-900/70 hover:border-red-400/80 px-2 py-1 h-7 backdrop-blur-sm"
                   >
                     <Trash2 className="w-3 h-3" />
                   </Button>
