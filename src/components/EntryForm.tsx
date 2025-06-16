@@ -84,7 +84,12 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.title.trim() || !formData.author.trim()) return;
+    console.log("Form submitted with data:", formData);
+    
+    if (!formData.title.trim() || !formData.author.trim()) {
+      console.log("Missing required fields");
+      return;
+    }
 
     const submitData = {
       title: formData.title,
@@ -173,7 +178,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
               value={formData.release_date}
               onChange={(e) => setFormData(prev => ({ ...prev, release_date: e.target.value }))}
               placeholder="DD/MM/YYYY"
-              className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 pr-10"
+              className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 pr-10 [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-clear-button]:hidden"
             />
             <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
           </div>
@@ -213,7 +218,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             max={10}
             min={1}
             step={0.5}
-            className="w-full"
+            className="w-full [&>.relative]:bg-gray-700 [&>.relative>.absolute]:bg-blue-500"
           />
           <div className="flex justify-between text-xs text-gray-400">
             <span>1</span>
@@ -226,7 +231,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
               variant="outline"
               size="sm"
               onClick={() => setFormData(prev => ({ ...prev, rating: undefined }))}
-              className="text-xs border-gray-600 text-gray-300"
+              className="text-xs border-gray-600 text-black bg-gray-300 hover:bg-gray-200"
             >
               Clear Rating
             </Button>
@@ -254,7 +259,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
               type="button" 
               onClick={handleAddTag} 
               variant="outline" 
-              className="border-gray-600 text-gray-300 hover:bg-gray-700"
+              className="border-gray-600 text-black bg-gray-300 hover:bg-gray-200"
             >
               Add
             </Button>
@@ -303,7 +308,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
           type="button" 
           variant="outline" 
           onClick={onCancel} 
-          className="border-gray-600 text-gray-300 hover:bg-gray-700"
+          className="border-gray-600 text-black bg-gray-300 hover:bg-gray-200"
         >
           Cancel
         </Button>

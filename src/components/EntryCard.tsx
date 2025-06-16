@@ -35,12 +35,12 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
         {[...Array(10)].map((_, i) => (
           <Star
             key={i}
-            className={`w-3 h-3 ${
+            className={`w-2 h-2 ${
               i < rating ? "fill-yellow-400 text-yellow-400" : "text-gray-600"
             }`}
           />
         ))}
-        <span className="text-sm text-gray-400 ml-1">{rating}/10</span>
+        <span className="text-xs text-gray-400 ml-1">{rating}/10</span>
       </div>
     );
   };
@@ -87,7 +87,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
       <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-all duration-200 group cursor-pointer hover:scale-[1.02] w-full">
         <CardContent className="p-0">
           {/* Cover Image */}
-          <div className="aspect-[3/4] relative overflow-hidden rounded-t-md bg-gray-700" onClick={() => setShowDetails(true)}>
+          <div className="aspect-[2/3] relative overflow-hidden rounded-t-md bg-gray-700" onClick={() => setShowDetails(true)}>
             <img
               src={entry.cover_url}
               alt={entry.title}
@@ -101,16 +101,16 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
               <Button
                 variant="secondary"
                 size="sm"
-                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-sm px-2 py-1"
               >
-                <Eye className="w-4 h-4" />
+                <Eye className="w-3 h-3" />
               </Button>
             </div>
             
             {/* Progress Badge */}
             {displayContent.showProgress && displayContent.progressText && (
-              <div className="absolute top-2 right-2">
-                <Badge className="bg-black bg-opacity-70 text-white text-xs">
+              <div className="absolute top-1 right-1">
+                <Badge className="bg-black bg-opacity-70 text-white text-[10px] px-1 py-0">
                   {displayContent.progressText}
                 </Badge>
               </div>
@@ -118,28 +118,28 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
           </div>
 
           {/* Content */}
-          <div className="p-3">
+          <div className="p-2">
             {/* Title */}
-            <h3 className="font-semibold text-white text-sm mb-2 line-clamp-2 leading-tight min-h-[2.5rem]">
+            <h3 className="font-semibold text-white text-xs mb-1 line-clamp-2 leading-tight min-h-[2rem]">
               {entry.title}
             </h3>
 
             {/* Author */}
-            <p className="text-gray-400 text-xs mb-3">{entry.author}</p>
+            <p className="text-gray-400 text-[10px] mb-2">{entry.author}</p>
 
             {/* Rating or Progress */}
-            <div className="mb-3 min-h-[1rem]">
+            <div className="mb-2 min-h-[0.75rem]">
               {displayContent.showScore && entry.rating && (
                 <div className="flex items-center space-x-1">
-                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                  <span className="text-sm font-medium text-yellow-400">{entry.rating}/10</span>
+                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+                  <span className="text-xs font-medium text-yellow-400">{entry.rating}/10</span>
                 </div>
               )}
             </div>
 
             {/* Actions */}
             {!isReadOnly && (
-              <div className="flex gap-2">
+              <div className="flex gap-1">
                 <Button
                   variant="outline"
                   size="sm"
@@ -147,9 +147,9 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                     e.stopPropagation();
                     onEdit(entry);
                   }}
-                  className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-700 text-xs"
+                  className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-700 text-[10px] px-1 py-1 h-6"
                 >
-                  <Edit className="w-3 h-3 mr-1" />
+                  <Edit className="w-2 h-2 mr-1" />
                   Edit
                 </Button>
                 <Button
@@ -159,9 +159,9 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                     e.stopPropagation();
                     setShowDeleteConfirm(true);
                   }}
-                  className="border-red-600 text-red-400 hover:bg-red-900"
+                  className="border-red-600 text-red-400 hover:bg-red-900 px-1 py-1 h-6"
                 >
-                  <Trash2 className="w-3 h-3" />
+                  <Trash2 className="w-2 h-2" />
                 </Button>
               </div>
             )}
@@ -242,7 +242,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
               <Button
                 variant="outline"
                 onClick={() => setShowDeleteConfirm(false)}
-                className="border-gray-600 text-gray-300"
+                className="border-gray-600 text-black bg-gray-300 hover:bg-gray-200"
               >
                 Cancel
               </Button>
@@ -252,6 +252,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                   onDelete(entry.id);
                   setShowDeleteConfirm(false);
                 }}
+                className="bg-red-600 hover:bg-red-700 text-white"
               >
                 Delete
               </Button>

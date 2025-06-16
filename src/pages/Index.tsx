@@ -22,7 +22,8 @@ const Index = () => {
   useEffect(() => {
     const checkAuth = () => {
       const authStatus = localStorage.getItem("rhl_auth");
-      setUser(authStatus === "authenticated" ? { name: "Arefin" } : null);
+      console.log("Auth status:", authStatus);
+      setUser(authStatus === "authenticated" ? { name: "Raiyan" } : null);
     };
     
     checkAuth();
@@ -30,7 +31,8 @@ const Index = () => {
 
   const handleAuthChange = () => {
     const authStatus = localStorage.getItem("rhl_auth");
-    setUser(authStatus === "authenticated" ? { name: "Arefin" } : null);
+    console.log("Auth changed:", authStatus);
+    setUser(authStatus === "authenticated" ? { name: "Raiyan" } : null);
   };
 
   const statuses = [
@@ -61,11 +63,13 @@ const Index = () => {
   };
 
   const handleAddEntry = (entry: Omit<Entry, "id" | "created_at" | "updated_at">) => {
+    console.log("Adding entry:", entry);
     addEntry(entry);
     setIsAddingEntry(false);
   };
 
   const handleEditEntry = (updatedEntry: Entry) => {
+    console.log("Updating entry:", updatedEntry);
     updateEntry(updatedEntry);
     setEditingEntry(null);
   };
@@ -111,7 +115,7 @@ const Index = () => {
             {user && (
               <Dialog open={isAddingEntry} onOpenChange={setIsAddingEntry}>
                 <DialogTrigger asChild>
-                  <Button className="bg-blue-600 hover:bg-blue-700">
+                  <Button className="bg-blue-600 hover:bg-blue-700 text-white">
                     <Plus className="w-4 h-4 mr-2" />
                     Add Entry
                   </Button>
@@ -147,7 +151,7 @@ const Index = () => {
                 />
                 
                 {sectionEntries.length > 0 ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-3">
                     {sectionEntries.map((entry) => (
                       <EntryCard
                         key={entry.id}
@@ -164,7 +168,7 @@ const Index = () => {
                     <p className="text-gray-400">No entries in this section.</p>
                     {user && (
                       <Button 
-                        className="mt-4 bg-blue-600 hover:bg-blue-700"
+                        className="mt-4 bg-blue-600 hover:bg-blue-700 text-white"
                         onClick={() => setIsAddingEntry(true)}
                       >
                         Add Your First Entry
