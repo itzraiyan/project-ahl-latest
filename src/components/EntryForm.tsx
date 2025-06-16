@@ -90,6 +90,9 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
       return;
     }
 
+    // Use source_url if provided, otherwise use the selected source
+    const finalSource = formData.source_url.trim() || formData.source;
+
     const submitData = {
       title: formData.title,
       author: formData.author,
@@ -100,7 +103,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
       notes: formData.notes,
       release_date: formData.release_date,
       synopsis: formData.synopsis,
-      source: formData.source
+      source: finalSource
     };
 
     if (entry) {
@@ -199,7 +202,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             </SelectContent>
           </Select>
           <Input
-            placeholder="Paste source URL here..."
+            placeholder="Or paste custom source URL here (overrides dropdown selection)..."
             value={formData.source_url}
             onChange={(e) => setFormData(prev => ({ ...prev, source_url: e.target.value }))}
             className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
