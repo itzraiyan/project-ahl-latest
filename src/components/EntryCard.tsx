@@ -143,32 +143,34 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                 {entry.author}
               </p>
 
-              {/* Actions - Fixed positioning */}
+              {/* Actions - Centered as one unit */}
               {!isReadOnly && (
-                <div className="flex gap-2 mt-auto">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onEdit(entry);
-                    }}
-                    className="flex-1 border-white/40 text-white bg-black/70 hover:bg-black/90 hover:border-white/60 text-xs px-2 py-1 h-7 backdrop-blur-sm"
-                  >
-                    <Edit className="w-3 h-3 mr-1" />
-                    Edit
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setShowDeleteConfirm(true);
-                    }}
-                    className="border-red-400/60 text-red-200 bg-black/70 hover:bg-red-900/70 hover:border-red-400/80 px-2 py-1 h-7 backdrop-blur-sm"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </Button>
+                <div className="flex justify-center">
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onEdit(entry);
+                      }}
+                      className="border-white/40 text-white bg-black/70 hover:bg-black/90 hover:border-white/60 text-xs px-2 py-1 h-7 backdrop-blur-sm"
+                    >
+                      <Edit className="w-3 h-3 mr-1" />
+                      Edit
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowDeleteConfirm(true);
+                      }}
+                      className="border-red-400/60 text-red-200 bg-black/70 hover:bg-red-900/70 hover:border-red-400/80 px-2 py-1 h-7 backdrop-blur-sm"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </Button>
+                  </div>
                 </div>
               )}
             </div>
