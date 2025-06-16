@@ -22,7 +22,7 @@ const Index = () => {
   useEffect(() => {
     const checkAuth = () => {
       const authStatus = localStorage.getItem("rhl_auth");
-      setUser(authStatus === "authenticated" ? { name: "Raiyan" } : null);
+      setUser(authStatus === "authenticated" ? { name: "Arefin" } : null);
     };
     
     checkAuth();
@@ -30,7 +30,7 @@ const Index = () => {
 
   const handleAuthChange = () => {
     const authStatus = localStorage.getItem("rhl_auth");
-    setUser(authStatus === "authenticated" ? { name: "Raiyan" } : null);
+    setUser(authStatus === "authenticated" ? { name: "Arefin" } : null);
   };
 
   const statuses = [
@@ -43,7 +43,7 @@ const Index = () => {
   ];
 
   const getFilteredEntries = (status: string) => {
-    return entries.filter(entry => {
+    const filtered = entries.filter(entry => {
       const matchesSearch = entry.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            entry.author.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            entry.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -51,6 +51,13 @@ const Index = () => {
       
       return matchesSearch && matchesStatus;
     });
+
+    // Apply sorting based on status
+    if (status === "Completed") {
+      return filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+    } else {
+      return filtered.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    }
   };
 
   const handleAddEntry = (entry: Omit<Entry, "id" | "created_at" | "updated_at">) => {
@@ -78,7 +85,7 @@ const Index = () => {
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold text-blue-400">
-              RHL
+              AHL
             </h1>
             <div className="flex items-center space-x-4">
               <AuthButton user={user} onAuthChange={handleAuthChange} />
@@ -140,7 +147,7 @@ const Index = () => {
                 />
                 
                 {sectionEntries.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
                     {sectionEntries.map((entry) => (
                       <EntryCard
                         key={entry.id}
@@ -148,6 +155,7 @@ const Index = () => {
                         onEdit={setEditingEntry}
                         onDelete={deleteEntry}
                         isReadOnly={!user}
+                        statusType={status.key as any}
                       />
                     ))}
                   </div>

@@ -12,6 +12,7 @@ interface EntryCardProps {
   onEdit: (entry: Entry) => void;
   onDelete: (id: string) => void;
   isReadOnly: boolean;
+  statusType: "Reading" | "Completed" | "Dropped" | "Plan to Read" | "Paused" | "Rereading";
 }
 
 const statusColors: Record<string, string> = {
@@ -23,7 +24,7 @@ const statusColors: Record<string, string> = {
   "Rereading": "bg-purple-500"
 };
 
-export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly }: EntryCardProps) => {
+export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: EntryCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -44,27 +45,53 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly }: EntryCardProp
     );
   };
 
-  const getProgressText = () => {
-    // For now, we'll show "1/1" for completed items, "?" for others
-    // This can be enhanced later with actual chapter/volume tracking
-    if (entry.status === "Completed") {
-      return "1/1";
-    } else if (entry.status === "Reading") {
-      return "1/?";
+  const getDisplayContent = () => {
+    switch (statusType) {
+      case "Reading":
+        return {
+          showProgress: true,
+          showScore: false,
+          progressText: "1/?"
+        };
+      case "Plan to Read":
+        return {
+          showProgress: true,
+          showScore: false,
+          progressText: "0/?"
+        };
+      case "Dropped":
+        return {
+          showProgress: true,
+          showScore: false,
+          progressText: "1 read"
+        };
+      case "Completed":
+        return {
+          showProgress: false,
+          showScore: true,
+          progressText: null
+        };
+      default:
+        return {
+          showProgress: true,
+          showScore: false,
+          progressText: "1/?"
+        };
     }
-    return null;
   };
+
+  const displayContent = getDisplayContent();
 
   return (
     <>
-      <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-all duration-200 group cursor-pointer hover:scale-105">
+      <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-all duration-200 group cursor-pointer hover:scale-[1.02] w-full">
         <CardContent className="p-0">
           {/* Cover Image */}
           <div className="aspect-[3/4] relative overflow-hidden rounded-t-md bg-gray-700" onClick={() => setShowDetails(true)}>
             <img
               src={entry.cover_url}
               alt={entry.title}
-              className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-110"
+              className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = "/placeholder.svg";
@@ -81,17 +108,17 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly }: EntryCardProp
             </div>
             
             {/* Progress Badge */}
-            {getProgressText() && (
+            {displayContent.showProgress && displayContent.progressText && (
               <div className="absolute top-2 right-2">
                 <Badge className="bg-black bg-opacity-70 text-white text-xs">
-                  {getProgressText()}
+                  {displayContent.progressText}
                 </Badge>
               </div>
             )}
           </div>
 
           {/* Content */}
-          <div className="p-4">
+          <div className="p-3">
             {/* Title */}
             <h3 className="font-semibold text-white text-sm mb-2 line-clamp-2 leading-tight min-h-[2.5rem]">
               {entry.title}
@@ -100,9 +127,14 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly }: EntryCardProp
             {/* Author */}
             <p className="text-gray-400 text-xs mb-3">{entry.author}</p>
 
-            {/* Rating */}
+            {/* Rating or Progress */}
             <div className="mb-3 min-h-[1rem]">
-              {entry.rating && renderStars(entry.rating)}
+              {displayContent.showScore && entry.rating && (
+                <div className="flex items-center space-x-1">
+                  <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  <span className="text-sm font-medium text-yellow-400">{entry.rating}/10</span>
+                </div>
+              )}
             </div>
 
             {/* Actions */}
@@ -115,7 +147,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly }: EntryCardProp
                     e.stopPropagation();
                     onEdit(entry);
                   }}
-                  className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-700"
+                  className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-700 text-xs"
                 >
                   <Edit className="w-3 h-3 mr-1" />
                   Edit
