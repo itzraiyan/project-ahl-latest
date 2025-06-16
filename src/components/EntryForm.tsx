@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,7 +33,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
     cover_url: "",
     tags: [] as string[],
     status: "Plan to Read" as Entry["status"],
-    rating: undefined as number | undefined,
+    rating: 5.5 as number | undefined,
     notes: "",
     release_date: "",
     synopsis: "",
@@ -51,7 +50,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         cover_url: entry.cover_url,
         tags: [...entry.tags],
         status: entry.status,
-        rating: entry.rating,
+        rating: entry.rating || 5.5,
         notes: entry.notes || "",
         release_date: entry.release_date || "",
         synopsis: entry.synopsis || "",
@@ -171,17 +170,16 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         </div>
         <div>
           <Label htmlFor="release_date" className="text-white">Release Date</Label>
-          <div className="relative">
-            <Input
-              id="release_date"
-              type="date"
-              value={formData.release_date}
-              onChange={(e) => setFormData(prev => ({ ...prev, release_date: e.target.value }))}
-              placeholder="DD/MM/YYYY"
-              className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 pr-10 [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-inner-spin-button]:hidden [&::-webkit-clear-button]:hidden"
-            />
-            <Calendar className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
-          </div>
+          <Input
+            id="release_date"
+            type="date"
+            value={formData.release_date}
+            onChange={(e) => setFormData(prev => ({ ...prev, release_date: e.target.value }))}
+            className="bg-gray-800 border-gray-700 text-white [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:bg-white [&::-webkit-calendar-picker-indicator]:rounded [&::-webkit-calendar-picker-indicator]:cursor-pointer"
+            style={{
+              colorScheme: 'dark'
+            }}
+          />
         </div>
       </div>
 
@@ -213,7 +211,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         <Label className="text-white">Rating: {formData.rating ? `${formData.rating}/10` : 'Not rated'}</Label>
         <div className="mt-2 space-y-2">
           <Slider
-            value={formData.rating ? [formData.rating] : [5]}
+            value={formData.rating ? [formData.rating] : [5.5]}
             onValueChange={handleRatingChange}
             max={10}
             min={1}
