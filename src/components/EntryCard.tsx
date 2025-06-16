@@ -27,7 +27,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
   const [showDetails, setShowDetails] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
-  const renderStars = (rating?: number) => {
+  const renderSingleStar = (rating?: number) => {
     if (!rating) return null;
     
     // Determine star color based on rating
@@ -41,16 +41,11 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
     const starColor = getStarColor(rating);
 
     return (
-      <div className="flex items-center space-x-1">
-        {[...Array(10)].map((_, i) => (
-          <Star
-            key={i}
-            className={`w-6 h-6 ${
-              i < rating ? starColor : "text-gray-600"
-            }`}
-          />
-        ))}
-        <span className="text-sm text-gray-300 ml-2 font-medium">{rating}/10</span>
+      <div className="flex items-center space-x-3">
+        <Star
+          className={`w-8 h-8 ${starColor} transition-all duration-300 hover:scale-110 animate-pulse`}
+        />
+        <span className="text-lg text-white font-bold">{rating}/10</span>
       </div>
     );
   };
@@ -110,7 +105,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
             </div>
 
             {/* Bottom overlay with title and info - lighter gradient */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent p-3 pt-8">
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent p-3 pt-8">
               {/* Score and Progress on the same line */}
               <div className="flex justify-between items-center mb-2">
                 {/* Score (left) */}
@@ -143,7 +138,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                 {entry.author}
               </p>
 
-              {/* Actions - Centered as one unit */}
+              {/* Actions - Always visible, properly positioned */}
               {!isReadOnly && (
                 <div className="flex justify-center">
                   <div className="flex gap-2">
@@ -166,7 +161,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                         e.stopPropagation();
                         setShowDeleteConfirm(true);
                       }}
-                      className="border-red-400/60 text-red-200 bg-black/70 hover:bg-red-900/70 hover:border-red-400/80 px-2 py-1 h-7 backdrop-blur-sm"
+                      className="border-red-400/60 text-red-200 bg-black/70 hover:bg-red-900/70 hover:border-red-400/80 text-xs px-2 py-1 h-7 backdrop-blur-sm mr-2"
                     >
                       <Trash2 className="w-3 h-3" />
                     </Button>
@@ -178,9 +173,9 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
         </CardContent>
       </Card>
 
-      {/* Details Dialog - Enhanced with full information */}
+      {/* Details Dialog - Fixed width and enhanced with full information */}
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
-        <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-left">{entry.title}</DialogTitle>
           </DialogHeader>
@@ -212,7 +207,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                 {entry.rating && (
                   <div>
                     <p className="text-sm text-gray-400 mb-2">Rating</p>
-                    {renderStars(entry.rating)}
+                    {renderSingleStar(entry.rating)}
                   </div>
                 )}
               </div>
