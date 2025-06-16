@@ -41,11 +41,11 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
     const starColor = getStarColor(rating);
 
     return (
-      <div className="flex items-center space-x-3">
+      <div className="flex items-center space-x-1">
         <Star
-          className={`w-8 h-8 ${starColor} transition-all duration-300 hover:scale-110 animate-pulse`}
+          className={`w-4 h-4 ${starColor}`}
         />
-        <span className="text-lg text-white font-bold">{rating}/10</span>
+        <span className="text-sm text-white font-medium">{rating}/10</span>
       </div>
     );
   };
@@ -105,7 +105,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
             </div>
 
             {/* Bottom overlay with title and info - lighter gradient */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/40 via-black/20 to-transparent p-3 pt-8">
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent p-3 pt-8">
               {/* Score and Progress on the same line */}
               <div className="flex justify-between items-center mb-2">
                 {/* Score (left) */}
@@ -161,7 +161,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                         e.stopPropagation();
                         setShowDeleteConfirm(true);
                       }}
-                      className="border-red-400/60 text-red-200 bg-black/70 hover:bg-red-900/70 hover:border-red-400/80 text-xs px-2 py-1 h-7 backdrop-blur-sm mr-2"
+                      className="border-red-400/60 text-red-200 bg-black/70 hover:bg-red-900/70 hover:border-red-400/80 text-xs px-2 py-1 h-7 backdrop-blur-sm"
                     >
                       <Trash2 className="w-3 h-3" />
                     </Button>
@@ -173,9 +173,9 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
         </CardContent>
       </Card>
 
-      {/* Details Dialog - Fixed width and enhanced with full information */}
+      {/* Details Dialog - Enhanced with full information */}
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
-        <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-left">{entry.title}</DialogTitle>
           </DialogHeader>
