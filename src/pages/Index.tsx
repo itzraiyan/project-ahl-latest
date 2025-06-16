@@ -9,6 +9,7 @@ import { EntryForm } from "@/components/EntryForm";
 import { AuthButton } from "@/components/AuthButton";
 import { SectionHeader } from "@/components/SectionHeader";
 import { useEntries, type Entry } from "@/hooks/useEntries";
+import { getAuthStatus } from "@/utils/authUtils";
 
 const Index = () => {
   const [user, setUser] = useState<any>(null);
@@ -21,18 +22,18 @@ const Index = () => {
   // Check authentication status
   useEffect(() => {
     const checkAuth = () => {
-      const authStatus = localStorage.getItem("rhl_auth");
-      console.log("Auth status:", authStatus);
-      setUser(authStatus === "authenticated" ? { name: "Raiyan" } : null);
+      const isAuthenticated = getAuthStatus();
+      console.log("Auth status:", isAuthenticated);
+      setUser(isAuthenticated ? { name: "Raiyan" } : null);
     };
     
     checkAuth();
   }, []);
 
   const handleAuthChange = () => {
-    const authStatus = localStorage.getItem("rhl_auth");
-    console.log("Auth changed:", authStatus);
-    setUser(authStatus === "authenticated" ? { name: "Raiyan" } : null);
+    const isAuthenticated = getAuthStatus();
+    console.log("Auth changed:", isAuthenticated);
+    setUser(isAuthenticated ? { name: "Raiyan" } : null);
   };
 
   const statuses = [
@@ -62,16 +63,24 @@ const Index = () => {
     }
   };
 
-  const handleAddEntry = (entry: Omit<Entry, "id" | "created_at" | "updated_at">) => {
+  const handleAddEntry = async (entry: Omit<Entry, "id" | "created_at" | "updated_at">) => {
     console.log("Adding entry:", entry);
-    addEntry(entry);
-    setIsAddingEntry(false);
+    try {
+      await addEntry(entry);
+      setIsAddingEntry(false);
+    } catch (error) {
+      console.error("Failed to add entry:", error);
+    }
   };
 
-  const handleEditEntry = (updatedEntry: Entry) => {
+  const handleEditEntry = async (updatedEntry: Entry) => {
     console.log("Updating entry:", updatedEntry);
-    updateEntry(updatedEntry);
-    setEditingEntry(null);
+    try {
+      await updateEntry(updatedEntry);
+      setEditingEntry(null);
+    } catch (error) {
+      console.error("Failed to update entry:", error);
+    }
   };
 
   if (isLoading) {
@@ -151,7 +160,7 @@ const Index = () => {
                 />
                 
                 {sectionEntries.length > 0 ? (
-                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 2xl:grid-cols-8 gap-3">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-3 auto-fit">
                     {sectionEntries.map((entry) => (
                       <EntryCard
                         key={entry.id}

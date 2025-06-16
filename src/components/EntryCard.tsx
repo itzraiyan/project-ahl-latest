@@ -45,49 +45,38 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
     );
   };
 
-  const getDisplayContent = () => {
+  const getProgressText = () => {
     switch (statusType) {
       case "Reading":
-        return {
-          showProgress: true,
-          showScore: false,
-          progressText: "1/?"
-        };
+        return "1/?";
       case "Plan to Read":
-        return {
-          showProgress: true,
-          showScore: false,
-          progressText: "0/?"
-        };
+        return "0/?";
       case "Dropped":
-        return {
-          showProgress: true,
-          showScore: false,
-          progressText: "1 read"
-        };
-      case "Completed":
-        return {
-          showProgress: false,
-          showScore: true,
-          progressText: null
-        };
+        return "1 read";
+      case "Paused":
+        return "1/?";
+      case "Rereading":
+        return "1/?";
       default:
-        return {
-          showProgress: true,
-          showScore: false,
-          progressText: "1/?"
-        };
+        return null;
     }
   };
 
-  const displayContent = getDisplayContent();
+  const shouldShowProgress = statusType !== "Completed";
+  const shouldShowScore = statusType === "Completed" || statusType === "Dropped";
+  const progressText = getProgressText();
+
+  const truncateTitle = (title: string, maxLength: number = 25) => {
+    if (title.length <= maxLength) return title;
+    return title.substring(0, maxLength) + "…";
+  };
 
   return (
     <>
-      <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-all duration-200 group cursor-pointer hover:scale-[1.02] w-full">
-        <CardContent className="p-0">
+      <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-all duration-200 group cursor-pointer hover:scale-[1.02] w-full aspect-[2/3] shadow-lg">
+        <CardContent className="p-0 h-full relative">
           {/* Cover Image */}
-          <div className="aspect-[2/3] relative overflow-hidden rounded-t-md bg-gray-700" onClick={() => setShowDetails(true)}>
+          <div className="aspect-[2/3] relative overflow-hidden rounded-md bg-gray-700 h-full" onClick={() => setShowDetails(true)}>
             <img
               src={entry.cover_url}
               alt={entry.title}
@@ -97,74 +86,82 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                 target.src = "/placeholder.svg";
               }}
             />
-            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-opacity duration-200 flex items-center justify-center">
+            
+            {/* Hover overlay */}
+            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-opacity duration-200 flex items-center justify-center">
               <Button
                 variant="secondary"
                 size="sm"
-                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-sm px-2 py-1"
+                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-sm px-3 py-1"
               >
-                <Eye className="w-3 h-3" />
+                <Eye className="w-4 h-4 mr-1" />
+                View
               </Button>
             </div>
-            
-            {/* Progress Badge */}
-            {displayContent.showProgress && displayContent.progressText && (
-              <div className="absolute top-1 right-1">
-                <Badge className="bg-black bg-opacity-70 text-white text-[10px] px-1 py-0">
-                  {displayContent.progressText}
-                </Badge>
+
+            {/* Bottom overlay with title and info */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-3 pt-6">
+              {/* Score and Progress on the same line */}
+              <div className="flex justify-between items-center mb-2">
+                {/* Score (left) */}
+                <div className="text-white text-xs">
+                  {shouldShowScore && entry.rating && (
+                    <div className="flex items-center">
+                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1" />
+                      <span className="font-medium">{entry.rating}</span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Progress (right) */}
+                <div className="text-white text-xs">
+                  {shouldShowProgress && progressText && (
+                    <span className="bg-black/50 px-2 py-1 rounded text-xs">
+                      {progressText}
+                    </span>
+                  )}
+                </div>
               </div>
-            )}
-          </div>
 
-          {/* Content */}
-          <div className="p-2">
-            {/* Title */}
-            <h3 className="font-semibold text-white text-xs mb-1 line-clamp-2 leading-tight min-h-[2rem]">
-              {entry.title}
-            </h3>
+              {/* Title */}
+              <h3 className="font-semibold text-white text-sm leading-tight">
+                {truncateTitle(entry.title)}
+              </h3>
 
-            {/* Author */}
-            <p className="text-gray-400 text-[10px] mb-2">{entry.author}</p>
+              {/* Author */}
+              <p className="text-gray-300 text-xs mt-1 opacity-80">
+                {entry.author}
+              </p>
 
-            {/* Rating or Progress */}
-            <div className="mb-2 min-h-[0.75rem]">
-              {displayContent.showScore && entry.rating && (
-                <div className="flex items-center space-x-1">
-                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                  <span className="text-xs font-medium text-yellow-400">{entry.rating}/10</span>
+              {/* Actions */}
+              {!isReadOnly && (
+                <div className="flex gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onEdit(entry);
+                    }}
+                    className="flex-1 border-gray-600 text-white bg-black/50 hover:bg-black/70 text-xs px-2 py-1 h-7"
+                  >
+                    <Edit className="w-3 h-3 mr-1" />
+                    Edit
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowDeleteConfirm(true);
+                    }}
+                    className="border-red-600 text-red-400 bg-black/50 hover:bg-red-900/50 px-2 py-1 h-7"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </Button>
                 </div>
               )}
             </div>
-
-            {/* Actions */}
-            {!isReadOnly && (
-              <div className="flex gap-1">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onEdit(entry);
-                  }}
-                  className="flex-1 border-gray-600 text-gray-300 hover:bg-gray-700 text-[10px] px-1 py-1 h-6"
-                >
-                  <Edit className="w-2 h-2 mr-1" />
-                  Edit
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowDeleteConfirm(true);
-                  }}
-                  className="border-red-600 text-red-400 hover:bg-red-900 px-1 py-1 h-6"
-                >
-                  <Trash2 className="w-2 h-2" />
-                </Button>
-              </div>
-            )}
           </div>
         </CardContent>
       </Card>
@@ -242,7 +239,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
               <Button
                 variant="outline"
                 onClick={() => setShowDeleteConfirm(false)}
-                className="border-gray-600 text-black bg-gray-300 hover:bg-gray-200"
+                className="border-gray-600 text-gray-900 bg-gray-300 hover:bg-gray-200"
               >
                 Cancel
               </Button>

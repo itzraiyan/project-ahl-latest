@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { supabase } from "@/integrations/supabase/client";
+import { validateCredentials, setAuthStatus } from "@/utils/authUtils";
 
 interface AuthButtonProps {
   user: any;
@@ -24,15 +24,15 @@ export const AuthButton = ({ user, onAuthChange }: AuthButtonProps) => {
     e.preventDefault();
     setIsLoading(true);
 
-    // Check for your specific credentials
-    if (username === "Raiyan" && password === "24530#Raiyan") {
-      // Create a mock session for your personal use
-      localStorage.setItem("rhl_auth", "authenticated");
+    if (validateCredentials(username, password)) {
+      setAuthStatus(true);
       toast({
         title: "Login successful",
         description: "Welcome to RHL!"
       });
       setIsOpen(false);
+      setUsername("");
+      setPassword("");
       onAuthChange();
     } else {
       toast({
@@ -45,7 +45,7 @@ export const AuthButton = ({ user, onAuthChange }: AuthButtonProps) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("rhl_auth");
+    setAuthStatus(false);
     toast({
       title: "Logged out",
       description: "You have been logged out successfully"
