@@ -109,25 +109,28 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
               </Button>
             </div>
 
-            {/* Progress - Positioned at top right */}
-            {shouldShowProgress && progressText && (
-              <div className="absolute top-2 right-2">
-                <span className="bg-black/80 text-white px-2 py-1 rounded-md text-xs font-medium backdrop-blur-md border border-white/20">
-                  {progressText}
-                </span>
-              </div>
-            )}
-
-            {/* Bottom overlay with title and info */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent p-3 pt-8">
-              {/* Score (left side) */}
-              <div className="flex justify-start items-center mb-2">
-                {shouldShowScore && entry.rating && (
-                  <div className="flex items-center">
-                    <Star className="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1" />
-                    <span className="text-white text-xs font-medium">{entry.rating}</span>
-                  </div>
-                )}
+            {/* Bottom overlay with title and info - lighter gradient */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent p-3 pt-8">
+              {/* Score and Progress on the same line */}
+              <div className="flex justify-between items-center mb-2">
+                {/* Score (left) */}
+                <div className="text-white text-xs">
+                  {shouldShowScore && entry.rating && (
+                    <div className="flex items-center">
+                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1" />
+                      <span className="font-medium">{entry.rating}</span>
+                    </div>
+                  )}
+                </div>
+                
+                {/* Progress (right) */}
+                <div className="text-white text-xs">
+                  {shouldShowProgress && progressText && (
+                    <span className="bg-black/50 px-2 py-1 rounded text-xs">
+                      {progressText}
+                    </span>
+                  )}
+                </div>
               </div>
 
               {/* Title */}
@@ -140,31 +143,30 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                 {entry.author}
               </p>
 
-              {/* Actions - Centered box with margins and rounded corners */}
+              {/* Actions - Always visible, properly positioned */}
               {!isReadOnly && (
-                <div className="flex justify-center px-4">
-                  <div className="bg-black/80 backdrop-blur-md rounded-lg px-4 py-2 flex items-center gap-3 border border-white/30 shadow-lg">
+                <div className="flex justify-center">
+                  <div className="flex gap-2">
                     <Button
-                      variant="ghost"
+                      variant="outline"
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
                         onEdit(entry);
                       }}
-                      className="text-white hover:bg-white/15 text-xs px-2 py-1 h-6 min-w-0 rounded-md"
+                      className="border-white/40 text-white bg-black/70 hover:bg-black/90 hover:border-white/60 text-xs px-2 py-1 h-7 backdrop-blur-sm"
                     >
                       <Edit className="w-3 h-3 mr-1" />
                       Edit
                     </Button>
-                    <div className="w-px h-4 bg-white/40"></div>
                     <Button
-                      variant="ghost"
+                      variant="outline"
                       size="sm"
                       onClick={(e) => {
                         e.stopPropagation();
                         setShowDeleteConfirm(true);
                       }}
-                      className="text-red-300 hover:bg-red-900/25 hover:text-red-200 text-xs px-2 py-1 h-6 min-w-0 rounded-md"
+                      className="border-red-400/60 text-red-200 bg-black/70 hover:bg-red-900/70 hover:border-red-400/80 text-xs px-2 py-1 h-7 backdrop-blur-sm mr-2"
                     >
                       <Trash2 className="w-3 h-3" />
                     </Button>
