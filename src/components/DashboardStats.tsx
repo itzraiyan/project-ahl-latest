@@ -26,21 +26,21 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
 
   if (isLoading) {
     return (
-      <div className="mb-8 p-6 bg-gray-900 rounded-lg border border-gray-800">
-        <div className="flex justify-center items-center space-x-8">
+      <div className="mb-6 p-4 bg-gray-900 rounded-lg border border-gray-800">
+        <div className="flex justify-center items-center space-x-6">
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-400 animate-pulse">--</div>
-            <div className="text-sm text-gray-400">Total Manga</div>
+            <div className="text-lg font-bold text-blue-400 animate-pulse">--</div>
+            <div className="text-xs text-gray-400">Total Manga</div>
           </div>
-          <div className="text-gray-600">|</div>
+          <div className="text-gray-600 text-sm">|</div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-400 animate-pulse">--</div>
-            <div className="text-sm text-gray-400">Chapters Read</div>
+            <div className="text-lg font-bold text-blue-400 animate-pulse">--</div>
+            <div className="text-xs text-gray-400">Chapters Read</div>
           </div>
-          <div className="text-gray-600">|</div>
+          <div className="text-gray-600 text-sm">|</div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-blue-400 animate-pulse">--</div>
-            <div className="text-sm text-gray-400">Mean Score</div>
+            <div className="text-lg font-bold text-blue-400 animate-pulse">--</div>
+            <div className="text-xs text-gray-400">Mean Score</div>
           </div>
         </div>
       </div>
@@ -48,31 +48,31 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
   }
 
   return (
-    <div className="mb-8 p-6 bg-gray-900 rounded-lg border border-gray-800">
-      <div className="flex justify-center items-center space-x-8 text-center">
+    <div className="mb-6 p-4 bg-gray-900 rounded-lg border border-gray-800">
+      <div className="flex justify-center items-center space-x-6 text-center">
         <div className="flex-1">
-          <div className="text-2xl font-bold text-blue-400">
+          <div className="text-lg font-bold text-blue-400">
             {displayStats.count}
           </div>
-          <div className="text-sm text-gray-400">Total Manga</div>
+          <div className="text-xs text-gray-400">Total Manga</div>
         </div>
         
-        <div className="text-gray-600 text-xl">|</div>
+        <div className="text-gray-600 text-sm">|</div>
         
         <div className="flex-1">
-          <div className="text-2xl font-bold text-blue-400">
+          <div className="text-lg font-bold text-blue-400">
             {displayStats.chaptersRead.toLocaleString()}
           </div>
-          <div className="text-sm text-gray-400">Chapters Read</div>
+          <div className="text-xs text-gray-400">Chapters Read</div>
         </div>
         
-        <div className="text-gray-600 text-xl">|</div>
+        <div className="text-gray-600 text-sm">|</div>
         
         <div className="flex-1">
-          <div className="text-2xl font-bold text-blue-400">
+          <div className="text-lg font-bold text-blue-400">
             {displayStats.meanScore ? displayStats.meanScore.toFixed(1) : '0.0'}
           </div>
-          <div className="text-sm text-gray-400">Mean Score</div>
+          <div className="text-xs text-gray-400">Mean Score</div>
         </div>
       </div>
       
