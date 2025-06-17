@@ -9,6 +9,7 @@ import { EntryForm } from "@/components/EntryForm";
 import { AuthButton } from "@/components/AuthButton";
 import { SectionHeader } from "@/components/SectionHeader";
 import { DashboardStats } from "@/components/DashboardStats";
+import { AniListButton } from "@/components/AniListButton";
 import { useEntries, type Entry } from "@/hooks/useEntries";
 import { getAuthStatus } from "@/utils/authUtils";
 
@@ -102,6 +103,7 @@ const Index = () => {
               AHL
             </h1>
             <div className="flex items-center space-x-4">
+              <AniListButton />
               <AuthButton user={user} onAuthChange={handleAuthChange} />
             </div>
           </div>

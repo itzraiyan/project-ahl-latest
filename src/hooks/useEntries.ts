@@ -12,7 +12,6 @@ export interface Entry {
   status: "Plan to Read" | "Reading" | "Paused" | "Completed" | "Dropped" | "Rereading";
   rating?: number;
   notes?: string;
-  release_date?: string;
   synopsis?: string;
   source?: string;
   total_chapters?: number;
@@ -105,7 +104,6 @@ export const useEntries = () => {
           status: updatedEntry.status,
           rating: updatedEntry.rating,
           notes: updatedEntry.notes,
-          release_date: updatedEntry.release_date,
           synopsis: updatedEntry.synopsis,
           source: updatedEntry.source,
           total_chapters: updatedEntry.total_chapters,

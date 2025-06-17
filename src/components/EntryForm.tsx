@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -39,7 +40,6 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
     status: "Plan to Read" as Entry["status"],
     rating: 5.5 as number | undefined,
     notes: "",
-    release_date: "",
     synopsis: "",
     source: "",
     source_url: "",
@@ -60,7 +60,6 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         status: entry.status,
         rating: entry.rating || 5.5,
         notes: entry.notes || "",
-        release_date: entry.release_date || "",
         synopsis: entry.synopsis || "",
         source: entry.source || "",
         source_url: "",
@@ -125,7 +124,6 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
       status: formData.status,
       rating: formData.rating,
       notes: formData.notes,
-      release_date: formData.release_date,
       synopsis: formData.synopsis,
       source: finalSource,
       total_chapters: finalTotalChapters,
@@ -182,36 +180,21 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="status" className="text-white">Status</Label>
-          <Select value={formData.status} onValueChange={(value: Entry["status"]) => setFormData(prev => ({ ...prev, status: value }))}>
-            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-              <SelectValue className="text-white" />
-            </SelectTrigger>
-            <SelectContent className="bg-gray-800 border-gray-700 text-white">
-              <SelectItem value="Plan to Read" className="text-white">Plan to Read</SelectItem>
-              <SelectItem value="Reading" className="text-white">Reading</SelectItem>
-              <SelectItem value="Paused" className="text-white">Paused</SelectItem>
-              <SelectItem value="Completed" className="text-white">Completed</SelectItem>
-              <SelectItem value="Dropped" className="text-white">Dropped</SelectItem>
-              <SelectItem value="Rereading" className="text-white">Rereading</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div>
-          <Label htmlFor="release_date" className="text-white">Release Date</Label>
-          <Input
-            id="release_date"
-            type="date"
-            value={formData.release_date}
-            onChange={(e) => setFormData(prev => ({ ...prev, release_date: e.target.value }))}
-            className="bg-gray-800 border-gray-700 text-white [&::-webkit-calendar-picker-indicator]:opacity-100 [&::-webkit-calendar-picker-indicator]:bg-white [&::-webkit-calendar-picker-indicator]:rounded [&::-webkit-calendar-picker-indicator]:cursor-pointer"
-            style={{
-              colorScheme: 'dark'
-            }}
-          />
-        </div>
+      <div>
+        <Label htmlFor="status" className="text-white">Status</Label>
+        <Select value={formData.status} onValueChange={(value: Entry["status"]) => setFormData(prev => ({ ...prev, status: value }))}>
+          <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
+            <SelectValue className="text-white" />
+          </SelectTrigger>
+          <SelectContent className="bg-gray-800 border-gray-700 text-white">
+            <SelectItem value="Plan to Read" className="text-white">Plan to Read</SelectItem>
+            <SelectItem value="Reading" className="text-white">Reading</SelectItem>
+            <SelectItem value="Paused" className="text-white">Paused</SelectItem>
+            <SelectItem value="Completed" className="text-white">Completed</SelectItem>
+            <SelectItem value="Dropped" className="text-white">Dropped</SelectItem>
+            <SelectItem value="Rereading" className="text-white">Rereading</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {/* Chapter Tracking Section */}
@@ -325,7 +308,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         </div>
       </div>
 
-      {/* Keep existing source section */}
+      {/* Source section */}
       <div>
         <Label htmlFor="source" className="text-white">Source</Label>
         <div className="space-y-2">
@@ -350,7 +333,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         </div>
       </div>
 
-      {/* Keep existing rating section */}
+      {/* Rating section */}
       <div>
         <Label className="text-white">Rating: {formData.rating ? `${formData.rating}/10` : 'Not rated'}</Label>
         <div className="mt-2 space-y-2">
@@ -381,7 +364,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         </div>
       </div>
 
-      {/* Keep existing tags, synopsis, and notes sections */}
+      {/* Tags section */}
       <div>
         <Label className="text-white">Tags</Label>
         <div className="space-y-2">

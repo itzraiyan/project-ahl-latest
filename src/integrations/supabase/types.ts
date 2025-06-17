@@ -19,7 +19,6 @@ export type Database = {
           id: string
           notes: string | null
           rating: number | null
-          release_date: string | null
           source: string | null
           start_date: string | null
           status: string
@@ -38,7 +37,6 @@ export type Database = {
           id?: string
           notes?: string | null
           rating?: number | null
-          release_date?: string | null
           source?: string | null
           start_date?: string | null
           status: string
@@ -57,7 +55,6 @@ export type Database = {
           id?: string
           notes?: string | null
           rating?: number | null
-          release_date?: string | null
           source?: string | null
           start_date?: string | null
           status?: string
