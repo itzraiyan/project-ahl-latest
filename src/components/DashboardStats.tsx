@@ -1,4 +1,3 @@
-
 import { useAniList } from "@/hooks/useAniList";
 import type { Entry } from "@/hooks/useEntries";
 
@@ -9,12 +8,12 @@ interface DashboardStatsProps {
 export const DashboardStats = ({ entries }: DashboardStatsProps) => {
   const { stats: anilistStats, isLoading, error } = useAniList();
 
-  // Fallback to local stats if AniList fails
+  // Calculate local stats as fallback
   const localStats = {
     totalManga: entries.length,
-    chaptersRead: entries.reduce((total, entry) => total + (entry.chapters_read || 0), 0),
+    chaptersRead: entries.reduce((acc, entry) => acc + (entry.chaptersRead || 0), 0),
     meanScore: entries.length > 0 
-      ? entries.filter(e => e.rating).reduce((sum, e) => sum + (e.rating || 0), 0) / entries.filter(e => e.rating).length
+      ? entries.reduce((acc, entry) => acc + (entry.score || 0), 0) / entries.length
       : 0
   };
 
@@ -30,17 +29,17 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
         <div className="flex justify-center items-center space-x-6">
           <div className="text-center">
             <div className="text-lg font-bold text-blue-400 animate-pulse">--</div>
-            <div className="text-xs text-gray-400">Total Manga</div>
+            <div className="text-xs font-bold text-gray-400">Total Manga</div>
           </div>
           <div className="text-gray-600 text-sm">|</div>
           <div className="text-center">
             <div className="text-lg font-bold text-blue-400 animate-pulse">--</div>
-            <div className="text-xs text-gray-400">Chapters Read</div>
+            <div className="text-xs font-bold text-gray-400">Chapters Read</div>
           </div>
           <div className="text-gray-600 text-sm">|</div>
           <div className="text-center">
             <div className="text-lg font-bold text-blue-400 animate-pulse">--</div>
-            <div className="text-xs text-gray-400">Mean Score</div>
+            <div className="text-xs font-bold text-gray-400">Mean Score</div>
           </div>
         </div>
       </div>
@@ -54,7 +53,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
           <div className="text-lg font-bold text-blue-400">
             {displayStats.count}
           </div>
-          <div className="text-xs text-gray-400">Total Manga</div>
+          <div className="text-xs font-bold text-gray-400">Total Manga</div>
         </div>
         
         <div className="text-gray-600 text-sm">|</div>
@@ -63,7 +62,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
           <div className="text-lg font-bold text-blue-400">
             {displayStats.chaptersRead.toLocaleString()}
           </div>
-          <div className="text-xs text-gray-400">Chapters Read</div>
+          <div className="text-xs font-bold text-gray-400">Chapters Read</div>
         </div>
         
         <div className="text-gray-600 text-sm">|</div>
@@ -72,7 +71,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
           <div className="text-lg font-bold text-blue-400">
             {displayStats.meanScore ? displayStats.meanScore.toFixed(1) : '0.0'}
           </div>
-          <div className="text-xs text-gray-400">Mean Score</div>
+          <div className="text-xs font-bold text-gray-400">Mean Score</div>
         </div>
       </div>
       
