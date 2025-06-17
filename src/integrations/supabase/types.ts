@@ -9,60 +9,87 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      entries: {
+      chapterfile: {
         Row: {
-          author: string
-          chapters_read: number | null
-          cover_url: string | null
-          created_at: string
-          end_date: string | null
-          id: string
-          notes: string | null
-          rating: number | null
-          source: string | null
-          start_date: string | null
-          status: string
-          synopsis: string | null
-          tags: string[] | null
-          title: string
-          total_chapters: number | null
-          updated_at: string
+          cbz_id: string | null
+          cbz_unique_id: string | null
+          file_id: string | null
+          file_unique_id: string | null
+          url: string
         }
         Insert: {
-          author: string
-          chapters_read?: number | null
-          cover_url?: string | null
-          created_at?: string
-          end_date?: string | null
-          id?: string
-          notes?: string | null
-          rating?: number | null
-          source?: string | null
-          start_date?: string | null
-          status: string
-          synopsis?: string | null
-          tags?: string[] | null
-          title: string
-          total_chapters?: number | null
-          updated_at?: string
+          cbz_id?: string | null
+          cbz_unique_id?: string | null
+          file_id?: string | null
+          file_unique_id?: string | null
+          url: string
         }
         Update: {
-          author?: string
-          chapters_read?: number | null
-          cover_url?: string | null
-          created_at?: string
-          end_date?: string | null
-          id?: string
-          notes?: string | null
-          rating?: number | null
-          source?: string | null
-          start_date?: string | null
-          status?: string
-          synopsis?: string | null
-          tags?: string[] | null
-          title?: string
-          total_chapters?: number | null
-          updated_at?: string
+          cbz_id?: string | null
+          cbz_unique_id?: string | null
+          file_id?: string | null
+          file_unique_id?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
+      lastchapter: {
+        Row: {
+          chapter_url: string
+          url: string
+        }
+        Insert: {
+          chapter_url: string
+          url: string
+        }
+        Update: {
+          chapter_url?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      manganame: {
+        Row: {
+          name: string
+          url: string
+        }
+        Insert: {
+          name: string
+          url: string
+        }
+        Update: {
+          name?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      mangaoutput: {
+        Row: {
+          output: number
+          user_id: string
+        }
+        Insert: {
+          output: number
+          user_id: string
+        }
+        Update: {
+          output?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      subscription: {
+        Row: {
+          url: string
+          user_id: string
+        }
+        Insert: {
+          url: string
+          user_id: string
+        }
+        Update: {
+          url?: string
+          user_id?: string
         }
         Relationships: []
       }
