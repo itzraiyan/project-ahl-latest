@@ -112,14 +112,14 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
             {/* Progress - Positioned at top right */}
             {shouldShowProgress && progressText && (
               <div className="absolute top-2 right-2">
-                <span className="bg-black/70 text-white px-2 py-1 rounded text-xs font-medium backdrop-blur-sm">
+                <span className="bg-black/80 text-white px-2 py-1 rounded-md text-xs font-medium backdrop-blur-md border border-white/20">
                   {progressText}
                 </span>
               </div>
             )}
 
             {/* Bottom overlay with title and info */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent p-3 pt-8">
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent p-3 pt-8">
               {/* Score (left side) */}
               <div className="flex justify-start items-center mb-2">
                 {shouldShowScore && entry.rating && (
@@ -140,10 +140,10 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                 {entry.author}
               </p>
 
-              {/* Actions - Centered single box with proper spacing */}
+              {/* Actions - Centered box with margins and rounded corners */}
               {!isReadOnly && (
-                <div className="flex justify-center">
-                  <div className="bg-black/70 backdrop-blur-sm rounded-md px-3 py-2 flex items-center gap-3 border border-white/20">
+                <div className="flex justify-center px-4">
+                  <div className="bg-black/80 backdrop-blur-md rounded-lg px-4 py-2 flex items-center gap-3 border border-white/30 shadow-lg">
                     <Button
                       variant="ghost"
                       size="sm"
@@ -151,12 +151,12 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                         e.stopPropagation();
                         onEdit(entry);
                       }}
-                      className="text-white hover:bg-white/20 text-xs px-2 py-1 h-6 min-w-0"
+                      className="text-white hover:bg-white/15 text-xs px-2 py-1 h-6 min-w-0 rounded-md"
                     >
                       <Edit className="w-3 h-3 mr-1" />
                       Edit
                     </Button>
-                    <div className="w-px h-4 bg-white/30"></div>
+                    <div className="w-px h-4 bg-white/40"></div>
                     <Button
                       variant="ghost"
                       size="sm"
@@ -164,7 +164,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                         e.stopPropagation();
                         setShowDeleteConfirm(true);
                       }}
-                      className="text-red-300 hover:bg-red-900/30 hover:text-red-200 text-xs px-2 py-1 h-6 min-w-0"
+                      className="text-red-300 hover:bg-red-900/25 hover:text-red-200 text-xs px-2 py-1 h-6 min-w-0 rounded-md"
                     >
                       <Trash2 className="w-3 h-3" />
                     </Button>
