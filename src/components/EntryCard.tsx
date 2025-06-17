@@ -260,7 +260,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                   </Badge>
                 ))}
               </div>
-            )}
+            </div>
 
             {entry.synopsis && (
               <div>
