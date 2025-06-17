@@ -1,3 +1,4 @@
+
 import { useAniList } from "@/hooks/useAniList";
 import type { Entry } from "@/hooks/useEntries";
 
@@ -11,9 +12,9 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
   // Calculate local stats as fallback
   const localStats = {
     totalManga: entries.length,
-    chaptersRead: entries.reduce((acc, entry) => acc + (entry.chaptersRead || 0), 0),
+    chaptersRead: entries.reduce((acc, entry) => acc + (entry.chapters_read || 0), 0),
     meanScore: entries.length > 0 
-      ? entries.reduce((acc, entry) => acc + (entry.score || 0), 0) / entries.length
+      ? entries.reduce((acc, entry) => acc + (entry.rating || 0), 0) / entries.length
       : 0
   };
 
