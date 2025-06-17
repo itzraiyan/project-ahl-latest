@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Star, Edit, Trash2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -86,11 +87,15 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
       <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-all duration-200 group cursor-pointer hover:scale-[1.08] w-full aspect-[2/3] shadow-lg">
         <CardContent className="p-0 h-full relative">
           {/* Cover Image */}
-          <div className="aspect-[2/3] relative overflow-hidden rounded-md bg-gray-700 h-full" onClick={() => setShowDetails(true)}>
+          <div className="aspect-[2/3] relative overflow-hidden rounded-md h-full" onClick={() => setShowDetails(true)}>
             <img
               src={entry.cover_url}
               alt={entry.title}
-              className="w-full h-full object-contain object-center bg-gray-700 transition-transform duration-200 group-hover:scale-105"
+              className="w-full h-full object-cover object-center transition-transform duration-200 group-hover:scale-105"
+              style={{
+                objectFit: 'cover',
+                objectPosition: 'center'
+              }}
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = "/placeholder.svg";
@@ -109,15 +114,15 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
               </Button>
             </div>
 
-            {/* Progress Text - Bottom Right Corner */}
+            {/* Progress Text - Above the title overlay with high z-index */}
             {shouldShowProgress && progressText && (
-              <div className="absolute bottom-1 right-1 bg-black/70 px-2 py-1 rounded text-xs text-white font-medium backdrop-blur-sm">
+              <div className="absolute bottom-16 right-2 bg-black/80 backdrop-blur-sm px-2 py-1 rounded text-xs text-white font-medium z-20">
                 {progressText}
               </div>
             )}
 
             {/* Bottom overlay with title, author, score and actions */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent p-3 pt-8">
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-3 pt-8 z-10">
               {/* Score (left aligned) */}
               {shouldShowScore && entry.rating && (
                 <div className="flex items-center mb-2">
