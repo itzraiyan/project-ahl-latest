@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Search, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -12,6 +11,7 @@ import { DashboardStats } from "@/components/DashboardStats";
 import { AniListButton } from "@/components/AniListButton";
 import { useEntries, type Entry } from "@/hooks/useEntries";
 import { getAuthStatus } from "@/utils/authUtils";
+import logo from '../assets/logo.svg';
 
 const Index = () => {
   const [user, setUser] = useState<any>(null);
@@ -99,9 +99,7 @@ const Index = () => {
       <header className="border-b border-gray-800 bg-gray-900 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-bold text-blue-400">
-              AHL
-            </h1>
+            <img src={logo} alt="Logo" className="h-8" />
             <div className="flex items-center space-x-4">
               <AniListButton />
               <AuthButton user={user} onAuthChange={handleAuthChange} />
