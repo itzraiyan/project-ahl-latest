@@ -1,4 +1,5 @@
 
+
 import { useState } from "react";
 import { Star, Edit, Trash2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -102,6 +103,13 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
               }}
             />
             
+            {/* Progress Text - Top Right Corner */}
+            {shouldShowProgress && progressText && (
+              <div className="absolute top-2 right-2 bg-black/40 backdrop-blur-sm px-2 py-1 rounded text-xs text-white font-medium">
+                {progressText}
+              </div>
+            )}
+            
             {/* Hover overlay */}
             <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-200 flex items-center justify-center">
               <Button
@@ -113,13 +121,6 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                 View
               </Button>
             </div>
-
-            {/* Progress Text - Above the title overlay with high z-index */}
-            {shouldShowProgress && progressText && (
-              <div className="absolute bottom-16 right-2 bg-black/80 backdrop-blur-sm px-2 py-1 rounded text-xs text-white font-medium z-20">
-                {progressText}
-              </div>
-            )}
 
             {/* Bottom overlay with title, author, score and actions */}
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-3 pt-8 z-10">
@@ -312,3 +313,4 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
     </>
   );
 };
+
