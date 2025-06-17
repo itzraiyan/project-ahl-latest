@@ -12,47 +12,59 @@ export type Database = {
       entries: {
         Row: {
           author: string
+          chapters_read: number | null
           cover_url: string | null
           created_at: string
+          end_date: string | null
           id: string
           notes: string | null
           rating: number | null
           release_date: string | null
           source: string | null
+          start_date: string | null
           status: string
           synopsis: string | null
           tags: string[] | null
           title: string
+          total_chapters: number | null
           updated_at: string
         }
         Insert: {
           author: string
+          chapters_read?: number | null
           cover_url?: string | null
           created_at?: string
+          end_date?: string | null
           id?: string
           notes?: string | null
           rating?: number | null
           release_date?: string | null
           source?: string | null
+          start_date?: string | null
           status: string
           synopsis?: string | null
           tags?: string[] | null
           title: string
+          total_chapters?: number | null
           updated_at?: string
         }
         Update: {
           author?: string
+          chapters_read?: number | null
           cover_url?: string | null
           created_at?: string
+          end_date?: string | null
           id?: string
           notes?: string | null
           rating?: number | null
           release_date?: string | null
           source?: string | null
+          start_date?: string | null
           status?: string
           synopsis?: string | null
           tags?: string[] | null
           title?: string
+          total_chapters?: number | null
           updated_at?: string
         }
         Relationships: []

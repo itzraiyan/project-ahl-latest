@@ -8,6 +8,7 @@ import { EntryCard } from "@/components/EntryCard";
 import { EntryForm } from "@/components/EntryForm";
 import { AuthButton } from "@/components/AuthButton";
 import { SectionHeader } from "@/components/SectionHeader";
+import { DashboardStats } from "@/components/DashboardStats";
 import { useEntries, type Entry } from "@/hooks/useEntries";
 import { getAuthStatus } from "@/utils/authUtils";
 
@@ -142,6 +143,9 @@ const Index = () => {
             )}
           </div>
         </div>
+
+        {/* Dashboard Stats */}
+        <DashboardStats entries={entries} />
 
         {/* Sections */}
         <div className="space-y-12">

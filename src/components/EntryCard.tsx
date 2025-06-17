@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Star, Edit, Trash2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -43,7 +44,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
     return (
       <div className="flex items-center space-x-1">
         <Star
-          className={`w-4 h-4 ${starColor}`}
+          className={`w-4 h-4 ${starColor} transition-all duration-300 hover:scale-110`}
         />
         <span className="text-sm text-white font-medium">{rating}/10</span>
       </div>
@@ -51,17 +52,22 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
   };
 
   const getProgressText = () => {
+    const chaptersRead = entry.chapters_read || 0;
+    const totalChapters = entry.total_chapters;
+    
     switch (statusType) {
       case "Reading":
-        return "1/?";
+        return totalChapters ? `${chaptersRead}/${totalChapters}` : `${chaptersRead}/?`;
       case "Plan to Read":
-        return "0/?";
+        return totalChapters ? `0/${totalChapters}` : "0/?";
       case "Dropped":
-        return "1 read";
+        return totalChapters ? `${chaptersRead}/${totalChapters}` : `${chaptersRead} read`;
       case "Paused":
-        return "1/?";
+        return totalChapters ? `${chaptersRead}/${totalChapters}` : `${chaptersRead}/?`;
       case "Rereading":
-        return "1/?";
+        return totalChapters ? `${chaptersRead}/${totalChapters}` : `${chaptersRead}/?`;
+      case "Completed":
+        return totalChapters ? `${totalChapters}/${totalChapters}` : null;
       default:
         return null;
     }
@@ -161,7 +167,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                         e.stopPropagation();
                         setShowDeleteConfirm(true);
                       }}
-                      className="border-red-400/60 text-red-200 bg-black/70 hover:bg-red-900/70 hover:border-red-400/80 text-xs px-2 py-1 h-7 backdrop-blur-sm"
+                      className="border-red-400/60 text-red-200 bg-black/70 hover:bg-red-900/70 hover:border-red-400/80 text-xs px-2 py-1 h-7 backdrop-blur-sm mr-2"
                     >
                       <Trash2 className="w-3 h-3" />
                     </Button>
@@ -175,7 +181,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
 
       {/* Details Dialog - Enhanced with full information */}
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
-        <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-left">{entry.title}</DialogTitle>
           </DialogHeader>
@@ -212,6 +218,34 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                 )}
               </div>
             </div>
+
+            {/* Chapter Progress */}
+            {(entry.chapters_read !== undefined || entry.total_chapters) && (
+              <div>
+                <p className="text-sm text-gray-400">Progress</p>
+                <p className="text-white">
+                  {entry.chapters_read || 0} / {entry.total_chapters || "?"} chapters
+                </p>
+              </div>
+            )}
+
+            {/* Dates Section */}
+            {(entry.start_date || entry.end_date) && (
+              <div className="grid grid-cols-2 gap-4">
+                {entry.start_date && (
+                  <div>
+                    <p className="text-sm text-gray-400">Start Date</p>
+                    <p className="text-white">{new Date(entry.start_date).toLocaleDateString()}</p>
+                  </div>
+                )}
+                {entry.end_date && (
+                  <div>
+                    <p className="text-sm text-gray-400">End Date</p>
+                    <p className="text-white">{new Date(entry.end_date).toLocaleDateString()}</p>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Additional details */}
             {entry.release_date && (

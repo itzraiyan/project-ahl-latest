@@ -15,6 +15,10 @@ export interface Entry {
   release_date?: string;
   synopsis?: string;
   source?: string;
+  total_chapters?: number;
+  chapters_read?: number;
+  start_date?: string;
+  end_date?: string;
   created_at: string;
   updated_at: string;
 }
@@ -104,6 +108,10 @@ export const useEntries = () => {
           release_date: updatedEntry.release_date,
           synopsis: updatedEntry.synopsis,
           source: updatedEntry.source,
+          total_chapters: updatedEntry.total_chapters,
+          chapters_read: updatedEntry.chapters_read,
+          start_date: updatedEntry.start_date,
+          end_date: updatedEntry.end_date,
           updated_at: new Date().toISOString()
         })
         .eq('id', updatedEntry.id);
