@@ -11,7 +11,7 @@ import { DashboardStats } from "@/components/DashboardStats";
 import { AniListButton } from "@/components/AniListButton";
 import { useEntries, type Entry } from "@/hooks/useEntries";
 import { getAuthStatus } from "@/utils/authUtils";
-import thumbnail from '../assets/thumbnail.png';
+import logo from '../assets/logo.svg';
 
 const Index = () => {
   const [user, setUser] = useState<any>(null);
@@ -99,7 +99,7 @@ const Index = () => {
       <header className="border-b border-gray-800 bg-gray-900 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <img src={thumbnail} alt="Logo" className="h-8" />          <div className="flex items-center space-x-4">
+            <img src={logo} alt="Logo" className="h-8" />          <div className="flex items-center space-x-4">
               <AniListButton />
               <AuthButton user={user} onAuthChange={handleAuthChange} />
             </div>
