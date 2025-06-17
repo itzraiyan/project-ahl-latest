@@ -246,14 +246,6 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                 )}
               </div>
             )}
-
-            {/* Additional details */}
-            {entry.release_date && (
-              <div>
-                <p className="text-sm text-gray-400">Release Date</p>
-                <p className="text-white">{new Date(entry.release_date).toLocaleDateString()}</p>
-              </div>
-            )}
             
             {entry.source && (
               <div>
