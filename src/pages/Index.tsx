@@ -40,7 +40,7 @@ const Index = () => {
   };
 
   const statuses = [
-    { key: "Reading", title: "Reading", color: "bg-[#00FFFF]" },
+    { key: "Reading", title: "Reading", color: "bg-[#0096FF]" },
     { key: "Completed", title: "Completed", color: "bg-green-500" },
     { key: "Dropped", title: "Dropped", color: "bg-red-500" },
     { key: "Plan to Read", title: "Plan to Read", color: "bg-gray-500" },
@@ -126,7 +126,7 @@ const Index = () => {
             {user && (
               <Dialog open={isAddingEntry} onOpenChange={setIsAddingEntry}>
                 <DialogTrigger asChild>
-                  <Button style={{ backgroundColor: "#00FFFF" }} className="hover:bg-cyan-600 text-black">
+                  <Button className="bg-[#0096FF] hover:bg-[#0080E6] text-white transition-colors duration-200">
                     <Plus className="w-4 h-4 mr-2" />
                     Add Entry
                   </Button>
@@ -177,8 +177,7 @@ const Index = () => {
                     <p className="text-gray-400">No entries in this section.</p>
                     {user && (
                       <Button 
-                        style={{ backgroundColor: "#00FFFF" }}
-                        className="mt-4 hover:bg-cyan-600 text-black"
+                        className="mt-4 bg-[#0096FF] hover:bg-[#0080E6] text-white transition-colors duration-200"
                         onClick={() => setIsAddingEntry(true)}
                       >
                         Add Your First Entry
