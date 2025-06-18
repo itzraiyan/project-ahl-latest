@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useAniList } from "@/hooks/useAniList";
-import { BarChart3, BookOpen, Star, ChevronDown, ChevronUp, TrendingUp, Database } from "lucide-react";
 import type { Entry } from "@/hooks/useEntries";
 
 interface DashboardStatsProps {
@@ -20,7 +19,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
       : 0
   };
 
-  // Combine AniList and local stats
+  // Combine AniList and local stats with new calculation logic
   const combinedStats = {
     count: (anilistStats?.count || 0) + localStats.totalManga,
     chaptersRead: (anilistStats?.chaptersRead || 0) + localStats.chaptersRead,
@@ -34,8 +33,8 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
       if (anilistCount === 0) return localScore;
       if (localCount === 0) return anilistScore;
       
-      // Calculate weighted average
-      return ((anilistScore * anilistCount) + (localScore * localCount)) / (anilistCount + localCount);
+      // Combined Mean Score = (AniListCount × AniListMean + LocalCount × LocalMean) ÷ (AniListCount + LocalCount)
+      return (anilistCount * anilistScore + localCount * localScore) / (anilistCount + localCount);
     })()
   };
 
@@ -47,19 +46,19 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
     return (
       <div className="mb-6 p-4 bg-gray-900 rounded-lg border border-gray-800">
         <div className="flex justify-center items-center space-x-6">
-          <div className="text-center flex-1">
+          <div className="text-center">
             <div className="text-lg font-bold text-blue-400 animate-pulse">--</div>
-            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
+            <div className="text-xs font-bold text-gray-400">Total Manga</div>
           </div>
           <div className="text-gray-600 text-sm">|</div>
-          <div className="text-center flex-1">
+          <div className="text-center">
             <div className="text-lg font-bold text-blue-400 animate-pulse">--</div>
-            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
+            <div className="text-xs font-bold text-gray-400">Chapters Read</div>
           </div>
           <div className="text-gray-600 text-sm">|</div>
-          <div className="text-center flex-1">
+          <div className="text-center">
             <div className="text-lg font-bold text-blue-400 animate-pulse">--</div>
-            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Mean&nbsp;Score</div>
+            <div className="text-xs font-bold text-gray-400">Mean Score</div>
           </div>
         </div>
       </div>
@@ -68,46 +67,46 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
 
   return (
     <div className="mb-6">
-      {/* Main Dashboard - Restored to original */}
+      {/* Main Dashboard - Using original sizing */}
       <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center space-x-6 text-center">
           {/* Total Manga */}
           <div 
-            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded p-2 transition-colors duration-200"
+            className="flex-1 cursor-pointer hover:bg-gray-800 rounded p-2 transition-colors duration-200"
             onClick={toggleBreakdown}
           >
             <div className="text-lg font-bold text-blue-400">
               {combinedStats.count}
             </div>
-            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
+            <div className="text-xs font-bold text-gray-400">Total Manga</div>
           </div>
           
           {/* Separator */}
-          <div className="text-gray-600 text-sm px-4">|</div>
+          <div className="text-gray-600 text-sm">|</div>
           
           {/* Chapters Read */}
           <div 
-            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded p-2 transition-colors duration-200"
+            className="flex-1 cursor-pointer hover:bg-gray-800 rounded p-2 transition-colors duration-200"
             onClick={toggleBreakdown}
           >
             <div className="text-lg font-bold text-blue-400">
               {combinedStats.chaptersRead.toLocaleString()}
             </div>
-            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
+            <div className="text-xs font-bold text-gray-400">Chapters Read</div>
           </div>
           
           {/* Separator */}
-          <div className="text-gray-600 text-sm px-4">|</div>
+          <div className="text-gray-600 text-sm">|</div>
           
           {/* Mean Score */}
           <div 
-            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded p-2 transition-colors duration-200"
+            className="flex-1 cursor-pointer hover:bg-gray-800 rounded p-2 transition-colors duration-200"
             onClick={toggleBreakdown}
           >
             <div className="text-lg font-bold text-blue-400">
               {combinedStats.meanScore ? combinedStats.meanScore.toFixed(1) : '0.0'}
             </div>
-            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Mean&nbsp;Score</div>
+            <div className="text-xs font-bold text-gray-400">Mean Score</div>
           </div>
         </div>
         
@@ -118,12 +117,12 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
         )}
       </div>
 
-      {/* Breakdown Panel - Horizontal layout matching main dashboard */}
+      {/* Breakdown Panel */}
       <div className={`transition-all duration-300 ease-in-out ${
         showBreakdown ? 'max-h-32 opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0'
       } overflow-hidden`}>
         <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center items-center space-x-6">
             {/* Total Manga Breakdown */}
             <div className="flex-1 text-center">
               <div className="space-y-1">
@@ -141,7 +140,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             </div>
             
             {/* Separator */}
-            <div className="text-gray-600 text-sm px-4">|</div>
+            <div className="text-gray-600 text-sm">|</div>
             
             {/* Chapters Read Breakdown */}
             <div className="flex-1 text-center">
@@ -160,7 +159,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             </div>
             
             {/* Separator */}
-            <div className="text-gray-600 text-sm px-4">|</div>
+            <div className="text-gray-600 text-sm">|</div>
             
             {/* Mean Score Breakdown */}
             <div className="flex-1 text-center">
