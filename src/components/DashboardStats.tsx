@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useAniList } from "@/hooks/useAniList";
 import { BarChart3, BookOpen, Star, ChevronDown, ChevronUp, TrendingUp, Database } from "lucide-react";
@@ -79,12 +80,12 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
 
   return (
     <div className="mb-6">
-      {/* Main Dashboard - Reduced height */}
+      {/* Main Dashboard - Fixed padding consistency */}
       <div className="py-3 px-4 bg-gray-900 rounded-lg border border-gray-800">
         <div className="flex justify-center items-center">
           {/* Total Manga */}
           <div 
-            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-2 transition-colors duration-200 min-w-0"
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-3 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
             <div className="text-lg font-bold text-blue-400 truncate">
@@ -94,11 +95,11 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
           </div>
           
           {/* Separator */}
-          <div className="text-gray-600 text-sm px-4">|</div>
+          <div className="text-gray-600 text-sm px-3">|</div>
           
-          {/* Chapters Read */}
+          {/* Chapters Read - Fixed padding */}
           <div 
-            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-2 transition-colors duration-200 min-w-0"
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-3 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
             <div className="text-lg font-bold text-blue-400 truncate">
@@ -108,11 +109,11 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
           </div>
           
           {/* Separator */}
-          <div className="text-gray-600 text-sm px-4">|</div>
+          <div className="text-gray-600 text-sm px-3">|</div>
           
           {/* Mean Score */}
           <div 
-            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-2 transition-colors duration-200 min-w-0"
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-3 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
             <div className="text-lg font-bold text-blue-400 truncate">
