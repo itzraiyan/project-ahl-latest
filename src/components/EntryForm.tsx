@@ -258,7 +258,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
               variant="outline"
               onClick={handleProcessImage}
               disabled={isProcessing}
-              className="bg-sky-600 border-sky-600 text-white hover:bg-sky-700 hover:border-sky-700 flex items-center gap-2"
+              className="bg-[#0096FF] border-[#0096FF] text-white hover:bg-[#0080E6] hover:border-[#0080E6] transition-colors duration-200 flex items-center gap-2"
             >
               <Upload className="w-4 h-4" />
               {isProcessing ? "Processing..." : "Process & Upload Image"}
@@ -435,7 +435,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             max={10}
             min={1}
             step={0.5}
-            className="w-full [&>.relative]:bg-gray-700 [&>.relative>.absolute]:bg-blue-500"
+            className="w-full [&>.relative]:bg-gray-700 [&>.relative>.absolute]:bg-[#0096FF]"
           />
           <div className="flex justify-between text-xs text-gray-400">
             <span>1</span>
@@ -475,7 +475,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
               type="button" 
               onClick={handleAddTag} 
               variant="outline" 
-              className="bg-sky-600 border-sky-600 text-white hover:bg-sky-700 hover:border-sky-700"
+              className="bg-[#0096FF] border-[#0096FF] text-white hover:bg-[#0080E6] hover:border-[#0080E6] transition-colors duration-200"
             >
               Add
             </Button>
@@ -500,7 +500,7 @@ nakadashi"
               type="button" 
               onClick={handleBulkTagsAdd} 
               variant="outline" 
-              className="bg-sky-600 border-sky-600 text-white hover:bg-sky-700 hover:border-sky-700"
+              className="bg-[#0096FF] border-[#0096FF] text-white hover:bg-[#0080E6] hover:border-[#0080E6] transition-colors duration-200"
               disabled={!bulkTags.trim()}
             >
               Parse & Add Tags
@@ -509,7 +509,7 @@ nakadashi"
           
           <div className="flex flex-wrap gap-2">
             {formData.tags.map((tag, index) => (
-              <Badge key={index} variant="secondary" className="bg-sky-600 text-white">
+              <Badge key={index} variant="secondary" className="bg-[#0096FF] text-white">
                 {tag}
                 <button
                   type="button"
@@ -555,7 +555,7 @@ nakadashi"
         >
           Cancel
         </Button>
-        <Button type="submit" className="bg-sky-600 hover:bg-sky-700 text-white">
+        <Button type="submit" className="bg-[#0096FF] hover:bg-[#0080E6] text-white transition-colors duration-200">
           {entry ? "Update Entry" : "Add Entry"}
         </Button>
       </div>
