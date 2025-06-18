@@ -1,7 +1,6 @@
-
 import { useState } from "react";
 import { useAniList } from "@/hooks/useAniList";
-import { BarChart3, BookOpen, Star } from "lucide-react";
+import { BarChart3, BookOpen, Star, ChevronDown, ChevronUp, TrendingUp, Database } from "lucide-react";
 import type { Entry } from "@/hooks/useEntries";
 
 interface DashboardStatsProps {
@@ -69,7 +68,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
 
   return (
     <div className="mb-6">
-      {/* Main Dashboard - Restored to original compact size */}
+      {/* Main Dashboard - Restored to original */}
       <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
         <div className="flex justify-center items-center">
           {/* Total Manga */}
@@ -119,19 +118,31 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
         )}
       </div>
 
-      {/* Breakdown Panel - Improved styling with icons and horizontal layout */}
-      <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
-        showBreakdown ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'
-      }`}>
-        <div className="mt-2 p-4 bg-gray-800 rounded-lg border border-gray-700">
+      {/* Breakdown Panel - Horizontal layout matching main dashboard */}
+      <div className={`transition-all duration-500 ease-out ${
+        showBreakdown ? 'max-h-96 opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0'
+      } overflow-hidden`}>
+        <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
           <div className="flex justify-center items-center">
             {/* Total Manga Breakdown */}
             <div className="flex-1 text-center">
-              <div className="flex items-center justify-center gap-2 text-sm text-gray-300 mb-1">
-                <BarChart3 className="w-3 h-3" />
-                <span>AniList: {anilistStats?.count || 0}</span>
+              <div className="flex items-center justify-center gap-1 mb-2">
+                <BarChart3 className="w-4 h-4 text-blue-400" />
+                <span className="text-sm font-semibold text-gray-300">Manga</span>
               </div>
-              <div className="text-xs text-gray-400">+ Local: {localStats.totalManga}</div>
+              
+              <div className="space-y-1">
+                <div className="flex items-center justify-center gap-2 text-xs">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  <span className="text-gray-400">AniList:</span>
+                  <span className="font-bold text-purple-400">{anilistStats?.count || 0}</span>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-xs">
+                  <Database className="w-2 h-2 text-green-400" />
+                  <span className="text-gray-400">Local:</span>
+                  <span className="font-bold text-green-400">{localStats.totalManga}</span>
+                </div>
+              </div>
             </div>
             
             {/* Separator */}
@@ -139,11 +150,23 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             
             {/* Chapters Read Breakdown */}
             <div className="flex-1 text-center">
-              <div className="flex items-center justify-center gap-2 text-sm text-gray-300 mb-1">
-                <BookOpen className="w-3 h-3" />
-                <span>AniList: {(anilistStats?.chaptersRead || 0).toLocaleString()}</span>
+              <div className="flex items-center justify-center gap-1 mb-2">
+                <BookOpen className="w-4 h-4 text-blue-400" />
+                <span className="text-sm font-semibold text-gray-300">Chapters</span>
               </div>
-              <div className="text-xs text-gray-400">+ Local: {localStats.chaptersRead.toLocaleString()}</div>
+              
+              <div className="space-y-1">
+                <div className="flex items-center justify-center gap-2 text-xs">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  <span className="text-gray-400">AniList:</span>
+                  <span className="font-bold text-purple-400">{(anilistStats?.chaptersRead || 0).toLocaleString()}</span>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-xs">
+                  <Database className="w-2 h-2 text-green-400" />
+                  <span className="text-gray-400">Local:</span>
+                  <span className="font-bold text-green-400">{localStats.chaptersRead.toLocaleString()}</span>
+                </div>
+              </div>
             </div>
             
             {/* Separator */}
@@ -151,11 +174,27 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             
             {/* Mean Score Breakdown */}
             <div className="flex-1 text-center">
-              <div className="flex items-center justify-center gap-2 text-sm text-gray-300 mb-1">
-                <Star className="w-3 h-3" />
-                <span>Combined</span>
+              <div className="flex items-center justify-center gap-1 mb-2">
+                <Star className="w-4 h-4 text-blue-400" />
+                <span className="text-sm font-semibold text-gray-300">Score</span>
               </div>
-              <div className="text-xs text-gray-400">Avg: {combinedStats.meanScore ? combinedStats.meanScore.toFixed(1) : '0.0'}</div>
+              
+              <div className="space-y-1">
+                <div className="flex items-center justify-center gap-2 text-xs">
+                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  <span className="text-gray-400">AniList:</span>
+                  <span className="font-bold text-purple-400">
+                    {anilistStats?.meanScore ? anilistStats.meanScore.toFixed(1) : '0.0'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-xs">
+                  <Database className="w-2 h-2 text-green-400" />
+                  <span className="text-gray-400">Local:</span>
+                  <span className="font-bold text-green-400">
+                    {localStats.meanScore ? localStats.meanScore.toFixed(1) : '0.0'}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
