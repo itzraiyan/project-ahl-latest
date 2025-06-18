@@ -13,11 +13,13 @@ export type Database = {
         Row: {
           author: string
           chapters_read: number | null
+          compressed_image_url: string | null
           cover_url: string | null
           created_at: string
           end_date: string | null
           id: string
           notes: string | null
+          original_image_url: string | null
           rating: number | null
           source: string | null
           start_date: string | null
@@ -31,11 +33,13 @@ export type Database = {
         Insert: {
           author: string
           chapters_read?: number | null
+          compressed_image_url?: string | null
           cover_url?: string | null
           created_at?: string
           end_date?: string | null
           id?: string
           notes?: string | null
+          original_image_url?: string | null
           rating?: number | null
           source?: string | null
           start_date?: string | null
@@ -49,11 +53,13 @@ export type Database = {
         Update: {
           author?: string
           chapters_read?: number | null
+          compressed_image_url?: string | null
           cover_url?: string | null
           created_at?: string
           end_date?: string | null
           id?: string
           notes?: string | null
+          original_image_url?: string | null
           rating?: number | null
           source?: string | null
           start_date?: string | null

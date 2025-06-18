@@ -1,10 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Star, Edit, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useImageCompression } from "@/hooks/useImageCompression";
 import type { Entry } from "@/hooks/useEntries";
 
 interface EntryCardProps {
@@ -27,27 +26,12 @@ const statusColors: Record<string, string> = {
 export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: EntryCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
-  const [compressedImageUrl, setCompressedImageUrl] = useState<string>(entry.cover_url);
-  const { compressImage } = useImageCompression();
 
-  // Compress image for card view on component mount
-  useEffect(() => {
-    const loadCompressedImage = async () => {
-      try {
-        const compressed = await compressImage(entry.cover_url, {
-          quality: 0.7,
-          maxWidth: 300,
-          maxHeight: 450
-        });
-        setCompressedImageUrl(compressed);
-      } catch (error) {
-        console.error('Failed to compress image:', error);
-        // Keep original URL as fallback
-      }
-    };
-
-    loadCompressedImage();
-  }, [entry.cover_url, compressImage]);
+  // Use compressed image for card view, fallback to cover_url
+  const cardImageUrl = entry.compressed_image_url || entry.cover_url;
+  
+  // Use original image for detail view, fallback to cover_url
+  const detailImageUrl = entry.original_image_url || entry.cover_url;
 
   const renderSingleStar = (rating?: number) => {
     if (!rating) return null;
@@ -107,10 +91,10 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
     <>
       <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-all duration-200 group cursor-pointer hover:scale-[1.08] w-full aspect-[2/3] shadow-lg">
         <CardContent className="p-0 h-full relative">
-          {/* Cover Image - Using compressed version */}
+          {/* Cover Image - Using compressed version for faster loading */}
           <div className="aspect-[2/3] relative overflow-hidden rounded-md h-full" onClick={() => setShowDetails(true)}>
             <img
-              src={compressedImageUrl}
+              src={cardImageUrl}
               alt={entry.title}
               className="w-full h-full object-cover object-center transition-transform duration-200 group-hover:scale-105"
               style={{
@@ -185,7 +169,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
         </CardContent>
       </Card>
 
-      {/* Details Dialog - Using full quality image */}
+      {/* Details Dialog - Using high-quality original image */}
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
         <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
@@ -196,7 +180,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
             <div className="flex gap-4">
               <div className="w-32 h-48 flex-shrink-0">
                 <img
-                  src={entry.cover_url}
+                  src={detailImageUrl}
                   alt={entry.title}
                   className="w-full h-full object-cover rounded-md"
                   onError={(e) => {

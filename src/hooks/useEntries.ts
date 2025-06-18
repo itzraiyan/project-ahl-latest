@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -7,6 +8,8 @@ export interface Entry {
   title: string;
   author: string;
   cover_url: string;
+  compressed_image_url?: string;
+  original_image_url?: string;
   tags: string[];
   status: "Plan to Read" | "Reading" | "Paused" | "Completed" | "Dropped" | "Rereading";
   rating?: number;
@@ -91,7 +94,6 @@ export const useEntries = () => {
     }
   };
 
-  // --- FIX: Ensure null is sent for rating if it is undefined ---
   const updateEntry = async (updatedEntry: Entry) => {
     try {
       // If rating is undefined, explicitly set it to null for Supabase
@@ -103,6 +105,8 @@ export const useEntries = () => {
           title: updatedEntry.title,
           author: updatedEntry.author,
           cover_url: updatedEntry.cover_url,
+          compressed_image_url: updatedEntry.compressed_image_url,
+          original_image_url: updatedEntry.original_image_url,
           tags: updatedEntry.tags,
           status: updatedEntry.status,
           rating: ratingToSave,

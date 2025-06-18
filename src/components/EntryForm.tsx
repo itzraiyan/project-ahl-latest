@@ -8,9 +8,10 @@ import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { X, Calendar as CalendarIcon, ChevronUp, ChevronDown } from "lucide-react";
+import { X, Calendar as CalendarIcon, ChevronUp, ChevronDown, Upload } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useImageProcessor } from "@/hooks/useImageProcessor";
 import type { Entry } from "@/hooks/useEntries";
 
 interface EntryFormProps {
@@ -31,10 +32,14 @@ const sources = [
 ];
 
 export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
+  const { processImage, isProcessing } = useImageProcessor();
+  
   const [formData, setFormData] = useState({
     title: "",
     author: "",
     cover_url: "",
+    compressed_image_url: "",
+    original_image_url: "",
     tags: [] as string[],
     status: "Plan to Read" as Entry["status"],
     rating: undefined as number | undefined,
@@ -57,6 +62,8 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         title: entry.title,
         author: entry.author,
         cover_url: entry.cover_url,
+        compressed_image_url: entry.compressed_image_url || "",
+        original_image_url: entry.original_image_url || "",
         tags: [...entry.tags],
         status: entry.status,
         rating: entry.rating,
@@ -148,6 +155,23 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
     setFormData(prev => ({ ...prev, author: cleanedAuthor }));
   };
 
+  const handleProcessImage = async () => {
+    if (!formData.cover_url || !formData.title) {
+      console.log("Cover URL and title are required for image processing");
+      return;
+    }
+
+    const result = await processImage(formData.cover_url, formData.title);
+    
+    if (result) {
+      setFormData(prev => ({
+        ...prev,
+        compressed_image_url: result.compressedUrl,
+        original_image_url: result.originalUrl
+      }));
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Form submitted with data:", formData);
@@ -167,6 +191,8 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
       title: formData.title,
       author: formData.author,
       cover_url: formData.cover_url,
+      compressed_image_url: formData.compressed_image_url || undefined,
+      original_image_url: formData.original_image_url || undefined,
       tags: formData.tags,
       status: formData.status,
       rating: hasRatingInteraction ? formData.rating : undefined,
@@ -218,13 +244,30 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
 
       <div>
         <Label htmlFor="cover_url" className="text-white">Cover Image URL</Label>
-        <Input
-          id="cover_url"
-          value={formData.cover_url}
-          onChange={(e) => setFormData(prev => ({ ...prev, cover_url: e.target.value }))}
-          placeholder="https://example.com/cover.jpg"
-          className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
-        />
+        <div className="space-y-2">
+          <Input
+            id="cover_url"
+            value={formData.cover_url}
+            onChange={(e) => setFormData(prev => ({ ...prev, cover_url: e.target.value }))}
+            placeholder="https://example.com/cover.jpg"
+            className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+          />
+          {formData.cover_url && formData.title && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={handleProcessImage}
+              disabled={isProcessing}
+              className="border-gray-600 text-white bg-gray-800 hover:bg-gray-700 flex items-center gap-2"
+            >
+              <Upload className="w-4 h-4" />
+              {isProcessing ? "Processing..." : "Process & Upload Image"}
+            </Button>
+          )}
+          {formData.compressed_image_url && (
+            <p className="text-sm text-green-400">✓ Image processed and uploaded successfully</p>
+          )}
+        </div>
       </div>
 
       <div>
