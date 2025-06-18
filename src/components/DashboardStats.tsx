@@ -45,20 +45,20 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
 
   if (isLoading) {
     return (
-      <div className="mb-6 py-2 px-4 bg-gray-900 rounded-lg border border-gray-800">
+      <div className="mb-6 py-3 px-4 bg-gray-900 rounded-lg border border-gray-800">
         <div className="flex justify-center items-center space-x-6">
-          <div className="text-center flex-1">
-            <div className="text-base font-bold text-blue-400 animate-pulse">--</div>
+          <div className="text-center flex-1 min-w-0">
+            <div className="text-lg font-bold text-blue-400 animate-pulse truncate">--</div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
           </div>
           <div className="text-gray-600 text-sm">|</div>
-          <div className="text-center flex-1">
-            <div className="text-base font-bold text-blue-400 animate-pulse">--</div>
+          <div className="text-center flex-1 min-w-0">
+            <div className="text-lg font-bold text-blue-400 animate-pulse truncate">--</div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
           </div>
           <div className="text-gray-600 text-sm">|</div>
-          <div className="text-center flex-1">
-            <div className="text-base font-bold text-blue-400 animate-pulse">--</div>
+          <div className="text-center flex-1 min-w-0">
+            <div className="text-lg font-bold text-blue-400 animate-pulse truncate">--</div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Mean&nbsp;Score</div>
           </div>
         </div>
@@ -69,15 +69,15 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
   return (
     <div className="mb-6">
       {/* Main Dashboard - Reduced height */}
-      <div className="py-2 px-4 bg-gray-900 rounded-lg border border-gray-800">
+      <div className="py-3 px-4 bg-gray-900 rounded-lg border border-gray-800">
         <div className="flex justify-center items-center">
           {/* Total Manga */}
           <div 
-            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1 px-2 transition-colors duration-200"
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-2 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
-            <div className="text-base font-bold text-blue-400">
-              {combinedStats.count}
+            <div className="text-lg font-bold text-blue-400 truncate">
+              {combinedStats.count.toLocaleString()}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
           </div>
@@ -87,10 +87,10 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
           
           {/* Chapters Read */}
           <div 
-            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1 px-2 transition-colors duration-200"
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-2 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
-            <div className="text-base font-bold text-blue-400">
+            <div className="text-lg font-bold text-blue-400 truncate">
               {combinedStats.chaptersRead.toLocaleString()}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
@@ -101,10 +101,10 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
           
           {/* Mean Score */}
           <div 
-            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1 px-2 transition-colors duration-200"
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-2 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
-            <div className="text-base font-bold text-blue-400">
+            <div className="text-lg font-bold text-blue-400 truncate">
               {combinedStats.meanScore ? combinedStats.meanScore.toFixed(1) : '0.0'}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Mean&nbsp;Score</div>
@@ -125,17 +125,17 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
         <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
           <div className="flex justify-center items-center">
             {/* Total Manga Breakdown */}
-            <div className="flex-1 text-center">
+            <div className="flex-1 text-center min-w-0">
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-sky-400 rounded-full"></div>
-                  <span className="text-gray-400">AniList:</span>
-                  <span className="font-bold text-sky-400">{anilistStats?.count || 0}</span>
+                  <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
+                  <span className="text-gray-400 flex-shrink-0">AniList:</span>
+                  <span className="font-bold text-sky-400 truncate">{(anilistStats?.count || 0).toLocaleString()}</span>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                  <span className="text-gray-400">Local:</span>
-                  <span className="font-bold text-green-400">{localStats.totalManga}</span>
+                  <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
+                  <span className="text-gray-400 flex-shrink-0">Local:</span>
+                  <span className="font-bold text-green-400 truncate">{localStats.totalManga.toLocaleString()}</span>
                 </div>
               </div>
             </div>
@@ -144,17 +144,17 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             <div className="text-gray-600 text-sm px-4">|</div>
             
             {/* Chapters Read Breakdown */}
-            <div className="flex-1 text-center">
+            <div className="flex-1 text-center min-w-0">
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-sky-400 rounded-full"></div>
-                  <span className="text-gray-400">AniList:</span>
-                  <span className="font-bold text-sky-400">{(anilistStats?.chaptersRead || 0).toLocaleString()}</span>
+                  <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
+                  <span className="text-gray-400 flex-shrink-0">AniList:</span>
+                  <span className="font-bold text-sky-400 truncate">{(anilistStats?.chaptersRead || 0).toLocaleString()}</span>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                  <span className="text-gray-400">Local:</span>
-                  <span className="font-bold text-green-400">{localStats.chaptersRead.toLocaleString()}</span>
+                  <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
+                  <span className="text-gray-400 flex-shrink-0">Local:</span>
+                  <span className="font-bold text-green-400 truncate">{localStats.chaptersRead.toLocaleString()}</span>
                 </div>
               </div>
             </div>
@@ -163,19 +163,19 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             <div className="text-gray-600 text-sm px-4">|</div>
             
             {/* Mean Score Breakdown */}
-            <div className="flex-1 text-center">
+            <div className="flex-1 text-center min-w-0">
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-sky-400 rounded-full"></div>
-                  <span className="text-gray-400">AniList:</span>
-                  <span className="font-bold text-sky-400">
+                  <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
+                  <span className="text-gray-400 flex-shrink-0">AniList:</span>
+                  <span className="font-bold text-sky-400 truncate">
                     {anilistStats?.meanScore ? anilistStats.meanScore.toFixed(1) : '0.0'}
                   </span>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
-                  <span className="text-gray-400">Local:</span>
-                  <span className="font-bold text-green-400">
+                  <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
+                  <span className="text-gray-400 flex-shrink-0">Local:</span>
+                  <span className="font-bold text-green-400 truncate">
                     {localStats.meanScore ? localStats.meanScore.toFixed(1) : '0.0'}
                   </span>
                 </div>
