@@ -1,6 +1,5 @@
-
 import { useState } from "react";
-import { Star, Edit, Trash2 } from "lucide-react";
+import { Star, Edit, Trash2, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -87,37 +86,52 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
       <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-all duration-200 group cursor-pointer hover:scale-[1.08] w-full aspect-[2/3] shadow-lg">
         <CardContent className="p-0 h-full relative">
           {/* Cover Image */}
-          <div className="aspect-[2/3] relative overflow-hidden rounded-md h-full" onClick={() => setShowDetails(true)}>
+          <div className="aspect-[2/3] relative overflow-hidden rounded-md bg-gray-700 h-full" onClick={() => setShowDetails(true)}>
             <img
               src={entry.cover_url}
               alt={entry.title}
-              className="w-full h-full object-cover object-center transition-transform duration-200 group-hover:scale-105"
-              style={{
-                objectFit: 'cover',
-                objectPosition: 'center'
-              }}
+              className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
               onError={(e) => {
                 const target = e.target as HTMLImageElement;
                 target.src = "/placeholder.svg";
               }}
             />
             
-            {/* Progress Text - Top Right Corner with Glassmorphism */}
-            {shouldShowProgress && progressText && (
-              <div className="absolute top-2 right-2 bg-white/10 backdrop-blur-md border border-white/20 px-2 py-1 rounded-md text-xs text-white font-medium shadow-lg">
-                {progressText}
-              </div>
-            )}
-            
-            {/* Bottom overlay with title, author, score and actions */}
-            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-3 pt-8 z-10">
-              {/* Score (left aligned) */}
-              {shouldShowScore && entry.rating && (
-                <div className="flex items-center mb-2">
-                  <Star className="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1" />
-                  <span className="text-white text-xs font-medium">{entry.rating}</span>
+            {/* Hover overlay - lighter transparency */}
+            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-opacity duration-200 flex items-center justify-center">
+              <Button
+                variant="secondary"
+                size="sm"
+                className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-sm px-3 py-1 bg-white/90 text-black hover:bg-white"
+              >
+                <Eye className="w-4 h-4 mr-1" />
+                View
+              </Button>
+            </div>
+
+            {/* Bottom overlay with title and info - lighter gradient */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent p-3 pt-8">
+              {/* Score and Progress on the same line */}
+              <div className="flex justify-between items-center mb-2">
+                {/* Score (left) */}
+                <div className="text-white text-xs">
+                  {shouldShowScore && entry.rating && (
+                    <div className="flex items-center">
+                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400 mr-1" />
+                      <span className="font-medium">{entry.rating}</span>
+                    </div>
+                  )}
                 </div>
-              )}
+                
+                {/* Progress (right) */}
+                <div className="text-white text-xs">
+                  {shouldShowProgress && progressText && (
+                    <span className="bg-black/50 px-2 py-1 rounded text-xs">
+                      {progressText}
+                    </span>
+                  )}
+                </div>
+              </div>
 
               {/* Title */}
               <h3 className="font-semibold text-white text-sm leading-tight mb-1">
@@ -129,7 +143,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                 {entry.author}
               </p>
 
-              {/* Centered Actions */}
+              {/* Actions - Always visible, properly positioned */}
               {!isReadOnly && (
                 <div className="flex justify-center">
                   <div className="flex gap-2">
@@ -152,7 +166,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                         e.stopPropagation();
                         setShowDeleteConfirm(true);
                       }}
-                      className="border-red-400/60 text-red-200 bg-black/70 hover:bg-red-900/70 hover:border-red-400/80 text-xs px-2 py-1 h-7 backdrop-blur-sm"
+                      className="border-red-400/60 text-red-200 bg-black/70 hover:bg-red-900/70 hover:border-red-400/80 text-xs px-2 py-1 h-7 backdrop-blur-sm mr-2"
                     >
                       <Trash2 className="w-3 h-3" />
                     </Button>

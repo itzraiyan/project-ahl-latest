@@ -1,16 +1,14 @@
-
 import { useState, useEffect } from "react";
 import { Search, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { EntryCard } from "@/components/EntryCard";
 import { EntryForm } from "@/components/EntryForm";
 import { AuthButton } from "@/components/AuthButton";
 import { SectionHeader } from "@/components/SectionHeader";
 import { DashboardStats } from "@/components/DashboardStats";
 import { AniListButton } from "@/components/AniListButton";
-import { PaginatedSection } from "@/components/PaginatedSection";
-import { Footer } from "@/components/Footer";
 import { useEntries, type Entry } from "@/hooks/useEntries";
 import { getAuthStatus } from "@/utils/authUtils";
 import logo from '../assets/logo.svg';
@@ -101,8 +99,7 @@ const Index = () => {
       <header className="border-b border-gray-800 bg-gray-900 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <img src={logo} alt="Logo" className="h-8" />
-            <div className="flex items-center space-x-4">
+            <img src={logo} alt="Logo" className="h-8" />          <div className="flex items-center space-x-4">
               <AniListButton />
               <AuthButton user={user} onAuthChange={handleAuthChange} />
             </div>
@@ -166,13 +163,18 @@ const Index = () => {
                 />
                 
                 {sectionEntries.length > 0 ? (
-                  <PaginatedSection
-                    entries={sectionEntries}
-                    onEdit={setEditingEntry}
-                    onDelete={deleteEntry}
-                    isReadOnly={!user}
-                    statusType={status.key as any}
-                  />
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-3 auto-fit">
+                    {sectionEntries.map((entry) => (
+                      <EntryCard
+                        key={entry.id}
+                        entry={entry}
+                        onEdit={setEditingEntry}
+                        onDelete={deleteEntry}
+                        isReadOnly={!user}
+                        statusType={status.key as any}
+                      />
+                    ))}
+                  </div>
                 ) : (
                   <div className="text-center py-8">
                     <p className="text-gray-400">No entries in this section.</p>
@@ -191,9 +193,6 @@ const Index = () => {
           })}
         </div>
       </main>
-
-      {/* Footer */}
-      <Footer />
 
       {/* Edit Dialog */}
       {editingEntry && (

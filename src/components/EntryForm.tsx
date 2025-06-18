@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,7 +38,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
     cover_url: "",
     tags: [] as string[],
     status: "Plan to Read" as Entry["status"],
-    rating: undefined as number | undefined,
+    rating: 5.5 as number | undefined,
     notes: "",
     synopsis: "",
     source: "",
@@ -48,8 +49,6 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
     end_date: undefined as Date | undefined
   });
   const [newTag, setNewTag] = useState("");
-  const [bulkTags, setBulkTags] = useState("");
-  const [hasRatingInteraction, setHasRatingInteraction] = useState(false);
 
   useEffect(() => {
     if (entry) {
@@ -59,7 +58,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         cover_url: entry.cover_url,
         tags: [...entry.tags],
         status: entry.status,
-        rating: entry.rating,
+        rating: entry.rating || 5.5,
         notes: entry.notes || "",
         synopsis: entry.synopsis || "",
         source: entry.source || "",
@@ -69,30 +68,8 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         start_date: entry.start_date ? new Date(entry.start_date) : undefined,
         end_date: entry.end_date ? new Date(entry.end_date) : undefined
       });
-      setHasRatingInteraction(!!entry.rating);
     }
   }, [entry]);
-
-  const cleanAuthorName = (authorName: string) => {
-    // Remove numbers and common suffixes like "K" that might be noise
-    return authorName.replace(/\d+[kK]?/g, '').trim();
-  };
-
-  const parseBulkTags = (bulkText: string) => {
-    if (!bulkText.trim()) return [];
-    
-    // Split by lines and filter out numbers, empty lines, and clean up
-    const tags = bulkText
-      .split(/\n|\r\n|\r/)
-      .map(line => line.trim())
-      .filter(line => line.length > 0)
-      .filter(line => !/^[\d,kK\s]+$/.test(line)) // Remove lines that are just numbers/K
-      .map(line => line.replace(/[\d,kK]+/g, '').trim()) // Remove numbers from within lines
-      .filter(line => line.length > 0)
-      .map(line => line.toLowerCase());
-    
-    return [...new Set(tags)]; // Remove duplicates
-  };
 
   const handleAddTag = () => {
     if (newTag.trim() && !formData.tags.includes(newTag.trim().toLowerCase())) {
@@ -104,19 +81,6 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
     }
   };
 
-  const handleBulkTagsAdd = () => {
-    const newTags = parseBulkTags(bulkTags);
-    const uniqueNewTags = newTags.filter(tag => !formData.tags.includes(tag));
-    
-    if (uniqueNewTags.length > 0) {
-      setFormData(prev => ({
-        ...prev,
-        tags: [...prev.tags, ...uniqueNewTags]
-      }));
-    }
-    setBulkTags("");
-  };
-
   const handleRemoveTag = (tagToRemove: string) => {
     setFormData(prev => ({
       ...prev,
@@ -125,13 +89,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
   };
 
   const handleRatingChange = (value: number[]) => {
-    setHasRatingInteraction(true);
     setFormData(prev => ({ ...prev, rating: value[0] }));
-  };
-
-  const handleClearRating = () => {
-    setHasRatingInteraction(false);
-    setFormData(prev => ({ ...prev, rating: undefined }));
   };
 
   const handleChaptersReadChange = (increment: boolean) => {
@@ -141,11 +99,6 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         : Math.max(0, prev.chapters_read - 1);
       return { ...prev, chapters_read: newValue };
     });
-  };
-
-  const handleAuthorChange = (value: string) => {
-    const cleanedAuthor = cleanAuthorName(value);
-    setFormData(prev => ({ ...prev, author: cleanedAuthor }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -169,7 +122,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
       cover_url: formData.cover_url,
       tags: formData.tags,
       status: formData.status,
-      rating: hasRatingInteraction ? formData.rating : undefined,
+      rating: formData.rating,
       notes: formData.notes,
       synopsis: formData.synopsis,
       source: finalSource,
@@ -208,7 +161,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
           <Input
             id="author"
             value={formData.author}
-            onChange={(e) => handleAuthorChange(e.target.value)}
+            onChange={(e) => setFormData(prev => ({ ...prev, author: e.target.value }))}
             placeholder="Enter author name..."
             className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
             required
@@ -382,12 +335,10 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
 
       {/* Rating section */}
       <div>
-        <Label className="text-white">
-          Rating: {hasRatingInteraction && formData.rating ? `${formData.rating}/10` : 'Not rated'}
-        </Label>
+        <Label className="text-white">Rating: {formData.rating ? `${formData.rating}/10` : 'Not rated'}</Label>
         <div className="mt-2 space-y-2">
           <Slider
-            value={hasRatingInteraction && formData.rating ? [formData.rating] : [5.5]}
+            value={formData.rating ? [formData.rating] : [5.5]}
             onValueChange={handleRatingChange}
             max={10}
             min={1}
@@ -399,19 +350,21 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             <span>5.5</span>
             <span>10</span>
           </div>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={handleClearRating}
-            className="text-xs border-gray-600 text-black bg-gray-300 hover:bg-gray-200"
-          >
-            Clear Rating
-          </Button>
+          {formData.rating && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setFormData(prev => ({ ...prev, rating: undefined }))}
+              className="text-xs border-gray-600 text-black bg-gray-300 hover:bg-gray-200"
+            >
+              Clear Rating
+            </Button>
+          )}
         </div>
       </div>
 
-      {/* Tags section with bulk input */}
+      {/* Tags section */}
       <div>
         <Label className="text-white">Tags</Label>
         <div className="space-y-2">
@@ -419,7 +372,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             <Input
               value={newTag}
               onChange={(e) => setNewTag(e.target.value)}
-              placeholder="Add a single tag..."
+              placeholder="Add a tag..."
               className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
@@ -437,33 +390,6 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
               Add
             </Button>
           </div>
-          
-          {/* Bulk tags input */}
-          <div className="space-y-2">
-            <Textarea
-              value={bulkTags}
-              onChange={(e) => setBulkTags(e.target.value)}
-              placeholder="Or paste multiple tags (one per line)...
-              
-Example:
-big breasts
-185K
-sole female
-160K
-nakadashi"
-              className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[100px]"
-            />
-            <Button 
-              type="button" 
-              onClick={handleBulkTagsAdd} 
-              variant="outline" 
-              className="border-gray-600 text-black bg-gray-300 hover:bg-gray-200"
-              disabled={!bulkTags.trim()}
-            >
-              Parse & Add Tags
-            </Button>
-          </div>
-          
           <div className="flex flex-wrap gap-2">
             {formData.tags.map((tag, index) => (
               <Badge key={index} variant="secondary" className="bg-purple-600 text-white">
