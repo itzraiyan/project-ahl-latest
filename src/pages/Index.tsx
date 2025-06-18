@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Search, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,7 +40,7 @@ const Index = () => {
   };
 
   const statuses = [
-    { key: "Reading", title: "Reading", color: "bg-blue-500" },
+    { key: "Reading", title: "Reading", color: "bg-[#00FFFF]" },
     { key: "Completed", title: "Completed", color: "bg-green-500" },
     { key: "Dropped", title: "Dropped", color: "bg-red-500" },
     { key: "Plan to Read", title: "Plan to Read", color: "bg-gray-500" },
@@ -127,7 +126,7 @@ const Index = () => {
             {user && (
               <Dialog open={isAddingEntry} onOpenChange={setIsAddingEntry}>
                 <DialogTrigger asChild>
-                  <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+                  <Button style={{ backgroundColor: "#00FFFF" }} className="hover:bg-cyan-600 text-black">
                     <Plus className="w-4 h-4 mr-2" />
                     Add Entry
                   </Button>
@@ -178,7 +177,8 @@ const Index = () => {
                     <p className="text-gray-400">No entries in this section.</p>
                     {user && (
                       <Button 
-                        className="mt-4 bg-blue-600 hover:bg-blue-700 text-white"
+                        style={{ backgroundColor: "#00FFFF" }}
+                        className="mt-4 hover:bg-cyan-600 text-black"
                         onClick={() => setIsAddingEntry(true)}
                       >
                         Add Your First Entry
