@@ -47,19 +47,19 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
     return (
       <div className="mb-6 p-4 bg-gray-900 rounded-lg border border-gray-800">
         <div className="flex justify-center items-center space-x-6">
-          <div className="text-center">
+          <div className="text-center flex-1">
             <div className="text-lg font-bold text-blue-400 animate-pulse">--</div>
-            <div className="text-xs font-bold text-gray-400">Total Manga</div>
+            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
           </div>
           <div className="text-gray-600 text-sm">|</div>
-          <div className="text-center">
+          <div className="text-center flex-1">
             <div className="text-lg font-bold text-blue-400 animate-pulse">--</div>
-            <div className="text-xs font-bold text-gray-400">Chapters Read</div>
+            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
           </div>
           <div className="text-gray-600 text-sm">|</div>
-          <div className="text-center">
+          <div className="text-center flex-1">
             <div className="text-lg font-bold text-blue-400 animate-pulse">--</div>
-            <div className="text-xs font-bold text-gray-400">Mean Score</div>
+            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Mean&nbsp;Score</div>
           </div>
         </div>
       </div>
@@ -78,7 +78,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             <div className="text-lg font-bold text-blue-400">
               {combinedStats.count}
             </div>
-            <div className="text-xs font-bold text-gray-400">Total Manga</div>
+            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
           </div>
           
           <div className="text-gray-600 text-sm">|</div>
@@ -90,7 +90,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             <div className="text-lg font-bold text-blue-400">
               {combinedStats.chaptersRead.toLocaleString()}
             </div>
-            <div className="text-xs font-bold text-gray-400">Chapters Read</div>
+            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
           </div>
           
           <div className="text-gray-600 text-sm">|</div>
@@ -102,7 +102,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             <div className="text-lg font-bold text-blue-400">
               {combinedStats.meanScore ? combinedStats.meanScore.toFixed(1) : '0.0'}
             </div>
-            <div className="text-xs font-bold text-gray-400">Mean Score</div>
+            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Mean&nbsp;Score</div>
           </div>
         </div>
         
@@ -115,31 +115,27 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
 
       {/* Breakdown Panel */}
       <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
-        showBreakdown ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+        showBreakdown ? 'max-h-24 opacity-100' : 'max-h-0 opacity-0'
       }`}>
-        <div className="mt-4 p-4 bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-700/50">
-          <div className="space-y-4 text-sm">
-            <div>
-              <h4 className="font-semibold text-gray-300 mb-2">Total Manga:</h4>
-              <div className="text-gray-400 space-y-1">
-                <div>AniList — {anilistStats?.count || 0}</div>
-                <div>+ Local — {localStats.totalManga}</div>
-              </div>
+        <div className="mt-2 p-4 bg-gray-800 rounded-lg border border-gray-700">
+          <div className="flex justify-center items-center space-x-6 text-center text-sm">
+            <div className="flex-1">
+              <div className="text-gray-300 mb-1">AniList: {anilistStats?.count || 0}</div>
+              <div className="text-gray-400">+ Local: {localStats.totalManga}</div>
             </div>
             
-            <div>
-              <h4 className="font-semibold text-gray-300 mb-2">Chapters Read:</h4>
-              <div className="text-gray-400 space-y-1">
-                <div>AniList — {(anilistStats?.chaptersRead || 0).toLocaleString()}</div>
-                <div>+ Local — {localStats.chaptersRead.toLocaleString()}</div>
-              </div>
+            <div className="text-gray-600 text-sm">|</div>
+            
+            <div className="flex-1">
+              <div className="text-gray-300 mb-1">AniList: {(anilistStats?.chaptersRead || 0).toLocaleString()}</div>
+              <div className="text-gray-400">+ Local: {localStats.chaptersRead.toLocaleString()}</div>
             </div>
             
-            <div>
-              <h4 className="font-semibold text-gray-300 mb-2">Mean Score:</h4>
-              <div className="text-gray-400">
-                <div>Combined Average — {combinedStats.meanScore ? combinedStats.meanScore.toFixed(1) : '0.0'}</div>
-              </div>
+            <div className="text-gray-600 text-sm">|</div>
+            
+            <div className="flex-1">
+              <div className="text-gray-300 mb-1">Combined</div>
+              <div className="text-gray-400">Avg: {combinedStats.meanScore ? combinedStats.meanScore.toFixed(1) : '0.0'}</div>
             </div>
           </div>
         </div>
