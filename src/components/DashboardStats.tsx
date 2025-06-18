@@ -11,6 +11,17 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
   const { stats: anilistStats, isLoading, error } = useAniList();
   const [showBreakdown, setShowBreakdown] = useState(false);
 
+  // Function to format large numbers
+  const formatNumber = (num: number): string => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    }
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    }
+    return num.toString();
+  };
+
   // Calculate local stats
   const localStats = {
     totalManga: entries.length,
@@ -77,7 +88,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             onClick={toggleBreakdown}
           >
             <div className="text-lg font-bold text-blue-400 truncate">
-              {combinedStats.count.toLocaleString()}
+              {formatNumber(combinedStats.count)}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
           </div>
@@ -91,7 +102,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             onClick={toggleBreakdown}
           >
             <div className="text-lg font-bold text-blue-400 truncate">
-              {combinedStats.chaptersRead.toLocaleString()}
+              {formatNumber(combinedStats.chaptersRead)}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
           </div>
@@ -130,12 +141,12 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
                 <div className="flex items-center justify-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
                   <span className="text-gray-400 flex-shrink-0">AniList:</span>
-                  <span className="font-bold text-sky-400 truncate">{(anilistStats?.count || 0).toLocaleString()}</span>
+                  <span className="font-bold text-sky-400 truncate">{formatNumber(anilistStats?.count || 0)}</span>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
                   <span className="text-gray-400 flex-shrink-0">Local:</span>
-                  <span className="font-bold text-green-400 truncate">{localStats.totalManga.toLocaleString()}</span>
+                  <span className="font-bold text-green-400 truncate">{formatNumber(localStats.totalManga)}</span>
                 </div>
               </div>
             </div>
@@ -149,12 +160,12 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
                 <div className="flex items-center justify-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
                   <span className="text-gray-400 flex-shrink-0">AniList:</span>
-                  <span className="font-bold text-sky-400 truncate">{(anilistStats?.chaptersRead || 0).toLocaleString()}</span>
+                  <span className="font-bold text-sky-400 truncate">{formatNumber(anilistStats?.chaptersRead || 0)}</span>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
                   <span className="text-gray-400 flex-shrink-0">Local:</span>
-                  <span className="font-bold text-green-400 truncate">{localStats.chaptersRead.toLocaleString()}</span>
+                  <span className="font-bold text-green-400 truncate">{formatNumber(localStats.chaptersRead)}</span>
                 </div>
               </div>
             </div>
