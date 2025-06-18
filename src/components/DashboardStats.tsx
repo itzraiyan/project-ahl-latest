@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAniList } from "@/hooks/useAniList";
 import { BarChart3, BookOpen, Star, ChevronDown, ChevronUp, TrendingUp, Database } from "lucide-react";
@@ -60,17 +59,17 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
       <div className="mb-6 py-3 px-4 bg-gray-900 rounded-lg border border-gray-800">
         <div className="flex justify-center items-center space-x-6">
           <div className="text-center flex-1 min-w-0">
-            <div className="text-lg font-bold text-blue-400 animate-pulse truncate">--</div>
+            <div className="text-lg font-bold animate-pulse truncate" style={{ color: '#0096FF' }}>--</div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
           </div>
           <div className="text-gray-600 text-sm">|</div>
           <div className="text-center flex-1 min-w-0">
-            <div className="text-lg font-bold text-blue-400 animate-pulse truncate">--</div>
+            <div className="text-lg font-bold animate-pulse truncate" style={{ color: '#0096FF' }}>--</div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
           </div>
           <div className="text-gray-600 text-sm">|</div>
           <div className="text-center flex-1 min-w-0">
-            <div className="text-lg font-bold text-blue-400 animate-pulse truncate">--</div>
+            <div className="text-lg font-bold animate-pulse truncate" style={{ color: '#0096FF' }}>--</div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Mean&nbsp;Score</div>
           </div>
         </div>
@@ -88,7 +87,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-3 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
-            <div className="text-lg font-bold text-blue-400 truncate">
+            <div className="text-lg font-bold truncate" style={{ color: '#0096FF' }}>
               {formatNumber(combinedStats.count)}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
@@ -102,7 +101,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-3 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
-            <div className="text-lg font-bold text-blue-400 truncate">
+            <div className="text-lg font-bold truncate" style={{ color: '#0096FF' }}>
               {formatNumber(combinedStats.chaptersRead)}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
@@ -116,7 +115,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-3 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
-            <div className="text-lg font-bold text-blue-400 truncate">
+            <div className="text-lg font-bold truncate" style={{ color: '#0096FF' }}>
               {combinedStats.meanScore ? combinedStats.meanScore.toFixed(1) : '0.0'}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Mean&nbsp;Score</div>
