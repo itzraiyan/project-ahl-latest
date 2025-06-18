@@ -119,26 +119,21 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
       </div>
 
       {/* Breakdown Panel - Horizontal layout matching main dashboard */}
-      <div className={`transition-all duration-500 ease-out ${
-        showBreakdown ? 'max-h-96 opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0'
+      <div className={`transition-all duration-300 ease-in-out ${
+        showBreakdown ? 'max-h-32 opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0'
       } overflow-hidden`}>
         <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
           <div className="flex justify-center items-center">
             {/* Total Manga Breakdown */}
             <div className="flex-1 text-center">
-              <div className="flex items-center justify-center gap-1 mb-2">
-                <BarChart3 className="w-4 h-4 text-blue-400" />
-                <span className="text-sm font-semibold text-gray-300">Manga</span>
-              </div>
-              
               <div className="space-y-1">
-                <div className="flex items-center justify-center gap-2 text-xs">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                <div className="flex items-center justify-center gap-2 text-sm">
+                  <div className="w-2 h-2 bg-sky-400 rounded-full"></div>
                   <span className="text-gray-400">AniList:</span>
-                  <span className="font-bold text-purple-400">{anilistStats?.count || 0}</span>
+                  <span className="font-bold text-sky-400">{anilistStats?.count || 0}</span>
                 </div>
-                <div className="flex items-center justify-center gap-2 text-xs">
-                  <Database className="w-2 h-2 text-green-400" />
+                <div className="flex items-center justify-center gap-2 text-sm">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                   <span className="text-gray-400">Local:</span>
                   <span className="font-bold text-green-400">{localStats.totalManga}</span>
                 </div>
@@ -150,19 +145,14 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             
             {/* Chapters Read Breakdown */}
             <div className="flex-1 text-center">
-              <div className="flex items-center justify-center gap-1 mb-2">
-                <BookOpen className="w-4 h-4 text-blue-400" />
-                <span className="text-sm font-semibold text-gray-300">Chapters</span>
-              </div>
-              
               <div className="space-y-1">
-                <div className="flex items-center justify-center gap-2 text-xs">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                <div className="flex items-center justify-center gap-2 text-sm">
+                  <div className="w-2 h-2 bg-sky-400 rounded-full"></div>
                   <span className="text-gray-400">AniList:</span>
-                  <span className="font-bold text-purple-400">{(anilistStats?.chaptersRead || 0).toLocaleString()}</span>
+                  <span className="font-bold text-sky-400">{(anilistStats?.chaptersRead || 0).toLocaleString()}</span>
                 </div>
-                <div className="flex items-center justify-center gap-2 text-xs">
-                  <Database className="w-2 h-2 text-green-400" />
+                <div className="flex items-center justify-center gap-2 text-sm">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                   <span className="text-gray-400">Local:</span>
                   <span className="font-bold text-green-400">{localStats.chaptersRead.toLocaleString()}</span>
                 </div>
@@ -174,21 +164,16 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             
             {/* Mean Score Breakdown */}
             <div className="flex-1 text-center">
-              <div className="flex items-center justify-center gap-1 mb-2">
-                <Star className="w-4 h-4 text-blue-400" />
-                <span className="text-sm font-semibold text-gray-300">Score</span>
-              </div>
-              
               <div className="space-y-1">
-                <div className="flex items-center justify-center gap-2 text-xs">
-                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                <div className="flex items-center justify-center gap-2 text-sm">
+                  <div className="w-2 h-2 bg-sky-400 rounded-full"></div>
                   <span className="text-gray-400">AniList:</span>
-                  <span className="font-bold text-purple-400">
+                  <span className="font-bold text-sky-400">
                     {anilistStats?.meanScore ? anilistStats.meanScore.toFixed(1) : '0.0'}
                   </span>
                 </div>
-                <div className="flex items-center justify-center gap-2 text-xs">
-                  <Database className="w-2 h-2 text-green-400" />
+                <div className="flex items-center justify-center gap-2 text-sm">
+                  <div className="w-2 h-2 bg-green-400 rounded-full"></div>
                   <span className="text-gray-400">Local:</span>
                   <span className="font-bold text-green-400">
                     {localStats.meanScore ? localStats.meanScore.toFixed(1) : '0.0'}
