@@ -258,7 +258,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
               variant="outline"
               onClick={handleProcessImage}
               disabled={isProcessing}
-              className="bg-purple-600 border-purple-600 text-white hover:bg-purple-700 hover:border-purple-700 flex items-center gap-2"
+              className="bg-sky-600 border-sky-600 text-white hover:bg-sky-700 hover:border-sky-700 flex items-center gap-2"
             >
               <Upload className="w-4 h-4" />
               {isProcessing ? "Processing..." : "Process & Upload Image"}
@@ -475,7 +475,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
               type="button" 
               onClick={handleAddTag} 
               variant="outline" 
-              className="bg-purple-600 border-purple-600 text-white hover:bg-purple-700 hover:border-purple-700"
+              className="bg-sky-600 border-sky-600 text-white hover:bg-sky-700 hover:border-sky-700"
             >
               Add
             </Button>
@@ -500,7 +500,7 @@ nakadashi"
               type="button" 
               onClick={handleBulkTagsAdd} 
               variant="outline" 
-              className="bg-purple-600 border-purple-600 text-white hover:bg-purple-700 hover:border-purple-700"
+              className="bg-sky-600 border-sky-600 text-white hover:bg-sky-700 hover:border-sky-700"
               disabled={!bulkTags.trim()}
             >
               Parse & Add Tags
@@ -509,7 +509,7 @@ nakadashi"
           
           <div className="flex flex-wrap gap-2">
             {formData.tags.map((tag, index) => (
-              <Badge key={index} variant="secondary" className="bg-purple-600 text-white">
+              <Badge key={index} variant="secondary" className="bg-sky-600 text-white">
                 {tag}
                 <button
                   type="button"
@@ -555,7 +555,7 @@ nakadashi"
         >
           Cancel
         </Button>
-        <Button type="submit" className="bg-purple-600 hover:bg-purple-700 text-white">
+        <Button type="submit" className="bg-sky-600 hover:bg-sky-700 text-white">
           {entry ? "Update Entry" : "Add Entry"}
         </Button>
       </div>
