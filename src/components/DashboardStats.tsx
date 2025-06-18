@@ -1,6 +1,7 @@
 
 import { useState } from "react";
 import { useAniList } from "@/hooks/useAniList";
+import { BarChart3, BookOpen, Star } from "lucide-react";
 import type { Entry } from "@/hooks/useEntries";
 
 interface DashboardStatsProps {
@@ -68,11 +69,12 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
 
   return (
     <div className="mb-6">
-      {/* Main Dashboard */}
+      {/* Main Dashboard - Restored to original compact size */}
       <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
-        <div className="flex justify-center items-center space-x-6 text-center">
+        <div className="flex justify-center items-center">
+          {/* Total Manga */}
           <div 
-            className="flex-1 cursor-pointer hover:bg-gray-800 rounded p-2 transition-colors duration-200"
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded p-2 transition-colors duration-200"
             onClick={toggleBreakdown}
           >
             <div className="text-lg font-bold text-blue-400">
@@ -81,10 +83,12 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
           </div>
           
-          <div className="text-gray-600 text-sm">|</div>
+          {/* Separator */}
+          <div className="text-gray-600 text-sm px-4">|</div>
           
+          {/* Chapters Read */}
           <div 
-            className="flex-1 cursor-pointer hover:bg-gray-800 rounded p-2 transition-colors duration-200"
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded p-2 transition-colors duration-200"
             onClick={toggleBreakdown}
           >
             <div className="text-lg font-bold text-blue-400">
@@ -93,10 +97,12 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
           </div>
           
-          <div className="text-gray-600 text-sm">|</div>
+          {/* Separator */}
+          <div className="text-gray-600 text-sm px-4">|</div>
           
+          {/* Mean Score */}
           <div 
-            className="flex-1 cursor-pointer hover:bg-gray-800 rounded p-2 transition-colors duration-200"
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded p-2 transition-colors duration-200"
             onClick={toggleBreakdown}
           >
             <div className="text-lg font-bold text-blue-400">
@@ -113,29 +119,43 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
         )}
       </div>
 
-      {/* Breakdown Panel */}
+      {/* Breakdown Panel - Improved styling with icons and horizontal layout */}
       <div className={`overflow-hidden transition-all duration-300 ease-in-out ${
-        showBreakdown ? 'max-h-24 opacity-100' : 'max-h-0 opacity-0'
+        showBreakdown ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'
       }`}>
         <div className="mt-2 p-4 bg-gray-800 rounded-lg border border-gray-700">
-          <div className="flex justify-center items-center space-x-6 text-center text-sm">
-            <div className="flex-1">
-              <div className="text-gray-300 mb-1">AniList: {anilistStats?.count || 0}</div>
-              <div className="text-gray-400">+ Local: {localStats.totalManga}</div>
+          <div className="flex justify-center items-center">
+            {/* Total Manga Breakdown */}
+            <div className="flex-1 text-center">
+              <div className="flex items-center justify-center gap-2 text-sm text-gray-300 mb-1">
+                <BarChart3 className="w-3 h-3" />
+                <span>AniList: {anilistStats?.count || 0}</span>
+              </div>
+              <div className="text-xs text-gray-400">+ Local: {localStats.totalManga}</div>
             </div>
             
-            <div className="text-gray-600 text-sm">|</div>
+            {/* Separator */}
+            <div className="text-gray-600 text-sm px-4">|</div>
             
-            <div className="flex-1">
-              <div className="text-gray-300 mb-1">AniList: {(anilistStats?.chaptersRead || 0).toLocaleString()}</div>
-              <div className="text-gray-400">+ Local: {localStats.chaptersRead.toLocaleString()}</div>
+            {/* Chapters Read Breakdown */}
+            <div className="flex-1 text-center">
+              <div className="flex items-center justify-center gap-2 text-sm text-gray-300 mb-1">
+                <BookOpen className="w-3 h-3" />
+                <span>AniList: {(anilistStats?.chaptersRead || 0).toLocaleString()}</span>
+              </div>
+              <div className="text-xs text-gray-400">+ Local: {localStats.chaptersRead.toLocaleString()}</div>
             </div>
             
-            <div className="text-gray-600 text-sm">|</div>
+            {/* Separator */}
+            <div className="text-gray-600 text-sm px-4">|</div>
             
-            <div className="flex-1">
-              <div className="text-gray-300 mb-1">Combined</div>
-              <div className="text-gray-400">Avg: {combinedStats.meanScore ? combinedStats.meanScore.toFixed(1) : '0.0'}</div>
+            {/* Mean Score Breakdown */}
+            <div className="flex-1 text-center">
+              <div className="flex items-center justify-center gap-2 text-sm text-gray-300 mb-1">
+                <Star className="w-3 h-3" />
+                <span>Combined</span>
+              </div>
+              <div className="text-xs text-gray-400">Avg: {combinedStats.meanScore ? combinedStats.meanScore.toFixed(1) : '0.0'}</div>
             </div>
           </div>
         </div>
