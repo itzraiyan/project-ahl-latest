@@ -258,7 +258,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
               variant="outline"
               onClick={handleProcessImage}
               disabled={isProcessing}
-              className="border-gray-600 text-white bg-gray-800 hover:bg-gray-700 flex items-center gap-2"
+              className="bg-purple-600 border-purple-600 text-white hover:bg-purple-700 hover:border-purple-700 flex items-center gap-2"
             >
               <Upload className="w-4 h-4" />
               {isProcessing ? "Processing..." : "Process & Upload Image"}
@@ -447,7 +447,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             variant="outline"
             size="sm"
             onClick={handleClearRating}
-            className="text-xs border-gray-600 text-black bg-gray-300 hover:bg-gray-200"
+            className="text-xs bg-gray-600 border-gray-500 text-white hover:bg-gray-700 hover:border-gray-600"
           >
             Clear Rating
           </Button>
@@ -475,7 +475,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
               type="button" 
               onClick={handleAddTag} 
               variant="outline" 
-              className="border-gray-600 text-black bg-gray-300 hover:bg-gray-200"
+              className="bg-purple-600 border-purple-600 text-white hover:bg-purple-700 hover:border-purple-700"
             >
               Add
             </Button>
@@ -500,7 +500,7 @@ nakadashi"
               type="button" 
               onClick={handleBulkTagsAdd} 
               variant="outline" 
-              className="border-gray-600 text-black bg-gray-300 hover:bg-gray-200"
+              className="bg-purple-600 border-purple-600 text-white hover:bg-purple-700 hover:border-purple-700"
               disabled={!bulkTags.trim()}
             >
               Parse & Add Tags
@@ -551,7 +551,7 @@ nakadashi"
           type="button" 
           variant="outline" 
           onClick={onCancel} 
-          className="border-gray-600 text-black bg-gray-300 hover:bg-gray-200"
+          className="bg-gray-600 border-gray-500 text-white hover:bg-gray-700 hover:border-gray-600"
         >
           Cancel
         </Button>
