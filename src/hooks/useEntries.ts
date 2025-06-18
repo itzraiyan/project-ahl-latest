@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -92,8 +91,12 @@ export const useEntries = () => {
     }
   };
 
+  // --- FIX: Ensure null is sent for rating if it is undefined ---
   const updateEntry = async (updatedEntry: Entry) => {
     try {
+      // If rating is undefined, explicitly set it to null for Supabase
+      const ratingToSave = typeof updatedEntry.rating === "undefined" ? null : updatedEntry.rating;
+
       const { error } = await supabase
         .from('entries')
         .update({
@@ -102,7 +105,7 @@ export const useEntries = () => {
           cover_url: updatedEntry.cover_url,
           tags: updatedEntry.tags,
           status: updatedEntry.status,
-          rating: updatedEntry.rating,
+          rating: ratingToSave,
           notes: updatedEntry.notes,
           synopsis: updatedEntry.synopsis,
           source: updatedEntry.source,
