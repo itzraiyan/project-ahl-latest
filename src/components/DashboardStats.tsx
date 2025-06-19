@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAniList } from "@/hooks/useAniList";
 import { BarChart3, BookOpen, Star, ChevronDown, ChevronUp, TrendingUp, Database } from "lucide-react";
@@ -88,7 +87,10 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 mx-1 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
-            <div className="text-lg font-bold truncate text-primary">
+            <div
+              className="text-lg font-bold truncate"
+              style={{ color: "#0096FF" }}
+            >
               {formatNumber(combinedStats.count)}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
@@ -101,7 +103,10 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 mx-1 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
-            <div className="text-lg font-bold truncate text-primary">
+            <div
+              className="text-lg font-bold truncate"
+              style={{ color: "#0096FF" }}
+            >
               {formatNumber(combinedStats.chaptersRead)}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
@@ -114,7 +119,10 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 mx-1 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
-            <div className="text-lg font-bold truncate text-primary">
+            <div
+              className="text-lg font-bold truncate"
+              style={{ color: "#0096FF" }}
+            >
               {combinedStats.meanScore ? combinedStats.meanScore.toFixed(1) : '0.0'}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Mean&nbsp;Score</div>
