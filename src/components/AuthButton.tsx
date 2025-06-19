@@ -87,7 +87,7 @@ export const AuthButton = ({ user, onAuthChange }: AuthButtonProps) => {
           <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent">
             Welcome Back
           </DialogTitle>
-          <p className="text-gray-400 text-sm mt-2">Sign in to your RHL account</p>
+          <p className="text-gray-400 text-sm mt-2">Sign in to your AHL account</p>
         </DialogHeader>
         
         <form onSubmit={handleLogin} className="space-y-6">
