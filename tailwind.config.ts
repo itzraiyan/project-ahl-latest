@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -19,13 +20,26 @@ export default {
 		},
 		extend: {
 			colors: {
+				// Custom primary color - Light Blue
+				'primary-blue': {
+					50: '#E6F3FF',
+					100: '#CCE7FF',
+					200: '#99CFFF',
+					300: '#66B7FF',
+					400: '#339FFF',
+					500: '#0096FF', // Main color
+					600: '#0078CC',
+					700: '#005A99',
+					800: '#003C66',
+					900: '#001E33',
+				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: 'hsl(var(--primary))',
+					DEFAULT: '#0096FF',
 					foreground: 'hsl(var(--primary-foreground))'
 				},
 				secondary: {
