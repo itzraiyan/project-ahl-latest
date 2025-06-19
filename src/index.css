@@ -97,3 +97,40 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* --- GLOBAL DARK UI FIX: Always use white text for inputs, buttons, textarea, and select on all states --- */
+input,
+textarea,
+select,
+button {
+  color: #fff;
+  background-color: inherit;
+}
+
+/* Ensure text remains white even when focused or active */
+input:focus,
+input:active,
+textarea:focus,
+textarea:active,
+select:focus,
+select:active,
+button:focus,
+button:active {
+  color: #fff;
+}
+
+/* Style placeholder text for readability */
+input::placeholder,
+textarea::placeholder {
+  color: #a3a3a3;
+  opacity: 1;
+}
+
+/* Optional: For disabled state, still keep text readable (gray if you prefer) */
+input:disabled,
+textarea:disabled,
+select:disabled,
+button:disabled {
+  color: #bbbbbb;
+  opacity: 0.6;
+}
