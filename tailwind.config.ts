@@ -19,14 +19,37 @@ export default {
 		},
 		extend: {
 			colors: {
+				// Custom primary color - #0096FF theme
+				'primary-blue': {
+					50: '#E6F3FF',
+					100: '#CCE7FF',
+					200: '#99CFFF',
+					300: '#66B7FF',
+					400: '#339FFF',
+					500: '#0096FF', // Main color
+					600: '#0078CC', // Hover/active states
+					700: '#005A99', // Pressed states
+					800: '#003C66', // Dark variants
+					900: '#001E33', // Darkest variant
+				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
-				ring: 'hsl(var(--ring))',
+				ring: '#0096FF', // Use main color for focus rings
 				background: 'hsl(var(--background))',
 				foreground: 'hsl(var(--foreground))',
 				primary: {
-					DEFAULT: 'hsl(var(--primary))',
-					foreground: 'hsl(var(--primary-foreground))'
+					DEFAULT: '#0096FF', // Main theme color
+					foreground: '#FFFFFF', // White text on primary
+					50: '#E6F3FF',
+					100: '#CCE7FF',
+					200: '#99CFFF',
+					300: '#66B7FF',
+					400: '#339FFF',
+					500: '#0096FF',
+					600: '#0078CC',
+					700: '#005A99',
+					800: '#003C66',
+					900: '#001E33',
 				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
@@ -55,12 +78,12 @@ export default {
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
-					primary: 'hsl(var(--sidebar-primary))',
-					'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
+					primary: '#0096FF', // Use main theme color for sidebar primary
+					'primary-foreground': '#FFFFFF',
 					accent: 'hsl(var(--sidebar-accent))',
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
-					ring: 'hsl(var(--sidebar-ring))'
+					ring: '#0096FF' // Consistent focus ring color
 				}
 			},
 			borderRadius: {
