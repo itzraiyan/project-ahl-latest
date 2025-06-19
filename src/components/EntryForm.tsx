@@ -8,7 +8,7 @@ import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { X, Calendar, ChevronUp, ChevronDown, Upload } from "lucide-react";
+import { X, Calendar as CalendarIcon, ChevronUp, ChevronDown, Upload } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useImageProcessor } from "@/hooks/useImageProcessor";
@@ -81,24 +81,20 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
   }, [entry]);
 
   const cleanAuthorName = (authorName: string) => {
-    // Remove numbers and common suffixes like "K" that might be noise
     return authorName.replace(/\d+[kK]?/g, '').trim();
   };
 
   const parseBulkTags = (bulkText: string) => {
     if (!bulkText.trim()) return [];
-    
-    // Split by lines and filter out numbers, empty lines, and clean up
     const tags = bulkText
       .split(/\n|\r\n|\r/)
       .map(line => line.trim())
       .filter(line => line.length > 0)
-      .filter(line => !/^[\d,kK\s]+$/.test(line)) // Remove lines that are just numbers/K
-      .map(line => line.replace(/[\d,kK]+/g, '').trim()) // Remove numbers from within lines
+      .filter(line => !/^[\d,kK\s]+$/.test(line))
+      .map(line => line.replace(/[\d,kK]+/g, '').trim())
       .filter(line => line.length > 0)
       .map(line => line.toLowerCase());
-    
-    return [...new Set(tags)]; // Remove duplicates
+    return [...new Set(tags)];
   };
 
   const handleAddTag = () => {
@@ -114,7 +110,6 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
   const handleBulkTagsAdd = () => {
     const newTags = parseBulkTags(bulkTags);
     const uniqueNewTags = newTags.filter(tag => !formData.tags.includes(tag));
-    
     if (uniqueNewTags.length > 0) {
       setFormData(prev => ({
         ...prev,
@@ -160,9 +155,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
       console.log("Cover URL and title are required for image processing");
       return;
     }
-
     const result = await processImage(formData.cover_url, formData.title);
-    
     if (result) {
       setFormData(prev => ({
         ...prev,
@@ -174,19 +167,12 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Form submitted with data:", formData);
-    
     if (!formData.title.trim() || !formData.author.trim()) {
       console.log("Missing required fields");
       return;
     }
-
-    // Use source_url if provided, otherwise use the selected source
     const finalSource = formData.source_url.trim() || formData.source;
-
-    // If total_chapters is empty but chapters_read has a value, set total_chapters to chapters_read
     const finalTotalChapters = formData.total_chapters || (formData.chapters_read > 0 ? formData.chapters_read : undefined);
-
     const submitData = {
       title: formData.title,
       author: formData.author,
@@ -204,7 +190,6 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
       start_date: formData.start_date ? formData.start_date.toISOString().split('T')[0] : undefined,
       end_date: formData.end_date ? formData.end_date.toISOString().split('T')[0] : undefined
     };
-
     if (entry) {
       onSubmit({
         ...entry,
@@ -215,8 +200,11 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
     }
   };
 
+  // --- MODIFIED AREA: Always show "Process & Upload Image" button, but disabled unless conditions are met ---
+  const canProcessImage = !!(formData.title && formData.cover_url);
+
   return (
-    <div onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="title" className="text-white">Title *</Label>
@@ -252,16 +240,19 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             placeholder="https://example.com/cover.jpg"
             className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:text-white"
           />
+
+          {/* Always show the button, but disabled unless title & cover_url are provided */}
           <Button
             type="button"
             variant="outline"
             onClick={handleProcessImage}
-            disabled={isProcessing || !formData.cover_url || !formData.title}
-            className={`${
-              !formData.cover_url || !formData.title 
-                ? 'bg-gray-700 border-gray-600 text-gray-400 cursor-not-allowed' 
-                : 'bg-primary border-primary text-primary-foreground hover:bg-primary-600 hover:border-primary-600'
-            } transition-colors duration-200 flex items-center gap-2`}
+            disabled={!canProcessImage || isProcessing}
+            className={`
+              bg-primary border-primary text-primary-foreground 
+              hover:bg-primary-600 hover:border-primary-600 transition-colors duration-200 
+              flex items-center gap-2
+              ${(!canProcessImage || isProcessing) ? 'opacity-60 cursor-not-allowed' : ''}
+            `}
           >
             <Upload className="w-4 h-4" />
             {isProcessing ? "Processing..." : "Process & Upload Image"}
@@ -289,7 +280,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         </Select>
       </div>
 
-      {/* Chapter Tracking Section */}
+      {/* ...rest of the form remains unchanged */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="total_chapters" className="text-white">Total Chapters</Label>
@@ -357,7 +348,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
                   !formData.start_date && "text-gray-400"
                 )}
               >
-                <Calendar className="mr-2 h-4 w-4" />
+                <CalendarIcon className="mr-2 h-4 w-4" />
                 {formData.start_date ? format(formData.start_date, "dd/MM/yyyy") : "DD/MM/YYYY"}
               </Button>
             </PopoverTrigger>
@@ -383,7 +374,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
                   !formData.end_date && "text-gray-400"
                 )}
               >
-                <Calendar className="mr-2 h-4 w-4" />
+                <CalendarIcon className="mr-2 h-4 w-4" />
                 {formData.end_date ? format(formData.end_date, "dd/MM/yyyy") : "DD/MM/YYYY"}
               </Button>
             </PopoverTrigger>
@@ -488,14 +479,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             <Textarea
               value={bulkTags}
               onChange={(e) => setBulkTags(e.target.value)}
-              placeholder="Or paste multiple tags (one per line)...
-              
-Example:
-big breasts
-185K
-sole female
-160K
-nakadashi"
+              placeholder="Or paste multiple tags (one per line)...\n\nExample:\nbig breasts\n185K\nsole female\n160K\nnakadashi"
               className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:text-white min-h-[100px]"
             />
             <Button 
