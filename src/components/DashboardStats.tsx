@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useAniList } from "@/hooks/useAniList";
 import { BarChart3, BookOpen, Star, ChevronDown, ChevronUp, TrendingUp, Database } from "lucide-react";
@@ -79,12 +80,12 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
 
   return (
     <div className="mb-6">
-      {/* Main Dashboard - Fixed padding consistency */}
+      {/* Main Dashboard - Fixed highlight spacing */}
       <div className="py-3 px-4 bg-gray-900 rounded-lg border border-gray-800">
-        <div className="flex justify-center items-center divide-x divide-gray-600">
+        <div className="flex justify-center items-center">
           {/* Total Manga */}
           <div 
-            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-3 transition-colors duration-200 min-w-0"
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 mx-1 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
             <div className="text-lg font-bold truncate text-primary">
@@ -93,9 +94,11 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
           </div>
           
-          {/* Chapters Read - Fixed hover background and consistent padding */}
+          <div className="text-gray-600 text-sm px-2">|</div>
+          
+          {/* Chapters Read - Fixed spacing and highlight */}
           <div 
-            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-3 transition-colors duration-200 min-w-0"
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 mx-1 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
             <div className="text-lg font-bold truncate text-primary">
@@ -104,9 +107,11 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
           </div>
           
+          <div className="text-gray-600 text-sm px-2">|</div>
+          
           {/* Mean Score */}
           <div 
-            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-3 transition-colors duration-200 min-w-0"
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 mx-1 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
             <div className="text-lg font-bold truncate text-primary">
@@ -123,14 +128,14 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
         )}
       </div>
 
-      {/* Breakdown Panel - Horizontal layout matching main dashboard */}
+      {/* Breakdown Panel - Fixed spacing to match main dashboard */}
       <div className={`transition-all duration-300 ease-in-out ${
         showBreakdown ? 'max-h-32 opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0'
       } overflow-hidden`}>
         <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
-          <div className="flex justify-center items-center divide-x divide-gray-600">
+          <div className="flex justify-center items-center">
             {/* Total Manga Breakdown */}
-            <div className="flex-1 text-center min-w-0 px-4">
+            <div className="flex-1 text-center min-w-0 mx-1">
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
@@ -145,8 +150,10 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
               </div>
             </div>
             
+            <div className="text-gray-600 text-sm px-2">|</div>
+            
             {/* Chapters Read Breakdown */}
-            <div className="flex-1 text-center min-w-0 px-4">
+            <div className="flex-1 text-center min-w-0 mx-1">
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
@@ -161,8 +168,10 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
               </div>
             </div>
             
+            <div className="text-gray-600 text-sm px-2">|</div>
+            
             {/* Mean Score Breakdown */}
-            <div className="flex-1 text-center min-w-0 px-4">
+            <div className="flex-1 text-center min-w-0 mx-1">
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
