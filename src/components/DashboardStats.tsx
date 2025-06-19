@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useAniList } from "@/hooks/useAniList";
 import { BarChart3, BookOpen, Star, ChevronDown, ChevronUp, TrendingUp, Database } from "lucide-react";
@@ -60,17 +59,17 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
       <div className="mb-6 py-4 px-6 bg-gray-900 rounded-lg border border-gray-800">
         <div className="flex justify-center items-center space-x-8">
           <div className="text-center flex-1 min-w-0">
-            <div className="text-lg font-bold animate-pulse truncate text-primary">--</div>
+            <div className="text-lg font-bold animate-pulse truncate text-[#0096FF]">--</div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
           </div>
           <div className="text-gray-600 text-sm">|</div>
           <div className="text-center flex-1 min-w-0">
-            <div className="text-lg font-bold animate-pulse truncate text-primary">--</div>
+            <div className="text-lg font-bold animate-pulse truncate text-[#0096FF]">--</div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
           </div>
           <div className="text-gray-600 text-sm">|</div>
           <div className="text-center flex-1 min-w-0">
-            <div className="text-lg font-bold animate-pulse truncate text-primary">--</div>
+            <div className="text-lg font-bold animate-pulse truncate text-[#0096FF]">--</div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Mean&nbsp;Score</div>
           </div>
         </div>
@@ -80,7 +79,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
 
   return (
     <div className="mb-6">
-      {/* Main Dashboard - Fixed padding consistency */}
+      {/* Main Dashboard */}
       <div className="py-4 px-6 bg-gray-900 rounded-lg border border-gray-800">
         <div className="flex justify-center items-center">
           {/* Total Manga */}
@@ -88,7 +87,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-2 px-4 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
-            <div className="text-lg font-bold truncate text-primary">
+            <div className="text-lg font-bold truncate text-[#0096FF]">
               {formatNumber(combinedStats.count)}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
@@ -97,12 +96,12 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
           {/* Separator */}
           <div className="text-gray-600 text-sm px-4">|</div>
           
-          {/* Chapters Read - Fixed padding to match others */}
+          {/* Chapters Read - Fixed alignment and padding */}
           <div 
             className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-2 px-4 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
-            <div className="text-lg font-bold truncate text-primary">
+            <div className="text-lg font-bold truncate text-[#0096FF]">
               {formatNumber(combinedStats.chaptersRead)}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
@@ -116,7 +115,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-2 px-4 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
-            <div className="text-lg font-bold truncate text-primary">
+            <div className="text-lg font-bold truncate text-[#0096FF]">
               {combinedStats.meanScore ? combinedStats.meanScore.toFixed(1) : '0.0'}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Mean&nbsp;Score</div>
@@ -130,7 +129,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
         )}
       </div>
 
-      {/* Breakdown Panel - Horizontal layout matching main dashboard */}
+      {/* Breakdown Panel */}
       <div className={`transition-all duration-300 ease-in-out ${
         showBreakdown ? 'max-h-32 opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0'
       } overflow-hidden`}>
@@ -140,9 +139,9 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             <div className="flex-1 text-center min-w-0">
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0"></div>
+                  <div className="w-2 h-2 bg-[#0096FF] rounded-full flex-shrink-0"></div>
                   <span className="text-gray-400 flex-shrink-0">AniList:</span>
-                  <span className="font-bold text-primary truncate">{formatNumber(anilistStats?.count || 0)}</span>
+                  <span className="font-bold text-[#0096FF] truncate">{formatNumber(anilistStats?.count || 0)}</span>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
@@ -159,9 +158,9 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             <div className="flex-1 text-center min-w-0">
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0"></div>
+                  <div className="w-2 h-2 bg-[#0096FF] rounded-full flex-shrink-0"></div>
                   <span className="text-gray-400 flex-shrink-0">AniList:</span>
-                  <span className="font-bold text-primary truncate">{formatNumber(anilistStats?.chaptersRead || 0)}</span>
+                  <span className="font-bold text-[#0096FF] truncate">{formatNumber(anilistStats?.chaptersRead || 0)}</span>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
@@ -178,9 +177,9 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             <div className="flex-1 text-center min-w-0">
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-primary rounded-full flex-shrink-0"></div>
+                  <div className="w-2 h-2 bg-[#0096FF] rounded-full flex-shrink-0"></div>
                   <span className="text-gray-400 flex-shrink-0">AniList:</span>
-                  <span className="font-bold text-primary truncate">
+                  <span className="font-bold text-[#0096FF] truncate">
                     {anilistStats?.meanScore ? anilistStats.meanScore.toFixed(1) : '0.0'}
                   </span>
                 </div>
