@@ -225,7 +225,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             value={formData.title}
             onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
             placeholder="Enter title..."
-            className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+            className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:text-white"
             required
           />
         </div>
@@ -236,7 +236,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             value={formData.author}
             onChange={(e) => handleAuthorChange(e.target.value)}
             placeholder="Enter author name..."
-            className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+            className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:text-white"
             required
           />
         </div>
@@ -250,7 +250,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             value={formData.cover_url}
             onChange={(e) => setFormData(prev => ({ ...prev, cover_url: e.target.value }))}
             placeholder="https://example.com/cover.jpg"
-            className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+            className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:text-white"
           />
           {formData.cover_url && formData.title && (
             <Button
@@ -258,7 +258,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
               variant="outline"
               onClick={handleProcessImage}
               disabled={isProcessing}
-              className="bg-[#0096FF] border-[#0096FF] text-white hover:bg-[#0080E6] hover:border-[#0080E6] transition-colors duration-200 flex items-center gap-2"
+              className="bg-primary border-primary text-primary-foreground hover:bg-primary-600 hover:border-primary-600 transition-colors duration-200 flex items-center gap-2"
             >
               <Upload className="w-4 h-4" />
               {isProcessing ? "Processing..." : "Process & Upload Image"}
@@ -300,7 +300,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
               total_chapters: e.target.value ? parseInt(e.target.value) : undefined 
             }))}
             placeholder="Leave empty to auto-set"
-            className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+            className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:text-white"
             min="0"
           />
         </div>
@@ -315,7 +315,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
                 ...prev, 
                 chapters_read: Math.max(0, parseInt(e.target.value) || 0)
               }))}
-              className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 rounded-r-none"
+              className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:text-white rounded-r-none"
               min="0"
             />
             <div className="flex flex-col border-l-0">
@@ -418,7 +418,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             placeholder="Or paste custom source URL here (overrides dropdown selection)..."
             value={formData.source_url}
             onChange={(e) => setFormData(prev => ({ ...prev, source_url: e.target.value }))}
-            className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+            className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:text-white"
           />
         </div>
       </div>
@@ -435,7 +435,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             max={10}
             min={1}
             step={0.5}
-            className="w-full [&>.relative]:bg-gray-700 [&>.relative>.absolute]:bg-[#0096FF]"
+            className="w-full [&>.relative]:bg-gray-700 [&>.relative>.absolute]:bg-primary"
           />
           <div className="flex justify-between text-xs text-gray-400">
             <span>1</span>
@@ -463,7 +463,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
               value={newTag}
               onChange={(e) => setNewTag(e.target.value)}
               placeholder="Add a single tag..."
-              className="bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+              className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:text-white"
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault();
@@ -475,7 +475,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
               type="button" 
               onClick={handleAddTag} 
               variant="outline" 
-              className="bg-[#0096FF] border-[#0096FF] text-white hover:bg-[#0080E6] hover:border-[#0080E6] transition-colors duration-200"
+              className="bg-primary border-primary text-primary-foreground hover:bg-primary-600 hover:border-primary-600 transition-colors duration-200"
             >
               Add
             </Button>
@@ -494,13 +494,13 @@ big breasts
 sole female
 160K
 nakadashi"
-              className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[100px]"
+              className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:text-white min-h-[100px]"
             />
             <Button 
               type="button" 
               onClick={handleBulkTagsAdd} 
               variant="outline" 
-              className="bg-[#0096FF] border-[#0096FF] text-white hover:bg-[#0080E6] hover:border-[#0080E6] transition-colors duration-200"
+              className="bg-primary border-primary text-primary-foreground hover:bg-primary-600 hover:border-primary-600 transition-colors duration-200"
               disabled={!bulkTags.trim()}
             >
               Parse & Add Tags
@@ -509,7 +509,7 @@ nakadashi"
           
           <div className="flex flex-wrap gap-2">
             {formData.tags.map((tag, index) => (
-              <Badge key={index} variant="secondary" className="bg-[#0096FF] text-white">
+              <Badge key={index} variant="secondary" className="bg-primary text-primary-foreground">
                 {tag}
                 <button
                   type="button"
@@ -531,7 +531,7 @@ nakadashi"
           value={formData.synopsis}
           onChange={(e) => setFormData(prev => ({ ...prev, synopsis: e.target.value }))}
           placeholder="Enter synopsis..."
-          className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[80px]"
+          className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:text-white min-h-[80px]"
         />
       </div>
 
@@ -542,7 +542,7 @@ nakadashi"
           value={formData.notes}
           onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
           placeholder="Your thoughts, comments..."
-          className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 min-h-[80px]"
+          className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:text-white min-h-[80px]"
         />
       </div>
 
@@ -555,7 +555,7 @@ nakadashi"
         >
           Cancel
         </Button>
-        <Button type="submit" className="bg-[#0096FF] hover:bg-[#0080E6] text-white transition-colors duration-200">
+        <Button type="submit" className="bg-primary hover:bg-primary-600 text-primary-foreground transition-colors duration-200">
           {entry ? "Update Entry" : "Add Entry"}
         </Button>
       </div>
