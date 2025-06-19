@@ -26,7 +26,7 @@ export const StatusTabs = ({ activeTab, onTabChange, statusCounts, children }: S
           <TabsTrigger
             key={key}
             value={key}
-            className="data-[state=active]:bg-primary data-[state=active]:text-white text-gray-300 hover:text-white flex items-center gap-2 px-4 py-2"
+            className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-gray-300 hover:text-white flex items-center gap-2 px-4 py-2"
           >
             {status}
             <Badge variant="secondary" className="bg-gray-700 text-gray-200 text-xs">

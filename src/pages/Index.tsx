@@ -39,7 +39,6 @@ const Index = () => {
     setUser(isAuthenticated ? { name: "Raiyan" } : null);
   };
 
-  // Restored original colors - only Reading uses the new #0096FF
   const statuses = [
     { key: "Reading", title: "Reading", color: "bg-[#0096FF]" },
     { key: "Completed", title: "Completed", color: "bg-green-500" },

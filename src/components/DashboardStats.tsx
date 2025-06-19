@@ -56,20 +56,20 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
 
   if (isLoading) {
     return (
-      <div className="mb-6 py-4 px-6 bg-gray-900 rounded-lg border border-gray-800">
-        <div className="flex justify-center items-center space-x-8">
+      <div className="mb-6 py-3 px-4 bg-gray-900 rounded-lg border border-gray-800">
+        <div className="flex justify-center items-center space-x-6">
           <div className="text-center flex-1 min-w-0">
-            <div className="text-lg font-bold animate-pulse truncate text-[#0096FF]">--</div>
+            <div className="text-lg font-bold animate-pulse truncate" style={{ color: '#0096FF' }}>--</div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
           </div>
           <div className="text-gray-600 text-sm">|</div>
           <div className="text-center flex-1 min-w-0">
-            <div className="text-lg font-bold animate-pulse truncate text-[#0096FF]">--</div>
+            <div className="text-lg font-bold animate-pulse truncate" style={{ color: '#0096FF' }}>--</div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
           </div>
           <div className="text-gray-600 text-sm">|</div>
           <div className="text-center flex-1 min-w-0">
-            <div className="text-lg font-bold animate-pulse truncate text-[#0096FF]">--</div>
+            <div className="text-lg font-bold animate-pulse truncate" style={{ color: '#0096FF' }}>--</div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Mean&nbsp;Score</div>
           </div>
         </div>
@@ -79,43 +79,43 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
 
   return (
     <div className="mb-6">
-      {/* Main Dashboard */}
-      <div className="py-4 px-6 bg-gray-900 rounded-lg border border-gray-800">
+      {/* Main Dashboard - Fixed padding consistency */}
+      <div className="py-3 px-4 bg-gray-900 rounded-lg border border-gray-800">
         <div className="flex justify-center items-center">
           {/* Total Manga */}
           <div 
-            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-2 px-4 transition-colors duration-200 min-w-0"
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-3 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
-            <div className="text-lg font-bold truncate text-[#0096FF]">
+            <div className="text-lg font-bold truncate" style={{ color: '#0096FF' }}>
               {formatNumber(combinedStats.count)}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
           </div>
           
           {/* Separator */}
-          <div className="text-gray-600 text-sm px-4">|</div>
+          <div className="text-gray-600 text-sm px-3">|</div>
           
-          {/* Chapters Read - Fixed alignment and padding */}
+          {/* Chapters Read - Fixed padding */}
           <div 
-            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-2 px-4 transition-colors duration-200 min-w-0"
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-3 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
-            <div className="text-lg font-bold truncate text-[#0096FF]">
+            <div className="text-lg font-bold truncate" style={{ color: '#0096FF' }}>
               {formatNumber(combinedStats.chaptersRead)}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
           </div>
           
           {/* Separator */}
-          <div className="text-gray-600 text-sm px-4">|</div>
+          <div className="text-gray-600 text-sm px-3">|</div>
           
           {/* Mean Score */}
           <div 
-            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-2 px-4 transition-colors duration-200 min-w-0"
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 px-3 transition-colors duration-200 min-w-0"
             onClick={toggleBreakdown}
           >
-            <div className="text-lg font-bold truncate text-[#0096FF]">
+            <div className="text-lg font-bold truncate" style={{ color: '#0096FF' }}>
               {combinedStats.meanScore ? combinedStats.meanScore.toFixed(1) : '0.0'}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Mean&nbsp;Score</div>
@@ -129,7 +129,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
         )}
       </div>
 
-      {/* Breakdown Panel */}
+      {/* Breakdown Panel - Horizontal layout matching main dashboard */}
       <div className={`transition-all duration-300 ease-in-out ${
         showBreakdown ? 'max-h-32 opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0'
       } overflow-hidden`}>
@@ -139,9 +139,9 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             <div className="flex-1 text-center min-w-0">
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-[#0096FF] rounded-full flex-shrink-0"></div>
+                  <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
                   <span className="text-gray-400 flex-shrink-0">AniList:</span>
-                  <span className="font-bold text-[#0096FF] truncate">{formatNumber(anilistStats?.count || 0)}</span>
+                  <span className="font-bold text-sky-400 truncate">{formatNumber(anilistStats?.count || 0)}</span>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
@@ -158,9 +158,9 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             <div className="flex-1 text-center min-w-0">
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-[#0096FF] rounded-full flex-shrink-0"></div>
+                  <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
                   <span className="text-gray-400 flex-shrink-0">AniList:</span>
-                  <span className="font-bold text-[#0096FF] truncate">{formatNumber(anilistStats?.chaptersRead || 0)}</span>
+                  <span className="font-bold text-sky-400 truncate">{formatNumber(anilistStats?.chaptersRead || 0)}</span>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
@@ -177,9 +177,9 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
             <div className="flex-1 text-center min-w-0">
               <div className="space-y-1">
                 <div className="flex items-center justify-center gap-2 text-sm">
-                  <div className="w-2 h-2 bg-[#0096FF] rounded-full flex-shrink-0"></div>
+                  <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
                   <span className="text-gray-400 flex-shrink-0">AniList:</span>
-                  <span className="font-bold text-[#0096FF] truncate">
+                  <span className="font-bold text-sky-400 truncate">
                     {anilistStats?.meanScore ? anilistStats.meanScore.toFixed(1) : '0.0'}
                   </span>
                 </div>
