@@ -1,73 +1,61 @@
-# Welcome to your Lovable project
+# Project AHL
 
-## Project info
+A modern, highly-personal manga & media tracker — built for speed, beauty, and pure vibes.
 
-**URL**: https://lovable.dev/projects/b71c8d1a-9087-46ed-aa2d-5113f1974e84
+---
 
-## How can I edit this code?
+## ✨ Overview
 
-There are several ways of editing your application.
+**Project AHL** is a personal library and progress tracker for manga and other media.  
+It’s designed for obsessive readers, note-takers, and anyone who wants a beautiful, fast, and customizable experience.  
+Features include cover uploads, progress tracking, advanced filtering, and a focus on privacy and self-hosting.
 
-**Use Lovable**
+---
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/b71c8d1a-9087-46ed-aa2d-5113f1974e84) and start prompting.
+## 🚀 Features
 
-Changes made via Lovable will be committed automatically to this repo.
+- 📚 **Track manga/media** with rich metadata
+- 🖼️ **Cover uploads** (now powered by Cloudflare Images for speed and modern compression)
+- 📝 **Personal notes** and synopses
+- ⭐ **Ratings, tags, and statuses** (Reading, Completed, etc.)
+- 🔎 **Advanced filtering and search**
+- ⚡ **No-nonsense, no ads, no trackers** — your data, your vibes
 
-**Use your preferred IDE**
+---
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## 🛠️ Tech Stack
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- **TypeScript** — main language
+- **Supabase** — for data and auth
+- **Cloudflare Images** — for cover hosting and delivery
+- **React** (with Vite) — for the snappy frontend
+- **Tailwind CSS + Shadcn/ui** — for beautiful, consistent design  
+- **Deno/Supabase Edge Functions** — for serverless utilities (deprecated for images, thanks to Cloudflare)
 
-Follow these steps:
+---
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+## 🤖 How It Was Built
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+I vibed-coded this project with a mix of:
+- [Claude](https://claude.ai/) (sometimes lovable, sometimes a little unhinged)
+- [ChatGPT](https://chat.openai.com/) (for code, ideas, and rubber-ducking)
+- **My own brain** (most of all)
+- And a dash of [Shadcn/ui](https://ui.shadcn.com/) for the beautiful UI
 
-# Step 3: Install the necessary dependencies.
-npm i
+Special thanks to the AI assistants,  
+but every line was reviewed and tuned by me for pure AHL energy.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+---
 
-**Edit a file directly in GitHub**
+## 🙏 Credits
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+**Created by [itzraiyan](https://github.com/itzraiyan)** —  
+If you vibe with it, that’s all the credit I need.
 
-**Use GitHub Codespaces**
+---
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## 📝 License
 
-## What technologies are used for this project?
+Personal project, but feel free to fork for your own use and inspiration.
 
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/b71c8d1a-9087-46ed-aa2d-5113f1974e84) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+---
