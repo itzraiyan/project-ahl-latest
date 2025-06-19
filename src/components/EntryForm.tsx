@@ -8,7 +8,7 @@ import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { X, Calendar as CalendarIcon, ChevronUp, ChevronDown, Upload } from "lucide-react";
+import { X, Calendar, ChevronUp, ChevronDown, Upload } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useImageProcessor } from "@/hooks/useImageProcessor";
@@ -216,7 +216,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <div onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="title" className="text-white">Title *</Label>
@@ -252,18 +252,20 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             placeholder="https://example.com/cover.jpg"
             className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:text-white"
           />
-          {formData.cover_url && formData.title && (
-            <Button
-              type="button"
-              variant="outline"
-              onClick={handleProcessImage}
-              disabled={isProcessing}
-              className="bg-primary border-primary text-primary-foreground hover:bg-primary-600 hover:border-primary-600 transition-colors duration-200 flex items-center gap-2"
-            >
-              <Upload className="w-4 h-4" />
-              {isProcessing ? "Processing..." : "Process & Upload Image"}
-            </Button>
-          )}
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleProcessImage}
+            disabled={isProcessing || !formData.cover_url || !formData.title}
+            className={`${
+              !formData.cover_url || !formData.title 
+                ? 'bg-gray-700 border-gray-600 text-gray-400 cursor-not-allowed' 
+                : 'bg-primary border-primary text-primary-foreground hover:bg-primary-600 hover:border-primary-600'
+            } transition-colors duration-200 flex items-center gap-2`}
+          >
+            <Upload className="w-4 h-4" />
+            {isProcessing ? "Processing..." : "Process & Upload Image"}
+          </Button>
           {formData.compressed_image_url && (
             <p className="text-sm text-green-400">✓ Image processed and uploaded successfully</p>
           )}
@@ -355,7 +357,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
                   !formData.start_date && "text-gray-400"
                 )}
               >
-                <CalendarIcon className="mr-2 h-4 w-4" />
+                <Calendar className="mr-2 h-4 w-4" />
                 {formData.start_date ? format(formData.start_date, "dd/MM/yyyy") : "DD/MM/YYYY"}
               </Button>
             </PopoverTrigger>
@@ -381,7 +383,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
                   !formData.end_date && "text-gray-400"
                 )}
               >
-                <CalendarIcon className="mr-2 h-4 w-4" />
+                <Calendar className="mr-2 h-4 w-4" />
                 {formData.end_date ? format(formData.end_date, "dd/MM/yyyy") : "DD/MM/YYYY"}
               </Button>
             </PopoverTrigger>
