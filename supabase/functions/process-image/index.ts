@@ -1,3 +1,4 @@
+
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
 serve(async (req) => {
@@ -66,8 +67,7 @@ serve(async (req) => {
     const originalFilename = `${baseFilename}-original.jpg`
     const originalUrl = await uploadToCatbox(imageUint8Array, originalFilename)
 
-    // Create compressed version using Canvas API (available in Deno)
-    // For compression, we'll reduce quality and potentially resize
+    // Create compressed version using Canvas API
     const compressedImageData = await compressImage(imageUint8Array)
     const compressedFilename = `${baseFilename}.jpg`
     const compressedUrl = await uploadToCatbox(compressedImageData, compressedFilename)
@@ -100,7 +100,7 @@ serve(async (req) => {
   }
 })
 
-// Simple image compression function using Canvas
+// Improved image compression function with aggressive compression
 async function compressImage(imageData: Uint8Array): Promise<Uint8Array> {
   try {
     // Create image from buffer
@@ -109,17 +109,23 @@ async function compressImage(imageData: Uint8Array): Promise<Uint8Array> {
     
     // Calculate new dimensions to keep under 60KB
     let { width, height } = imageBitmap
-    const maxWidth = 400
-    const maxHeight = 600
+    const maxWidth = 300  // Reduced from 400
+    const maxHeight = 450 // Reduced from 600
     
-    if (width > maxWidth) {
-      height = (height * maxWidth) / width
-      width = maxWidth
-    }
+    // Calculate aspect ratio
+    const aspectRatio = width / height
     
-    if (height > maxHeight) {
-      width = (width * maxHeight) / height
-      height = maxHeight
+    // Resize based on aspect ratio
+    if (width > maxWidth || height > maxHeight) {
+      if (aspectRatio > 1) {
+        // Landscape
+        width = maxWidth
+        height = Math.round(width / aspectRatio)
+      } else {
+        // Portrait
+        height = maxHeight
+        width = Math.round(height * aspectRatio)
+      }
     }
     
     // Create canvas and compress
@@ -130,13 +136,37 @@ async function compressImage(imageData: Uint8Array): Promise<Uint8Array> {
       throw new Error('Could not get canvas context')
     }
     
+    // Apply smoothing for better quality at smaller sizes
+    ctx.imageSmoothingEnabled = true
+    ctx.imageSmoothingQuality = 'high'
     ctx.drawImage(imageBitmap, 0, 0, width, height)
     
-    // Convert to blob with compression
-    const compressedBlob = await canvas.convertToBlob({
-      type: 'image/jpeg',
-      quality: 0.6
-    })
+    // Start with lower quality and iterate until we get desired file size
+    let quality = 0.4 // Start with even lower quality
+    let compressedBlob: Blob
+    let attempts = 0
+    const maxAttempts = 5
+    const targetSize = 60 * 1024 // 60KB target
+    
+    do {
+      compressedBlob = await canvas.convertToBlob({
+        type: 'image/jpeg',
+        quality: quality
+      })
+      
+      console.log(`Compression attempt ${attempts + 1}: Quality ${quality}, Size: ${compressedBlob.size} bytes`)
+      
+      if (compressedBlob.size <= targetSize || attempts >= maxAttempts) {
+        break
+      }
+      
+      // Reduce quality more aggressively
+      quality = Math.max(0.1, quality - 0.1)
+      attempts++
+      
+    } while (attempts < maxAttempts)
+    
+    console.log(`Final compressed size: ${compressedBlob.size} bytes (${Math.round(compressedBlob.size / 1024)}KB)`)
     
     const arrayBuffer = await compressedBlob.arrayBuffer()
     return new Uint8Array(arrayBuffer)
