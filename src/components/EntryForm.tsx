@@ -200,7 +200,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
     }
   };
 
-  // --- MODIFIED AREA: Always show "Process & Upload Image" button, but disabled unless conditions are met ---
+  // Always show "Process & Upload Image" button, but disable it unless title & cover_url are provided
   const canProcessImage = !!(formData.title && formData.cover_url);
 
   return (
@@ -248,7 +248,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             onClick={handleProcessImage}
             disabled={!canProcessImage || isProcessing}
             className={`
-              bg-primary border-primary text-primary-foreground 
+              bg-primary border-primary !text-white
               hover:bg-primary-600 hover:border-primary-600 transition-colors duration-200 
               flex items-center gap-2
               ${(!canProcessImage || isProcessing) ? 'opacity-60 cursor-not-allowed' : ''}
@@ -280,7 +280,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         </Select>
       </div>
 
-      {/* ...rest of the form remains unchanged */}
+      {/* Chapter Tracking Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="total_chapters" className="text-white">Total Chapters</Label>
