@@ -134,3 +134,21 @@ button:disabled {
   color: #bbbbbb;
   opacity: 0.6;
 }
+
+/* --- SHIMMER/SKELETON ANIMATION FOR IMAGE LOADERS --- */
+@keyframes shimmer {
+  100% {
+    background-position-x: 150%;
+  }
+}
+.animate-shimmer {
+  animation: shimmer 1.2s infinite linear;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,0.09),
+    transparent
+  );
+  background-size: 200% 100%;
+  background-position-x: -150%;
+}
