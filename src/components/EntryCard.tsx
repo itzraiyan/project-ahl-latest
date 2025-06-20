@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Star, Edit, Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -225,6 +224,12 @@ export const EntryCard = ({ entry, onEdit, onDelete, onIncrementChapter, isReadO
                     <p className="text-white">
                       {entry.chapters_read || 0} / {entry.total_chapters || "?"} chapters
                     </p>
+                  </div>
+                )}
+                {entry.status === "Rereading" && entry.total_repeats !== undefined && entry.total_repeats > 0 && (
+                  <div>
+                    <p className="text-sm text-gray-400">Total Repeats</p>
+                    <p className="text-white">{entry.total_repeats}</p>
                   </div>
                 )}
               </div>

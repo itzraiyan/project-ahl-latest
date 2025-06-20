@@ -39,7 +39,8 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
     total_chapters: undefined as number | undefined,
     chapters_read: 0 as number,
     start_date: undefined as Date | undefined,
-    end_date: undefined as Date | undefined
+    end_date: undefined as Date | undefined,
+    total_repeats: 0 as number
   });
   const [newTag, setNewTag] = useState("");
   const [bulkTags, setBulkTags] = useState("");
@@ -62,7 +63,8 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         total_chapters: entry.total_chapters || undefined,
         chapters_read: entry.chapters_read || 0,
         start_date: entry.start_date ? new Date(entry.start_date) : undefined,
-        end_date: entry.end_date ? new Date(entry.end_date) : undefined
+        end_date: entry.end_date ? new Date(entry.end_date) : undefined,
+        total_repeats: entry.total_repeats || 0
       });
       setHasRatingInteraction(!!entry.rating);
     }
@@ -157,7 +159,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
     setFormData(prev => {
       const updates: Partial<typeof prev> = { status: newStatus };
       
-      // Auto date detection logic
+      // Auto date detection logic based on status
       if (newStatus === "Reading" && !prev.start_date) {
         updates.start_date = new Date();
       }
@@ -170,12 +172,25 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
     });
   };
 
+  const handleStartDateChange = (date: Date | undefined) => {
+    setFormData(prev => {
+      const updates: Partial<typeof prev> = { start_date: date };
+      
+      // If adding start date and status is Plan to Read, auto-convert to Reading
+      if (date && prev.status === "Plan to Read") {
+        updates.status = "Reading";
+      }
+      
+      return { ...prev, ...updates };
+    });
+  };
+
   const handleEndDateChange = (date: Date | undefined) => {
     setFormData(prev => {
       const updates: Partial<typeof prev> = { end_date: date };
       
-      // If adding end date while status is Reading, auto-convert to Completed
-      if (date && prev.status === "Reading") {
+      // If adding end date, auto-convert to Completed (unless already completed)
+      if (date && prev.status !== "Completed") {
         updates.status = "Completed";
       }
       
@@ -206,7 +221,8 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
       total_chapters: finalTotalChapters,
       chapters_read: formData.chapters_read,
       start_date: formData.start_date ? formData.start_date.toISOString().split('T')[0] : undefined,
-      end_date: formData.end_date ? formData.end_date.toISOString().split('T')[0] : undefined
+      end_date: formData.end_date ? formData.end_date.toISOString().split('T')[0] : undefined,
+      total_repeats: formData.total_repeats
     };
     if (entry) {
       onSubmit({
@@ -371,7 +387,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
               <Calendar
                 mode="single"
                 selected={formData.start_date}
-                onSelect={(date) => setFormData(prev => ({ ...prev, start_date: date }))}
+                onSelect={handleStartDateChange}
                 initialFocus
                 className="pointer-events-auto"
               />

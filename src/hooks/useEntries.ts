@@ -20,6 +20,7 @@ export interface Entry {
   chapters_read?: number;
   start_date?: string;
   end_date?: string;
+  total_repeats?: number;
   created_at: string;
   updated_at: string;
 }
@@ -41,7 +42,10 @@ export const useEntries = () => {
         return;
       }
 
-      setEntries((data || []) as Entry[]);
+      setEntries((data || []).map(entry => ({
+        ...entry,
+        status: entry.status as Entry["status"]
+      })));
     } catch (error) {
       console.error("Error fetching entries:", error);
       toast.error("Failed to fetch entries");
@@ -68,7 +72,7 @@ export const useEntries = () => {
         return;
       }
 
-      setEntries(prev => [data as Entry, ...prev]);
+      setEntries(prev => [{ ...data, status: data.status as Entry["status"] }, ...prev]);
       toast.success("Entry added successfully");
     } catch (error) {
       console.error("Error adding entry:", error);
@@ -127,21 +131,32 @@ export const useEntries = () => {
     const newChaptersRead = (entry.chapters_read || 0) + 1;
     const isCompleted = entry.total_chapters && newChaptersRead >= entry.total_chapters;
     
-    // Auto date detection logic
     let updatedEntry: Partial<Entry> = {
       chapters_read: newChaptersRead
     };
 
-    // If status is "Plan to Read" and we're incrementing for the first time, change to "Reading" and set start date
-    if (entry.status === "Plan to Read" && newChaptersRead === 1) {
+    // Handle status transitions based on current status
+    if (entry.status === "Plan to Read") {
       updatedEntry.status = "Reading";
       if (!entry.start_date) {
         updatedEntry.start_date = new Date().toISOString().split('T')[0];
       }
+    } else if (entry.status === "Paused" || entry.status === "Dropped") {
+      updatedEntry.status = "Reading";
+      if (!entry.start_date) {
+        updatedEntry.start_date = new Date().toISOString().split('T')[0];
+      }
+    } else if (entry.status === "Rereading") {
+      // For rereading, increment total_repeats when completing a cycle
+      if (isCompleted) {
+        updatedEntry.total_repeats = (entry.total_repeats || 0) + 1;
+        updatedEntry.chapters_read = 0; // Reset for next reread cycle
+        updatedEntry.status = "Rereading"; // Keep as rereading
+      }
     }
 
-    // If we hit total chapters, mark as completed and set end date
-    if (isCompleted) {
+    // If we hit total chapters and not rereading, mark as completed
+    if (isCompleted && entry.status !== "Rereading") {
       updatedEntry.status = "Completed";
       if (!entry.end_date) {
         updatedEntry.end_date = new Date().toISOString().split('T')[0];
@@ -164,8 +179,10 @@ export const useEntries = () => {
         e.id === id ? { ...e, ...updatedEntry } : e
       ));
 
-      if (isCompleted) {
+      if (isCompleted && entry.status !== "Rereading") {
         toast.success("Completed! 🎉");
+      } else if (entry.status === "Rereading" && isCompleted) {
+        toast.success(`Reread completed! Total repeats: ${(entry.total_repeats || 0) + 1}`);
       } else {
         toast.success("Chapter updated");
       }

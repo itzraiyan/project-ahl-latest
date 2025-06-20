@@ -28,6 +28,7 @@ export type Database = {
           tags: string[] | null
           title: string
           total_chapters: number | null
+          total_repeats: number | null
           updated_at: string
         }
         Insert: {
@@ -48,6 +49,7 @@ export type Database = {
           tags?: string[] | null
           title: string
           total_chapters?: number | null
+          total_repeats?: number | null
           updated_at?: string
         }
         Update: {
@@ -68,6 +70,7 @@ export type Database = {
           tags?: string[] | null
           title?: string
           total_chapters?: number | null
+          total_repeats?: number | null
           updated_at?: string
         }
         Relationships: []
