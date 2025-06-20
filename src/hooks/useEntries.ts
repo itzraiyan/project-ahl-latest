@@ -41,7 +41,7 @@ export const useEntries = () => {
         return;
       }
 
-      setEntries(data || []);
+      setEntries((data || []) as Entry[]);
     } catch (error) {
       console.error("Error fetching entries:", error);
       toast.error("Failed to fetch entries");
@@ -68,7 +68,7 @@ export const useEntries = () => {
         return;
       }
 
-      setEntries(prev => [data, ...prev]);
+      setEntries(prev => [data as Entry, ...prev]);
       toast.success("Entry added successfully");
     } catch (error) {
       console.error("Error adding entry:", error);
