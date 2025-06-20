@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Search, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,7 +21,7 @@ const Index = () => {
   const [isAddingEntry, setIsAddingEntry] = useState(false);
   const [editingEntry, setEditingEntry] = useState<Entry | null>(null);
   
-  const { entries, isLoading, addEntry, updateEntry, deleteEntry } = useEntries();
+  const { entries, isLoading, addEntry, updateEntry, deleteEntry, incrementChapter } = useEntries();
 
   // Check authentication status
   useEffect(() => {
@@ -120,13 +121,13 @@ const Index = () => {
                 placeholder="Search entries..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-400"
+                className="pl-10 bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:text-white"
               />
             </div>
             {user && (
               <Dialog open={isAddingEntry} onOpenChange={setIsAddingEntry}>
                 <DialogTrigger asChild>
-                  <Button className="bg-primary hover:bg-primary-600 text-primary-foreground transition-colors duration-200">
+                  <Button className="bg-primary hover:bg-primary-600 text-primary-foreground focus:text-primary-foreground transition-colors duration-200">
                     <Plus className="w-4 h-4 mr-2" />
                     Add Entry
                   </Button>
@@ -169,6 +170,7 @@ const Index = () => {
                     entries={sectionEntries}
                     onEdit={setEditingEntry}
                     onDelete={deleteEntry}
+                    onIncrementChapter={incrementChapter}
                     isReadOnly={!user}
                     statusType={status.key as any}
                   />
@@ -177,7 +179,7 @@ const Index = () => {
                     <p className="text-gray-400">No entries in this section.</p>
                     {user && (
                       <Button 
-                        className="mt-4 bg-primary hover:bg-primary-600 text-primary-foreground transition-colors duration-200"
+                        className="mt-4 bg-primary hover:bg-primary-600 text-primary-foreground focus:text-primary-foreground transition-colors duration-200"
                         onClick={() => setIsAddingEntry(true)}
                       >
                         Add Your First Entry

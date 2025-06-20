@@ -1,6 +1,6 @@
 
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { EntryCard } from "@/components/EntryCard";
 import type { Entry } from "@/hooks/useEntries";
@@ -9,79 +9,96 @@ interface PaginatedSectionProps {
   entries: Entry[];
   onEdit: (entry: Entry) => void;
   onDelete: (id: string) => void;
+  onIncrementChapter?: (id: string) => void;
   isReadOnly: boolean;
   statusType: "Reading" | "Completed" | "Dropped" | "Plan to Read" | "Paused" | "Rereading";
 }
 
-export const PaginatedSection = ({ entries, onEdit, onDelete, isReadOnly, statusType }: PaginatedSectionProps) => {
-  const [visibleRows, setVisibleRows] = useState(4);
-  const [isLoading, setIsLoading] = useState(false);
+const ITEMS_PER_PAGE = 12;
 
-  // Calculate entries per row based on screen size (responsive grid)
-  const getEntriesPerRow = () => {
-    // This matches the grid classes: grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10
-    if (typeof window !== 'undefined') {
-      const width = window.innerWidth;
-      if (width >= 1536) return 10; // 2xl
-      if (width >= 1280) return 8;  // xl
-      if (width >= 1024) return 6;  // lg
-      if (width >= 768) return 5;   // md
-      if (width >= 640) return 4;   // sm
-      return 3; // default
-    }
-    return 6; // fallback for SSR
-  };
+export const PaginatedSection = ({ 
+  entries, 
+  onEdit, 
+  onDelete, 
+  onIncrementChapter,
+  isReadOnly, 
+  statusType 
+}: PaginatedSectionProps) => {
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const entriesPerRow = getEntriesPerRow();
-  const totalEntriesToShow = visibleRows * entriesPerRow;
-  const visibleEntries = entries.slice(0, totalEntriesToShow);
-  const hasMore = entries.length > totalEntriesToShow;
+  const totalPages = Math.ceil(entries.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentEntries = entries.slice(startIndex, endIndex);
 
-  const handleLoadMore = async () => {
-    setIsLoading(true);
-    // Simulate loading delay for better UX
-    await new Promise(resolve => setTimeout(resolve, 500));
-    setVisibleRows(prev => prev + 4);
-    setIsLoading(false);
+  const goToPage = (page: number) => {
+    setCurrentPage(Math.max(1, Math.min(page, totalPages)));
   };
 
   return (
     <div className="space-y-6">
-      {/* Grid of entries */}
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-8 2xl:grid-cols-10 gap-3 auto-fit">
-        {visibleEntries.map((entry, index) => (
-          <div
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+        {currentEntries.map((entry) => (
+          <EntryCard
             key={entry.id}
-            className="animate-fade-in"
-            style={{ animationDelay: `${(index % entriesPerRow) * 0.1}s` }}
-          >
-            <EntryCard
-              entry={entry}
-              onEdit={onEdit}
-              onDelete={onDelete}
-              isReadOnly={isReadOnly}
-              statusType={statusType}
-            />
-          </div>
+            entry={entry}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onIncrementChapter={onIncrementChapter}
+            isReadOnly={isReadOnly}
+            statusType={statusType}
+          />
         ))}
       </div>
 
-      {/* Load More button */}
-      {hasMore && (
-        <div className="flex justify-center pt-6">
+      {totalPages > 1 && (
+        <div className="flex items-center justify-center space-x-2">
           <Button
-            onClick={handleLoadMore}
-            disabled={isLoading}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-2 rounded-lg transition-all duration-200 flex items-center gap-2"
+            variant="outline"
+            size="sm"
+            onClick={() => goToPage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="border-gray-700 text-gray-300 hover:text-white hover:bg-gray-700 focus:text-white disabled:opacity-50"
           >
-            {isLoading ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Loading...
-              </>
-            ) : (
-              `Load More (${entries.length - totalEntriesToShow} remaining)`
-            )}
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
+          
+          <div className="flex items-center space-x-1">
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter(page => 
+                page === 1 || 
+                page === totalPages || 
+                (page >= currentPage - 1 && page <= currentPage + 1)
+              )
+              .map((page, index, array) => (
+                <div key={page} className="flex items-center">
+                  {index > 0 && array[index - 1] !== page - 1 && (
+                    <span className="px-2 text-gray-500">...</span>
+                  )}
+                  <Button
+                    variant={currentPage === page ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => goToPage(page)}
+                    className={
+                      currentPage === page
+                        ? "bg-primary text-primary-foreground"
+                        : "border-gray-700 text-gray-300 hover:text-white hover:bg-gray-700 focus:text-white"
+                    }
+                  >
+                    {page}
+                  </Button>
+                </div>
+              ))}
+          </div>
+          
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => goToPage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="border-gray-700 text-gray-300 hover:text-white hover:bg-gray-700 focus:text-white disabled:opacity-50"
+          >
+            <ChevronRight className="w-4 h-4" />
           </Button>
         </div>
       )}

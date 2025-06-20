@@ -1,5 +1,6 @@
+
 import { useState } from "react";
-import { Star, Edit, Trash2 } from "lucide-react";
+import { Star, Edit, Trash2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -11,6 +12,7 @@ interface EntryCardProps {
   entry: Entry;
   onEdit: (entry: Entry) => void;
   onDelete: (id: string) => void;
+  onIncrementChapter?: (id: string) => void;
   isReadOnly: boolean;
   statusType: "Reading" | "Completed" | "Dropped" | "Plan to Read" | "Paused" | "Rereading";
 }
@@ -24,7 +26,7 @@ const statusColors: Record<string, string> = {
   "Rereading": "bg-purple-500"
 };
 
-export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: EntryCardProps) => {
+export const EntryCard = ({ entry, onEdit, onDelete, onIncrementChapter, isReadOnly, statusType }: EntryCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
@@ -73,11 +75,18 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
 
   const shouldShowProgress = statusType !== "Completed";
   const shouldShowScore = statusType === "Completed" || statusType === "Dropped";
+  const shouldShowPlusButton = !isReadOnly && (statusType === "Reading" || statusType === "Plan to Read" || statusType === "Dropped" || statusType === "Paused" || statusType === "Rereading");
   const progressText = getProgressText();
 
   const truncateTitle = (title: string, maxLength: number = 25) => {
     if (title.length <= maxLength) return title;
     return title.substring(0, maxLength) + "…";
+  };
+
+  const canIncrement = () => {
+    const currentChapters = entry.chapters_read || 0;
+    const totalChapters = entry.total_chapters;
+    return !totalChapters || currentChapters < totalChapters;
   };
 
   return (
@@ -99,11 +108,27 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                 setImageLoading(false);
               }}
             />
+            
+            {/* Plus Button - Top Left */}
+            {shouldShowPlusButton && onIncrementChapter && canIncrement() && (
+              <div 
+                className="absolute top-2 left-2 bg-white/10 backdrop-blur-md border border-white/20 px-2 py-1 rounded-md text-xs text-white font-medium shadow-lg cursor-pointer hover:bg-white/20 transition-colors z-20"
+                onClick={e => {
+                  e.stopPropagation();
+                  onIncrementChapter(entry.id);
+                }}
+              >
+                <Plus className="w-3 h-3" />
+              </div>
+            )}
+            
+            {/* Progress - Top Right */}
             {shouldShowProgress && progressText && (
               <div className="absolute top-2 right-2 bg-white/10 backdrop-blur-md border border-white/20 px-2 py-1 rounded-md text-xs text-white font-medium shadow-lg">
                 {progressText}
               </div>
             )}
+            
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-3 pt-8 z-10">
               {shouldShowScore && entry.rating && (
                 <div className="flex items-center mb-2">
@@ -125,7 +150,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                         e.stopPropagation();
                         onEdit(entry);
                       }}
-                      className="border-white/40 text-white bg-black/70 hover:bg-black/90 hover:border-white/60 text-xs px-2 py-1 h-7 backdrop-blur-sm"
+                      className="border-white/40 text-white bg-black/70 hover:bg-black/90 hover:border-white/60 hover:text-white focus:text-white text-xs px-2 py-1 h-7 backdrop-blur-sm"
                     >
                       <Edit className="w-3 h-3 mr-1" />
                       Edit
@@ -137,7 +162,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                         e.stopPropagation();
                         setShowDeleteConfirm(true);
                       }}
-                      className="border-red-400/60 text-red-200 bg-black/70 hover:bg-red-900/70 hover:border-red-400/80 text-xs px-2 py-1 h-7 backdrop-blur-sm"
+                      className="border-red-400/60 text-red-200 bg-black/70 hover:bg-red-900/70 hover:border-red-400/80 hover:text-red-200 focus:text-red-200 text-xs px-2 py-1 h-7 backdrop-blur-sm"
                     >
                       <Trash2 className="w-3 h-3" />
                     </Button>
@@ -148,20 +173,21 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
           </div>
         </CardContent>
       </Card>
-      {/* Details Dialog */}
+
+      {/* Redesigned Details Dialog */}
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
-        <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold text-left">{entry.title}</DialogTitle>
+            <DialogTitle className="text-2xl font-bold text-left">{entry.title}</DialogTitle>
           </DialogHeader>
           <div className="space-y-6">
-            <div className="flex gap-4">
-              <div className="w-32 h-48 flex-shrink-0 relative">
+            <div className="flex gap-6">
+              <div className="w-40 h-60 flex-shrink-0 relative">
                 {detailImageLoading && <Skeleton className="absolute inset-0 w-full h-full z-10" />}
                 <img
                   src={detailImageUrl}
                   alt={entry.title}
-                  className={`w-full h-full object-cover rounded-md ${detailImageLoading ? "opacity-0" : "opacity-100"} transition-opacity duration-300`}
+                  className={`w-full h-full object-cover rounded-md shadow-lg ${detailImageLoading ? "opacity-0" : "opacity-100"} transition-opacity duration-300`}
                   onLoad={() => setDetailImageLoading(false)}
                   onError={e => {
                     const target = e.target as HTMLImageElement;
@@ -170,80 +196,100 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                   }}
                 />
               </div>
-              <div className="flex-1 space-y-3">
-                <div>
-                  <p className="text-sm text-gray-400">Author</p>
-                  <p className="text-white font-medium">{entry.author}</p>
+              <div className="flex-1 space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-sm text-gray-400">Author</p>
+                    <p className="text-white font-medium">{entry.author}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-400">Status</p>
+                    <Badge className={`${statusColors[entry.status]} text-white`}>
+                      {entry.status}
+                    </Badge>
+                  </div>
                 </div>
-                <div>
-                  <p className="text-sm text-gray-400">Status</p>
-                  <Badge className={`${statusColors[entry.status]} text-white`}>
-                    {entry.status}
-                  </Badge>
-                </div>
+                
                 {entry.rating && (
                   <div>
                     <p className="text-sm text-gray-400 mb-2">Rating</p>
                     {renderSingleStar(entry.rating)}
                   </div>
                 )}
-              </div>
-            </div>
-            {(entry.chapters_read !== undefined || entry.total_chapters) && (
-              <div>
-                <p className="text-sm text-gray-400">Progress</p>
-                <p className="text-white">
-                  {entry.chapters_read || 0} / {entry.total_chapters || "?"} chapters
-                </p>
-              </div>
-            )}
-            {(entry.start_date || entry.end_date) && (
-              <div className="grid grid-cols-2 gap-4">
-                {entry.start_date && (
+
+                {(entry.chapters_read !== undefined || entry.total_chapters) && (
                   <div>
-                    <p className="text-sm text-gray-400">Start Date</p>
-                    <p className="text-white">{new Date(entry.start_date).toLocaleDateString()}</p>
+                    <p className="text-sm text-gray-400">Progress</p>
+                    <p className="text-white">
+                      {entry.chapters_read || 0} / {entry.total_chapters || "?"} chapters
+                    </p>
                   </div>
                 )}
-                {entry.end_date && (
-                  <div>
-                    <p className="text-sm text-gray-400">End Date</p>
-                    <p className="text-white">{new Date(entry.end_date).toLocaleDateString()}</p>
+
+                {(entry.start_date || entry.end_date) && (
+                  <div className="grid grid-cols-2 gap-4">
+                    {entry.start_date && (
+                      <div>
+                        <p className="text-sm text-gray-400">Start Date</p>
+                        <p className="text-white">{new Date(entry.start_date).toLocaleDateString()}</p>
+                      </div>
+                    )}
+                    {entry.end_date && (
+                      <div>
+                        <p className="text-sm text-gray-400">End Date</p>
+                        <p className="text-white">{new Date(entry.end_date).toLocaleDateString()}</p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
-            )}
-            {entry.source && (
-              <div>
-                <p className="text-sm text-gray-400">Source</p>
-                <p className="text-white">{entry.source}</p>
-              </div>
-            )}
-            <div>
-              <p className="text-sm text-gray-400 mb-2">Tags</p>
-              <div className="flex flex-wrap gap-1">
-                {entry.tags.map((tag, index) => (
-                  <Badge key={index} variant="outline" className="text-xs border-gray-600 text-gray-300">
-                    {tag}
-                  </Badge>
-                ))}
-              </div>
             </div>
+
+            {entry.sources && entry.sources.length > 0 && (
+              <div>
+                <p className="text-sm text-gray-400 mb-2">Sources</p>
+                <div className="space-y-1">
+                  {entry.sources.map((source, index) => (
+                    <div key={index} className="text-white text-sm">
+                      <a href={source} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:text-blue-300 underline">
+                        {source}
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {entry.tags && entry.tags.length > 0 && (
+              <div>
+                <p className="text-sm text-gray-400 mb-2">Tags</p>
+                <div className="flex flex-wrap gap-2">
+                  {entry.tags.map((tag, index) => (
+                    <Badge key={index} variant="outline" className="text-xs border-gray-600 text-gray-300 bg-gray-800">
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {entry.synopsis && (
               <div>
                 <p className="text-sm text-gray-400 mb-2">Synopsis</p>
-                <p className="text-white text-sm leading-relaxed">{entry.synopsis}</p>
+                <p className="text-white text-sm leading-relaxed bg-gray-800 p-3 rounded-md">{entry.synopsis}</p>
               </div>
             )}
+
             {entry.notes && (
               <div>
                 <p className="text-sm text-gray-400 mb-2">Personal Notes</p>
-                <p className="text-white text-sm leading-relaxed">{entry.notes}</p>
+                <p className="text-white text-sm leading-relaxed bg-gray-800 p-3 rounded-md">{entry.notes}</p>
               </div>
             )}
           </div>
         </DialogContent>
       </Dialog>
+
       {/* Delete Confirmation Dialog */}
       <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
         <DialogContent className="bg-gray-900 border-gray-700 text-white">
@@ -256,7 +302,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
               <Button
                 variant="outline"
                 onClick={() => setShowDeleteConfirm(false)}
-                className="border-gray-600 text-gray-900 bg-gray-300 hover:bg-gray-200"
+                className="border-gray-600 text-gray-300 bg-gray-800 hover:bg-gray-700 hover:text-white focus:text-white"
               >
                 Cancel
               </Button>
@@ -266,7 +312,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, isReadOnly, statusType }: E
                   onDelete(entry.id);
                   setShowDeleteConfirm(false);
                 }}
-                className="bg-red-600 hover:bg-red-700 text-white"
+                className="bg-red-600 hover:bg-red-700 text-white focus:text-white"
               >
                 Delete
               </Button>

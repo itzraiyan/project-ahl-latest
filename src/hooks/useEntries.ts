@@ -15,7 +15,7 @@ export interface Entry {
   rating?: number;
   notes?: string;
   synopsis?: string;
-  source?: string;
+  sources?: string[];
   total_chapters?: number;
   chapters_read?: number;
   start_date?: string;
@@ -96,29 +96,53 @@ export const useEntries = () => {
 
   const updateEntry = async (updatedEntry: Entry) => {
     try {
-      // If rating is undefined, explicitly set it to null for Supabase
-      const ratingToSave = typeof updatedEntry.rating === "undefined" ? null : updatedEntry.rating;
+      // Handle auto-dating logic
+      const now = new Date().toISOString().split('T')[0];
+      let newStartDate = updatedEntry.start_date;
+      let newEndDate = updatedEntry.end_date;
+      let newStatus = updatedEntry.status;
+
+      // Find the current entry to compare status changes
+      const currentEntry = entries.find(e => e.id === updatedEntry.id);
+      
+      // Auto start date when changing to Reading from Plan to Read
+      if (currentEntry?.status === "Plan to Read" && updatedEntry.status === "Reading" && !newStartDate) {
+        newStartDate = now;
+      }
+      
+      // Auto end date when changing to Completed from Reading
+      if (currentEntry?.status === "Reading" && updatedEntry.status === "Completed" && !newEndDate) {
+        newEndDate = now;
+      }
+      
+      // Auto change to Completed if end date is set manually
+      if (newEndDate && !currentEntry?.end_date && updatedEntry.status === "Reading") {
+        newStatus = "Completed";
+      }
+
+      // Prepare update data - explicitly handle null values for cleared fields
+      const updateData = {
+        title: updatedEntry.title,
+        author: updatedEntry.author,
+        cover_url: updatedEntry.cover_url,
+        compressed_image_url: updatedEntry.compressed_image_url || null,
+        original_image_url: updatedEntry.original_image_url || null,
+        tags: updatedEntry.tags || [],
+        status: newStatus,
+        rating: updatedEntry.rating || null,
+        notes: updatedEntry.notes || null,
+        synopsis: updatedEntry.synopsis || null,
+        sources: updatedEntry.sources || [],
+        total_chapters: updatedEntry.total_chapters || null,
+        chapters_read: updatedEntry.chapters_read || null,
+        start_date: newStartDate || null,
+        end_date: newEndDate || null,
+        updated_at: new Date().toISOString()
+      };
 
       const { error } = await supabase
         .from('entries')
-        .update({
-          title: updatedEntry.title,
-          author: updatedEntry.author,
-          cover_url: updatedEntry.cover_url,
-          compressed_image_url: updatedEntry.compressed_image_url,
-          original_image_url: updatedEntry.original_image_url,
-          tags: updatedEntry.tags,
-          status: updatedEntry.status,
-          rating: ratingToSave,
-          notes: updatedEntry.notes,
-          synopsis: updatedEntry.synopsis,
-          source: updatedEntry.source,
-          total_chapters: updatedEntry.total_chapters,
-          chapters_read: updatedEntry.chapters_read,
-          start_date: updatedEntry.start_date,
-          end_date: updatedEntry.end_date,
-          updated_at: new Date().toISOString()
-        })
+        .update(updateData)
         .eq('id', updatedEntry.id);
 
       if (error) {
@@ -131,12 +155,72 @@ export const useEntries = () => {
         return;
       }
 
+      const finalEntry = { ...updatedEntry, start_date: newStartDate, end_date: newEndDate, status: newStatus, updated_at: new Date().toISOString() };
       setEntries(prev => prev.map(entry => 
-        entry.id === updatedEntry.id ? { ...updatedEntry, updated_at: new Date().toISOString() } : entry
+        entry.id === updatedEntry.id ? finalEntry : entry
       ));
+      
       toast({
         title: "Success",
         description: "Entry updated successfully"
+      });
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const incrementChapter = async (id: string) => {
+    try {
+      const entry = entries.find(e => e.id === id);
+      if (!entry) return;
+
+      const currentChapters = entry.chapters_read || 0;
+      const totalChapters = entry.total_chapters;
+      
+      // Don't allow increment beyond total chapters (if set)
+      if (totalChapters && currentChapters >= totalChapters) return;
+
+      const newChaptersRead = currentChapters + 1;
+      let newStatus = entry.status;
+      let newStartDate = entry.start_date;
+
+      // Auto change status logic
+      if (entry.status === "Plan to Read" || entry.status === "Dropped") {
+        newStatus = "Reading";
+        if (!newStartDate) {
+          newStartDate = new Date().toISOString().split('T')[0];
+        }
+      }
+
+      const updateData = {
+        chapters_read: newChaptersRead,
+        status: newStatus,
+        start_date: newStartDate,
+        updated_at: new Date().toISOString()
+      };
+
+      const { error } = await supabase
+        .from('entries')
+        .update(updateData)
+        .eq('id', id);
+
+      if (error) {
+        console.error('Error incrementing chapter:', error);
+        toast({
+          title: "Error",
+          description: "Failed to update chapter count",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      setEntries(prev => prev.map(e => 
+        e.id === id ? { ...e, chapters_read: newChaptersRead, status: newStatus, start_date: newStartDate, updated_at: new Date().toISOString() } : e
+      ));
+
+      toast({
+        title: "Success",
+        description: `Chapter count updated to ${newChaptersRead}`,
       });
     } catch (error) {
       console.error('Error:', error);
@@ -180,6 +264,7 @@ export const useEntries = () => {
     addEntry,
     updateEntry,
     deleteEntry,
+    incrementChapter,
     refetch: fetchEntries
   };
 };

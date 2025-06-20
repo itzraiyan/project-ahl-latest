@@ -21,7 +21,7 @@ export type Database = {
           notes: string | null
           original_image_url: string | null
           rating: number | null
-          source: string | null
+          sources: string[] | null
           start_date: string | null
           status: string
           synopsis: string | null
@@ -41,7 +41,7 @@ export type Database = {
           notes?: string | null
           original_image_url?: string | null
           rating?: number | null
-          source?: string | null
+          sources?: string[] | null
           start_date?: string | null
           status: string
           synopsis?: string | null
@@ -61,7 +61,7 @@ export type Database = {
           notes?: string | null
           original_image_url?: string | null
           rating?: number | null
-          source?: string | null
+          sources?: string[] | null
           start_date?: string | null
           status?: string
           synopsis?: string | null
