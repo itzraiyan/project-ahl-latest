@@ -153,6 +153,36 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
     }
   };
 
+  const handleStatusChange = (newStatus: Entry["status"]) => {
+    setFormData(prev => {
+      const updates: Partial<typeof prev> = { status: newStatus };
+      
+      // Auto date detection logic
+      if (newStatus === "Reading" && !prev.start_date) {
+        updates.start_date = new Date();
+      }
+      
+      if (newStatus === "Completed" && !prev.end_date) {
+        updates.end_date = new Date();
+      }
+      
+      return { ...prev, ...updates };
+    });
+  };
+
+  const handleEndDateChange = (date: Date | undefined) => {
+    setFormData(prev => {
+      const updates: Partial<typeof prev> = { end_date: date };
+      
+      // If adding end date while status is Reading, auto-convert to Completed
+      if (date && prev.status === "Reading") {
+        updates.status = "Completed";
+      }
+      
+      return { ...prev, ...updates };
+    });
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title.trim() || !formData.author.trim()) {
@@ -252,7 +282,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
 
       <div>
         <Label htmlFor="status" className="text-white">Status</Label>
-        <Select value={formData.status} onValueChange={(value: Entry["status"]) => setFormData(prev => ({ ...prev, status: value }))}>
+        <Select value={formData.status} onValueChange={handleStatusChange}>
           <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
             <SelectValue className="text-white" />
           </SelectTrigger>
@@ -367,7 +397,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
               <Calendar
                 mode="single"
                 selected={formData.end_date}
-                onSelect={(date) => setFormData(prev => ({ ...prev, end_date: date }))}
+                onSelect={handleEndDateChange}
                 initialFocus
                 className="pointer-events-auto"
               />

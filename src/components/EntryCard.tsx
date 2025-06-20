@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Skeleton } from "@/components/ui/skeleton";
 import type { Entry } from "@/hooks/useEntries";
 
 interface EntryCardProps {
@@ -25,6 +24,13 @@ const statusColors: Record<string, string> = {
   "Dropped": "bg-red-500",
   "Rereading": "bg-purple-500"
 };
+
+// Shimmer Skeleton Component
+const ShimmerSkeleton = () => (
+  <div className="absolute inset-0 bg-gray-700 rounded-md overflow-hidden">
+    <div className="shimmer-bg w-full h-full"></div>
+  </div>
+);
 
 export const EntryCard = ({ entry, onEdit, onDelete, onIncrementChapter, isReadOnly, statusType }: EntryCardProps) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -95,7 +101,7 @@ export const EntryCard = ({ entry, onEdit, onDelete, onIncrementChapter, isReadO
         <CardContent className="p-0 h-full relative">
           <div className="aspect-[2/3] relative overflow-hidden rounded-md h-full" onClick={() => setShowDetails(true)}>
             {/* Shimmer Skeleton */}
-            {imageLoading && <Skeleton className="absolute inset-0 w-full h-full z-10" />}
+            {imageLoading && <ShimmerSkeleton />}
             <img
               src={cardImageUrl}
               alt={entry.title}
@@ -174,16 +180,16 @@ export const EntryCard = ({ entry, onEdit, onDelete, onIncrementChapter, isReadO
         </CardContent>
       </Card>
 
-      {/* Redesigned Details Dialog */}
+      {/* About Dialog - Reverted to simpler layout */}
       <Dialog open={showDetails} onOpenChange={setShowDetails}>
-        <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+        <DialogContent className="bg-gray-900 border-gray-700 text-white max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-left">{entry.title}</DialogTitle>
+            <DialogTitle className="text-xl font-bold">{entry.title}</DialogTitle>
           </DialogHeader>
-          <div className="space-y-6">
-            <div className="flex gap-6">
-              <div className="w-40 h-60 flex-shrink-0 relative">
-                {detailImageLoading && <Skeleton className="absolute inset-0 w-full h-full z-10" />}
+          <div className="space-y-4">
+            <div className="flex gap-4">
+              <div className="w-32 h-48 flex-shrink-0 relative">
+                {detailImageLoading && <ShimmerSkeleton />}
                 <img
                   src={detailImageUrl}
                   alt={entry.title}
@@ -196,27 +202,23 @@ export const EntryCard = ({ entry, onEdit, onDelete, onIncrementChapter, isReadO
                   }}
                 />
               </div>
-              <div className="flex-1 space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-sm text-gray-400">Author</p>
-                    <p className="text-white font-medium">{entry.author}</p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-gray-400">Status</p>
-                    <Badge className={`${statusColors[entry.status]} text-white`}>
-                      {entry.status}
-                    </Badge>
-                  </div>
+              <div className="flex-1 space-y-3">
+                <div>
+                  <p className="text-sm text-gray-400">Author</p>
+                  <p className="text-white">{entry.author}</p>
                 </div>
-                
+                <div>
+                  <p className="text-sm text-gray-400">Status</p>
+                  <Badge className={`${statusColors[entry.status]} text-white`}>
+                    {entry.status}
+                  </Badge>
+                </div>
                 {entry.rating && (
                   <div>
-                    <p className="text-sm text-gray-400 mb-2">Rating</p>
+                    <p className="text-sm text-gray-400">Rating</p>
                     {renderSingleStar(entry.rating)}
                   </div>
                 )}
-
                 {(entry.chapters_read !== undefined || entry.total_chapters) && (
                   <div>
                     <p className="text-sm text-gray-400">Progress</p>
@@ -225,25 +227,25 @@ export const EntryCard = ({ entry, onEdit, onDelete, onIncrementChapter, isReadO
                     </p>
                   </div>
                 )}
+              </div>
+            </div>
 
-                {(entry.start_date || entry.end_date) && (
-                  <div className="grid grid-cols-2 gap-4">
-                    {entry.start_date && (
-                      <div>
-                        <p className="text-sm text-gray-400">Start Date</p>
-                        <p className="text-white">{new Date(entry.start_date).toLocaleDateString()}</p>
-                      </div>
-                    )}
-                    {entry.end_date && (
-                      <div>
-                        <p className="text-sm text-gray-400">End Date</p>
-                        <p className="text-white">{new Date(entry.end_date).toLocaleDateString()}</p>
-                      </div>
-                    )}
+            {(entry.start_date || entry.end_date) && (
+              <div className="grid grid-cols-2 gap-4">
+                {entry.start_date && (
+                  <div>
+                    <p className="text-sm text-gray-400">Start Date</p>
+                    <p className="text-white">{new Date(entry.start_date).toLocaleDateString()}</p>
+                  </div>
+                )}
+                {entry.end_date && (
+                  <div>
+                    <p className="text-sm text-gray-400">End Date</p>
+                    <p className="text-white">{new Date(entry.end_date).toLocaleDateString()}</p>
                   </div>
                 )}
               </div>
-            </div>
+            )}
 
             {entry.sources && entry.sources.length > 0 && (
               <div>
