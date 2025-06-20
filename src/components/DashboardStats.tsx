@@ -1,6 +1,4 @@
-
 import { useEffect, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import { useAniList } from "@/hooks/useAniList";
 import type { Entry } from "@/hooks/useEntries";
 
@@ -9,22 +7,23 @@ interface DashboardStatsProps {
 }
 
 export const DashboardStats = ({ entries }: DashboardStatsProps) => {
-  const [aniListData, setAniListData] = useState<any>(null);
+  // Refetching logic, similar to previous: every 12 hours
+  const [anilistStats, setAniListStats] = useState<any>(null);
   const [lastFetch, setLastFetch] = useState<number>(0);
-  const { stats, refetch } = useAniList();
+  const { stats, refetch, isLoading, error } = useAniList();
+  const [showBreakdown, setShowBreakdown] = useState(false);
 
   // Auto refresh AniList data every 12 hours
   useEffect(() => {
     const fetchData = async () => {
       const now = Date.now();
       const twelveHours = 12 * 60 * 60 * 1000;
-      
+
       // Check if we need to refresh (12 hours passed or no data)
-      if (!aniListData || (now - lastFetch) > twelveHours) {
-        console.log("Fetching fresh AniList data...");
+      if (!anilistStats || (now - lastFetch) > twelveHours) {
         await refetch();
         if (stats) {
-          setAniListData(stats);
+          setAniListStats(stats);
           setLastFetch(now);
           localStorage.setItem('anilist_data', JSON.stringify(stats));
           localStorage.setItem('anilist_last_fetch', now.toString());
@@ -35,15 +34,15 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
     // Load from localStorage on mount
     const storedData = localStorage.getItem('anilist_data');
     const storedLastFetch = localStorage.getItem('anilist_last_fetch');
-    
+
     if (storedData && storedLastFetch) {
-      setAniListData(JSON.parse(storedData));
+      setAniListStats(JSON.parse(storedData));
       setLastFetch(parseInt(storedLastFetch));
     }
 
     // Use stats from hook if available
     if (stats) {
-      setAniListData(stats);
+      setAniListStats(stats);
     }
 
     fetchData();
@@ -53,99 +52,185 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
     return () => clearInterval(interval);
   }, [stats, refetch]);
 
-  const localStats = {
-    totalEntries: entries.length,
-    reading: entries.filter(e => e.status === "Reading").length,
-    completed: entries.filter(e => e.status === "Completed").length,
-    planToRead: entries.filter(e => e.status === "Plan to Read").length,
-    totalChaptersRead: entries.reduce((sum, entry) => sum + (entry.chapters_read || 0), 0),
-    averageRating: entries.filter(e => e.rating).length > 0 
-      ? (entries.filter(e => e.rating).reduce((sum, entry) => sum + (entry.rating || 0), 0) / entries.filter(e => e.rating).length).toFixed(1)
-      : "0.0"
+  // Function to format large numbers
+  const formatNumber = (num: number): string => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+    }
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    }
+    return num?.toString() ?? "0";
   };
 
-  // Combined stats calculation
-  const aniListTotal = aniListData?.count || 0;
-  const localTotal = localStats.totalEntries;
-  const combinedTotal = aniListTotal + localTotal;
+  // Calculate local stats
+  const localStats = {
+    totalManga: entries.length,
+    chaptersRead: entries.reduce((acc, entry) => acc + (entry.chapters_read || 0), 0),
+    meanScore: entries.filter(entry => entry.rating).length > 0
+      ? entries.filter(entry => entry.rating).reduce((acc, entry) => acc + (entry.rating || 0), 0) / entries.filter(entry => entry.rating).length
+      : 0
+  };
 
-  const aniListChapters = aniListData?.chaptersRead || 0;
-  const localChapters = localStats.totalChaptersRead;
-  const combinedChapters = aniListChapters + localChapters;
+  // Just show AniList stats if available, otherwise show local
+  const displayStats = {
+    count: anilistStats?.count ?? 0,
+    chaptersRead: anilistStats?.chaptersRead ?? 0,
+    meanScore: typeof anilistStats?.meanScore === "number"
+      ? anilistStats.meanScore
+      : 0
+  };
 
-  const aniListMeanScore = aniListData?.meanScore ? (aniListData.meanScore / 10).toFixed(1) : "0.0";
-  const localMeanScore = localStats.averageRating;
-  const combinedMeanScore = aniListData?.meanScore && entries.filter(e => e.rating).length > 0
-    ? (((aniListData.meanScore / 10) + parseFloat(localMeanScore)) / 2).toFixed(1)
-    : aniListData?.meanScore ? (aniListData.meanScore / 10).toFixed(1) : localMeanScore;
+  // For breakdown panel
+  const toggleBreakdown = () => {
+    setShowBreakdown(!showBreakdown);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="mb-6 py-3 px-4 bg-gray-900 rounded-lg border border-gray-800">
+        <div className="flex justify-center items-center space-x-6">
+          <div className="text-center flex-1 min-w-0">
+            <div className="text-lg font-bold animate-pulse truncate text-primary">--</div>
+            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
+          </div>
+          <div className="text-gray-600 text-sm">|</div>
+          <div className="text-center flex-1 min-w-0">
+            <div className="text-lg font-bold animate-pulse truncate text-primary">--</div>
+            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
+          </div>
+          <div className="text-gray-600 text-sm">|</div>
+          <div className="text-center flex-1 min-w-0">
+            <div className="text-lg font-bold animate-pulse truncate text-primary">--</div>
+            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Mean&nbsp;Score</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-      <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-colors cursor-pointer group">
-        <CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold text-blue-400 mb-1">{combinedTotal}</div>
-          <div className="text-sm text-gray-400 mb-2">Total Manga</div>
-          {aniListTotal > 0 && (
-            <div className="text-xs text-gray-500">
-              <div>AniList: {aniListTotal}</div>
-              {localTotal > 0 && <div>+ Local: {localTotal}</div>}
+    <div className="mb-6">
+      {/* Main Dashboard */}
+      <div className="py-3 px-4 bg-gray-900 rounded-lg border border-gray-800">
+        <div className="flex justify-center items-center">
+          {/* Total Manga */}
+          <div
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 mx-1 transition-colors duration-200 min-w-0"
+            onClick={toggleBreakdown}
+          >
+            <div
+              className="text-lg font-bold truncate"
+              style={{ color: "#0096FF" }}
+            >
+              {formatNumber(displayStats.count)}
             </div>
-          )}
-          <div className="mt-2 h-0.5 bg-blue-400 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></div>
-        </CardContent>
-      </Card>
+            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
+          </div>
 
-      <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-colors cursor-pointer group">
-        <CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold text-green-400 mb-1">{combinedChapters}</div>
-          <div className="text-sm text-gray-400 mb-2">Chapters Read</div>
-          {aniListChapters > 0 && (
-            <div className="text-xs text-gray-500">
-              <div>AniList: {aniListChapters}</div>
-              {localChapters > 0 && <div>+ Local: {localChapters}</div>}
+          <div className="text-gray-600 text-sm px-2">|</div>
+
+          {/* Chapters Read */}
+          <div
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 mx-1 transition-colors duration-200 min-w-0"
+            onClick={toggleBreakdown}
+          >
+            <div
+              className="text-lg font-bold truncate"
+              style={{ color: "#0096FF" }}
+            >
+              {formatNumber(displayStats.chaptersRead)}
             </div>
-          )}
-          <div className="mt-2 h-0.5 bg-green-400 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></div>
-        </CardContent>
-      </Card>
+            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
+          </div>
 
-      <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-colors cursor-pointer group">
-        <CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold text-yellow-400 mb-1">{combinedMeanScore}</div>
-          <div className="text-sm text-gray-400 mb-2">Mean Score</div>
-          {(aniListData?.meanScore || entries.filter(e => e.rating).length > 0) && (
-            <div className="text-xs text-gray-500">
-              {aniListData?.meanScore && <div>AniList: {aniListMeanScore}</div>}
-              {entries.filter(e => e.rating).length > 0 && <div>Local: {localMeanScore}</div>}
+          <div className="text-gray-600 text-sm px-2">|</div>
+
+          {/* Mean Score */}
+          <div
+            className="flex-1 text-center cursor-pointer hover:bg-gray-800 rounded py-1.5 mx-1 transition-colors duration-200 min-w-0"
+            onClick={toggleBreakdown}
+          >
+            <div
+              className="text-lg font-bold truncate"
+              style={{ color: "#0096FF" }}
+            >
+              {displayStats.meanScore ? displayStats.meanScore.toFixed(1) : '0.0'}
             </div>
-          )}
-          <div className="mt-2 h-0.5 bg-yellow-400 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></div>
-        </CardContent>
-      </Card>
+            <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Mean&nbsp;Score</div>
+          </div>
+        </div>
+        {error && (
+          <div className="text-xs text-gray-500 text-center mt-1">
+            AniList unavailable - showing only AniList data if available
+          </div>
+        )}
+      </div>
 
-      <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-colors cursor-pointer group">
-        <CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold text-primary mb-1">{localStats.reading}</div>
-          <div className="text-sm text-gray-400">Reading</div>
-          <div className="mt-2 h-0.5 bg-primary rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></div>
-        </CardContent>
-      </Card>
+      {/* Breakdown Panel */}
+      <div className={`transition-all duration-300 ease-in-out ${
+        showBreakdown ? 'max-h-32 opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0'
+      } overflow-hidden`}>
+        <div className="p-4 bg-gray-900 rounded-lg border border-gray-800">
+          <div className="flex justify-center items-center">
+            {/* Total Manga Breakdown */}
+            <div className="flex-1 text-center min-w-0 mx-1">
+              <div className="space-y-1">
+                <div className="flex items-center justify-center gap-2 text-sm">
+                  <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
+                  <span className="text-gray-400 flex-shrink-0">AniList:</span>
+                  <span className="font-bold text-sky-400 truncate">{formatNumber(anilistStats?.count ?? 0)}</span>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-sm">
+                  <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
+                  <span className="text-gray-400 flex-shrink-0">Local:</span>
+                  <span className="font-bold text-green-400 truncate">{formatNumber(localStats.totalManga)}</span>
+                </div>
+              </div>
+            </div>
 
-      <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-colors cursor-pointer group">
-        <CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold text-green-500 mb-1">{localStats.completed}</div>
-          <div className="text-sm text-gray-400">Completed</div>
-          <div className="mt-2 h-0.5 bg-green-500 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></div>
-        </CardContent>
-      </Card>
+            <div className="text-gray-600 text-sm px-2">|</div>
 
-      <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-colors cursor-pointer group">
-        <CardContent className="p-4 text-center">
-          <div className="text-2xl font-bold text-gray-400 mb-1">{localStats.planToRead}</div>
-          <div className="text-sm text-gray-400">Plan to Read</div>
-          <div className="mt-2 h-0.5 bg-gray-400 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></div>
-        </CardContent>
-      </Card>
+            {/* Chapters Read Breakdown */}
+            <div className="flex-1 text-center min-w-0 mx-1">
+              <div className="space-y-1">
+                <div className="flex items-center justify-center gap-2 text-sm">
+                  <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
+                  <span className="text-gray-400 flex-shrink-0">AniList:</span>
+                  <span className="font-bold text-sky-400 truncate">{formatNumber(anilistStats?.chaptersRead ?? 0)}</span>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-sm">
+                  <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
+                  <span className="text-gray-400 flex-shrink-0">Local:</span>
+                  <span className="font-bold text-green-400 truncate">{formatNumber(localStats.chaptersRead)}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="text-gray-600 text-sm px-2">|</div>
+
+            {/* Mean Score Breakdown */}
+            <div className="flex-1 text-center min-w-0 mx-1">
+              <div className="space-y-1">
+                <div className="flex items-center justify-center gap-2 text-sm">
+                  <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
+                  <span className="text-gray-400 flex-shrink-0">AniList:</span>
+                  <span className="font-bold text-sky-400 truncate">
+                    {typeof anilistStats?.meanScore === "number" ? anilistStats.meanScore.toFixed(1) : '0.0'}
+                  </span>
+                </div>
+                <div className="flex items-center justify-center gap-2 text-sm">
+                  <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
+                  <span className="text-gray-400 flex-shrink-0">Local:</span>
+                  <span className="font-bold text-green-400 truncate">
+                    {localStats.meanScore ? localStats.meanScore.toFixed(1) : '0.0'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
