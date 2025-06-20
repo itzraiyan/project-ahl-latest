@@ -11,7 +11,7 @@ interface DashboardStatsProps {
 export const DashboardStats = ({ entries }: DashboardStatsProps) => {
   const [aniListData, setAniListData] = useState<any>(null);
   const [lastFetch, setLastFetch] = useState<number>(0);
-  const { fetchUserStats } = useAniList();
+  const { stats, refetch } = useAniList();
 
   // Auto refresh AniList data every 12 hours
   useEffect(() => {
@@ -22,11 +22,11 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
       // Check if we need to refresh (12 hours passed or no data)
       if (!aniListData || (now - lastFetch) > twelveHours) {
         console.log("Fetching fresh AniList data...");
-        const data = await fetchUserStats("AstralArefin");
-        if (data) {
-          setAniListData(data);
+        await refetch();
+        if (stats) {
+          setAniListData(stats);
           setLastFetch(now);
-          localStorage.setItem('anilist_data', JSON.stringify(data));
+          localStorage.setItem('anilist_data', JSON.stringify(stats));
           localStorage.setItem('anilist_last_fetch', now.toString());
         }
       }
@@ -41,12 +41,17 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
       setLastFetch(parseInt(storedLastFetch));
     }
 
+    // Use stats from hook if available
+    if (stats) {
+      setAniListData(stats);
+    }
+
     fetchData();
 
     // Set up interval to check every hour
     const interval = setInterval(fetchData, 60 * 60 * 1000);
     return () => clearInterval(interval);
-  }, [fetchUserStats]);
+  }, [stats, refetch]);
 
   const localStats = {
     totalEntries: entries.length,
@@ -64,7 +69,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
       <Card className="bg-gray-800 border-gray-700 hover:bg-gray-750 transition-colors cursor-pointer group">
         <CardContent className="p-4 text-center">
           <div className="text-2xl font-bold text-blue-400 mb-1">
-            {aniListData?.totalManga || localStats.totalEntries}
+            {aniListData?.count || localStats.totalEntries}
           </div>
           <div className="text-sm text-gray-400">Total Manga</div>
           <div className="mt-2 h-0.5 bg-blue-400 rounded-full transform scale-x-0 group-hover:scale-x-100 transition-transform duration-200"></div>

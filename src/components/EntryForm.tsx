@@ -12,6 +12,7 @@ import { X, Calendar as CalendarIcon, ChevronUp, ChevronDown, Upload } from "luc
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useImageProcessor } from "@/hooks/useImageProcessor";
+import { MultiSourceInput } from "@/components/MultiSourceInput";
 import type { Entry } from "@/hooks/useEntries";
 
 interface EntryFormProps {
@@ -19,17 +20,6 @@ interface EntryFormProps {
   onSubmit: (entry: Entry | Omit<Entry, "id" | "created_at" | "updated_at">) => void;
   onCancel: () => void;
 }
-
-const sources = [
-  { name: "Nhentai.net", url: "https://nhentai.net/" },
-  { name: "Hentaifox.com", url: "https://hentaifox.com/" },
-  { name: "Hentai2read.com", url: "https://hentai2read.com/" },
-  { name: "Hitomi.la", url: "https://hitomi.la/" },
-  { name: "Hentairead.com", url: "https://hentairead.com/" },
-  { name: "Hentaiera.com", url: "https://hentaiera.com/" },
-  { name: "Imhentai.xxx", url: "https://imhentai.xxx/" },
-  { name: "Hentaihand.com", url: "https://hentaihand.com/" }
-];
 
 export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
   const { processImage, isProcessing } = useImageProcessor();
@@ -45,8 +35,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
     rating: undefined as number | undefined,
     notes: "",
     synopsis: "",
-    source: "",
-    source_url: "",
+    sources: [] as string[],
     total_chapters: undefined as number | undefined,
     chapters_read: 0 as number,
     start_date: undefined as Date | undefined,
@@ -69,8 +58,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         rating: entry.rating,
         notes: entry.notes || "",
         synopsis: entry.synopsis || "",
-        source: entry.source || "",
-        source_url: "",
+        sources: entry.sources || [],
         total_chapters: entry.total_chapters || undefined,
         chapters_read: entry.chapters_read || 0,
         start_date: entry.start_date ? new Date(entry.start_date) : undefined,
@@ -171,7 +159,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
       console.log("Missing required fields");
       return;
     }
-    const finalSource = formData.source_url.trim() || formData.source;
+    
     const finalTotalChapters = formData.total_chapters || (formData.chapters_read > 0 ? formData.chapters_read : undefined);
     const submitData = {
       title: formData.title,
@@ -184,7 +172,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
       rating: hasRatingInteraction ? formData.rating : undefined,
       notes: formData.notes,
       synopsis: formData.synopsis,
-      source: finalSource,
+      sources: formData.sources,
       total_chapters: finalTotalChapters,
       chapters_read: formData.chapters_read,
       start_date: formData.start_date ? formData.start_date.toISOString().split('T')[0] : undefined,
@@ -241,7 +229,6 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:text-white"
           />
 
-          {/* Always show the button, but disabled unless title & cover_url are provided */}
           <Button
             type="button"
             variant="outline"
@@ -280,7 +267,6 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         </Select>
       </div>
 
-      {/* Chapter Tracking Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label htmlFor="total_chapters" className="text-white">Total Chapters</Label>
@@ -335,7 +321,6 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         </div>
       </div>
 
-      {/* Start Date and End Date Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
           <Label className="text-white">Start Date</Label>
@@ -391,32 +376,12 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         </div>
       </div>
 
-      {/* Source section */}
-      <div>
-        <Label htmlFor="source" className="text-white">Source</Label>
-        <div className="space-y-2">
-          <Select value={formData.source} onValueChange={(value) => setFormData(prev => ({ ...prev, source: value }))}>
-            <SelectTrigger className="bg-gray-800 border-gray-700 text-white">
-              <SelectValue placeholder="Select source..." className="text-white" />
-            </SelectTrigger>
-            <SelectContent className="bg-gray-800 border-gray-700 text-white">
-              {sources.map((source) => (
-                <SelectItem key={source.name} value={source.name} className="text-white">
-                  {source.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Input
-            placeholder="Or paste custom source URL here (overrides dropdown selection)..."
-            value={formData.source_url}
-            onChange={(e) => setFormData(prev => ({ ...prev, source_url: e.target.value }))}
-            className="bg-gray-800 border-gray-700 text-white placeholder-gray-400 focus:text-white"
-          />
-        </div>
-      </div>
+      {/* Multi-source input */}
+      <MultiSourceInput
+        sources={formData.sources}
+        onChange={(sources) => setFormData(prev => ({ ...prev, sources }))}
+      />
 
-      {/* Rating section */}
       <div>
         <Label className="text-white">
           Rating: {hasRatingInteraction && formData.rating ? `${formData.rating}/10` : 'Not rated'}
@@ -447,7 +412,6 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         </div>
       </div>
 
-      {/* Tags section with bulk input */}
       <div>
         <Label className="text-white">Tags</Label>
         <div className="space-y-2">
@@ -474,7 +438,6 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             </Button>
           </div>
           
-          {/* Bulk tags input */}
           <div className="space-y-2">
             <Textarea
               value={bulkTags}
