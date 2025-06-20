@@ -7,19 +7,16 @@ interface DashboardStatsProps {
 }
 
 export const DashboardStats = ({ entries }: DashboardStatsProps) => {
-  // Refetching logic, similar to previous: every 12 hours
+  // AniList refetching logic
   const [anilistStats, setAniListStats] = useState<any>(null);
   const [lastFetch, setLastFetch] = useState<number>(0);
   const { stats, refetch, isLoading, error } = useAniList();
   const [showBreakdown, setShowBreakdown] = useState(false);
 
-  // Auto refresh AniList data every 12 hours
   useEffect(() => {
     const fetchData = async () => {
       const now = Date.now();
       const twelveHours = 12 * 60 * 60 * 1000;
-
-      // Check if we need to refresh (12 hours passed or no data)
       if (!anilistStats || (now - lastFetch) > twelveHours) {
         await refetch();
         if (stats) {
@@ -34,7 +31,6 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
     // Load from localStorage on mount
     const storedData = localStorage.getItem('anilist_data');
     const storedLastFetch = localStorage.getItem('anilist_last_fetch');
-
     if (storedData && storedLastFetch) {
       setAniListStats(JSON.parse(storedData));
       setLastFetch(parseInt(storedLastFetch));
@@ -46,13 +42,11 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
     }
 
     fetchData();
-
-    // Set up interval to check every hour
     const interval = setInterval(fetchData, 60 * 60 * 1000);
     return () => clearInterval(interval);
   }, [stats, refetch]);
 
-  // Function to format large numbers
+  // Format numbers like 1K, 1.5M, etc.
   const formatNumber = (num: number): string => {
     if (num >= 1000000) {
       return (num / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
@@ -63,7 +57,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
     return num?.toString() ?? "0";
   };
 
-  // Calculate local stats
+  // Local stats
   const localStats = {
     totalManga: entries.length,
     chaptersRead: entries.reduce((acc, entry) => acc + (entry.chapters_read || 0), 0),
@@ -72,19 +66,33 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
       : 0
   };
 
-  // Just show AniList stats if available, otherwise show local
-  const displayStats = {
-    count: anilistStats?.count ?? 0,
+  // AniList stats
+  const aniStats = {
+    totalManga: anilistStats?.count ?? 0,
     chaptersRead: anilistStats?.chaptersRead ?? 0,
     meanScore: typeof anilistStats?.meanScore === "number"
       ? anilistStats.meanScore
-      : 0
+      : 0,
+    meanScoreCount: typeof anilistStats?.count === "number" ? anilistStats.count : 0
   };
 
-  // For breakdown panel
-  const toggleBreakdown = () => {
-    setShowBreakdown(!showBreakdown);
+  // Weighted mean score calculation
+  const localCount = entries.filter(entry => entry.rating).length;
+  const combinedMeanScore = (() => {
+    if (aniStats.meanScoreCount === 0 && localCount === 0) return 0;
+    if (aniStats.meanScoreCount === 0) return localStats.meanScore;
+    if (localCount === 0) return aniStats.meanScore;
+    return ((aniStats.meanScoreCount * aniStats.meanScore) + (localCount * localStats.meanScore)) / (aniStats.meanScoreCount + localCount);
+  })();
+
+  // Combined stats for main dashboard
+  const combinedStats = {
+    count: aniStats.totalManga + localStats.totalManga,
+    chaptersRead: aniStats.chaptersRead + localStats.chaptersRead,
+    meanScore: combinedMeanScore
   };
+
+  const toggleBreakdown = () => setShowBreakdown(!showBreakdown);
 
   if (isLoading) {
     return (
@@ -111,7 +119,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
 
   return (
     <div className="mb-6">
-      {/* Main Dashboard */}
+      {/* Main Dashboard - Combined stats */}
       <div className="py-3 px-4 bg-gray-900 rounded-lg border border-gray-800">
         <div className="flex justify-center items-center">
           {/* Total Manga */}
@@ -123,7 +131,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
               className="text-lg font-bold truncate"
               style={{ color: "#0096FF" }}
             >
-              {formatNumber(displayStats.count)}
+              {formatNumber(combinedStats.count)}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Total&nbsp;Manga</div>
           </div>
@@ -139,7 +147,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
               className="text-lg font-bold truncate"
               style={{ color: "#0096FF" }}
             >
-              {formatNumber(displayStats.chaptersRead)}
+              {formatNumber(combinedStats.chaptersRead)}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Chapters&nbsp;Read</div>
           </div>
@@ -155,19 +163,19 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
               className="text-lg font-bold truncate"
               style={{ color: "#0096FF" }}
             >
-              {displayStats.meanScore ? displayStats.meanScore.toFixed(1) : '0.0'}
+              {combinedStats.meanScore ? combinedStats.meanScore.toFixed(1) : '0.0'}
             </div>
             <div className="text-xs font-bold text-gray-400 whitespace-nowrap">Mean&nbsp;Score</div>
           </div>
         </div>
         {error && (
           <div className="text-xs text-gray-500 text-center mt-1">
-            AniList unavailable - showing only AniList data if available
+            AniList unavailable - showing combined with local data
           </div>
         )}
       </div>
 
-      {/* Breakdown Panel */}
+      {/* Breakdown Panel - shows AniList + Local side by side */}
       <div className={`transition-all duration-300 ease-in-out ${
         showBreakdown ? 'max-h-32 opacity-100 mt-2' : 'max-h-0 opacity-0 mt-0'
       } overflow-hidden`}>
@@ -179,7 +187,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
                 <div className="flex items-center justify-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
                   <span className="text-gray-400 flex-shrink-0">AniList:</span>
-                  <span className="font-bold text-sky-400 truncate">{formatNumber(anilistStats?.count ?? 0)}</span>
+                  <span className="font-bold text-sky-400 truncate">{formatNumber(aniStats.totalManga)}</span>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
@@ -197,7 +205,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
                 <div className="flex items-center justify-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
                   <span className="text-gray-400 flex-shrink-0">AniList:</span>
-                  <span className="font-bold text-sky-400 truncate">{formatNumber(anilistStats?.chaptersRead ?? 0)}</span>
+                  <span className="font-bold text-sky-400 truncate">{formatNumber(aniStats.chaptersRead)}</span>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-sm">
                   <div className="w-2 h-2 bg-green-400 rounded-full flex-shrink-0"></div>
@@ -216,7 +224,7 @@ export const DashboardStats = ({ entries }: DashboardStatsProps) => {
                   <div className="w-2 h-2 bg-sky-400 rounded-full flex-shrink-0"></div>
                   <span className="text-gray-400 flex-shrink-0">AniList:</span>
                   <span className="font-bold text-sky-400 truncate">
-                    {typeof anilistStats?.meanScore === "number" ? anilistStats.meanScore.toFixed(1) : '0.0'}
+                    {typeof aniStats.meanScore === "number" ? aniStats.meanScore.toFixed(1) : '0.0'}
                   </span>
                 </div>
                 <div className="flex items-center justify-center gap-2 text-sm">
