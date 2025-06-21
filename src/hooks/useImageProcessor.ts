@@ -1,5 +1,3 @@
-
-import { useState } from "react";
 import { useBrowserImageProcessor } from "./useBrowserImageProcessor";
 
 interface ProcessImageResult {
@@ -8,11 +6,6 @@ interface ProcessImageResult {
 }
 
 export const useImageProcessor = () => {
-  const { processImage: processBrowserImage, isProcessing } = useBrowserImageProcessor();
-
-  const processImage = async (imageUrl: string, title: string): Promise<ProcessImageResult | null> => {
-    return await processBrowserImage(imageUrl, title);
-  };
-
+  const { processImage, isProcessing } = useBrowserImageProcessor();
   return { processImage, isProcessing };
 };
