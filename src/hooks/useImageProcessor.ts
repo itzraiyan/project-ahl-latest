@@ -16,7 +16,9 @@ export const useImageProcessor = () => {
     setIsProcessing(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('process-image', {
+      console.log('Starting Imagify + Catbox image processing...');
+      
+      const { data, error } = await supabase.functions.invoke('process-image-imagify', {
         body: { imageUrl, title }
       });
 
@@ -30,6 +32,7 @@ export const useImageProcessor = () => {
         return null;
       }
 
+      console.log('Image processing completed successfully');
       return {
         originalUrl: data.originalUrl,
         compressedUrl: data.compressedUrl

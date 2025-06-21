@@ -145,6 +145,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
       console.log("Cover URL and title are required for image processing");
       return;
     }
+    console.log("Starting Imagify + Catbox image processing workflow...");
     const result = await processImage(formData.cover_url, formData.title);
     if (result) {
       setFormData(prev => ({
@@ -152,6 +153,9 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         compressed_image_url: result.compressedUrl,
         original_image_url: result.originalUrl
       }));
+      console.log("Image processing completed successfully");
+    } else {
+      console.log("Image processing failed");
     }
   };
 
@@ -288,10 +292,10 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             `}
           >
             <Upload className="w-4 h-4" />
-            {isProcessing ? "Processing..." : "Process & Upload Image"}
+            {isProcessing ? "Processing with Imagify..." : "Process & Upload Image"}
           </Button>
           {formData.compressed_image_url && (
-            <p className="text-sm text-green-400">✓ Image processed and uploaded successfully</p>
+            <p className="text-sm text-green-400">✓ Image processed with Imagify and uploaded to Catbox successfully</p>
           )}
         </div>
       </div>
