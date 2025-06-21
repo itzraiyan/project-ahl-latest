@@ -146,10 +146,8 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
       setProcessingStatus("Cover URL and title are required");
       return;
     }
-    
     setProcessingStatus("Processing image...");
     const result = await processImage(formData.cover_url, formData.title);
-    
     if (result) {
       setFormData(prev => ({
         ...prev,
@@ -165,16 +163,12 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
   const handleStatusChange = (newStatus: Entry["status"]) => {
     setFormData(prev => {
       const updates: Partial<typeof prev> = { status: newStatus };
-      
-      // Auto date detection logic based on status
       if (newStatus === "Reading" && !prev.start_date) {
         updates.start_date = new Date();
       }
-      
       if (newStatus === "Completed" && !prev.end_date) {
         updates.end_date = new Date();
       }
-      
       return { ...prev, ...updates };
     });
   };
@@ -182,12 +176,9 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
   const handleStartDateChange = (date: Date | undefined) => {
     setFormData(prev => {
       const updates: Partial<typeof prev> = { start_date: date };
-      
-      // If adding start date and status is Plan to Read, auto-convert to Reading
       if (date && prev.status === "Plan to Read") {
         updates.status = "Reading";
       }
-      
       return { ...prev, ...updates };
     });
   };
@@ -195,12 +186,9 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
   const handleEndDateChange = (date: Date | undefined) => {
     setFormData(prev => {
       const updates: Partial<typeof prev> = { end_date: date };
-      
-      // If adding end date, auto-convert to Completed (unless already completed)
       if (date && prev.status !== "Completed") {
         updates.status = "Completed";
       }
-      
       return { ...prev, ...updates };
     });
   };
@@ -211,7 +199,6 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
       console.log("Missing required fields");
       return;
     }
-    
     const finalTotalChapters = formData.total_chapters || (formData.chapters_read > 0 ? formData.chapters_read : undefined);
     const submitData = {
       title: formData.title,
@@ -241,7 +228,6 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
     }
   };
 
-  // Always show "Process & Upload Image" button, but disable it unless title & cover_url are provided
   const canProcessImage = !!(formData.title && formData.cover_url);
 
   const getStatusIcon = () => {
