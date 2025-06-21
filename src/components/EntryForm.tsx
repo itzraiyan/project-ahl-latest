@@ -8,7 +8,7 @@ import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { X, Calendar as CalendarIcon, ChevronUp, ChevronDown, Upload } from "lucide-react";
+import { X, Calendar as CalendarIcon, ChevronUp, ChevronDown, Upload, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useImageProcessor } from "@/hooks/useImageProcessor";
@@ -143,11 +143,11 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
 
   const handleProcessImage = async () => {
     if (!formData.cover_url || !formData.title) {
-      setProcessingStatus("❌ Cover URL and title are required");
+      setProcessingStatus("Cover URL and title are required");
       return;
     }
     
-    setProcessingStatus("🔄 Processing image...");
+    setProcessingStatus("Processing image...");
     const result = await processImage(formData.cover_url, formData.title);
     
     if (result) {
@@ -156,9 +156,9 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
         compressed_image_url: result.compressedUrl,
         original_image_url: result.originalUrl
       }));
-      setProcessingStatus("✅ Image processed and uploaded successfully!");
+      setProcessingStatus("Image processed and uploaded successfully!");
     } else {
-      setProcessingStatus("❌ Failed to process image. Check console for details.");
+      setProcessingStatus("Failed to process image. Check console for details.");
     }
   };
 
@@ -244,6 +244,17 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
   // Always show "Process & Upload Image" button, but disable it unless title & cover_url are provided
   const canProcessImage = !!(formData.title && formData.cover_url);
 
+  const getStatusIcon = () => {
+    if (processingStatus.includes("successfully")) {
+      return <CheckCircle className="w-4 h-4 text-green-400" />;
+    } else if (processingStatus.includes("Failed") || processingStatus.includes("required")) {
+      return <XCircle className="w-4 h-4 text-red-400" />;
+    } else if (processingStatus.includes("Processing")) {
+      return <AlertCircle className="w-4 h-4 text-yellow-400" />;
+    }
+    return null;
+  };
+
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -299,19 +310,28 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
           </Button>
           
           {processingStatus && (
-            <p className={`text-sm ${
-              processingStatus.includes('✅') ? 'text-green-400' : 
-              processingStatus.includes('❌') ? 'text-red-400' : 
-              'text-yellow-400'
-            }`}>
-              {processingStatus}
-            </p>
+            <div className="flex items-center gap-2 text-sm">
+              {getStatusIcon()}
+              <span className={`${
+                processingStatus.includes('successfully') ? 'text-green-400' : 
+                processingStatus.includes('Failed') || processingStatus.includes('required') ? 'text-red-400' : 
+                'text-yellow-400'
+              }`}>
+                {processingStatus}
+              </span>
+            </div>
           )}
           
           {formData.compressed_image_url && (
             <div className="text-sm space-y-1">
-              <p className="text-green-400">✓ Compressed: {formData.compressed_image_url}</p>
-              <p className="text-green-400">✓ Original: {formData.original_image_url}</p>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-400" />
+                <span className="text-green-400">Compressed: {formData.compressed_image_url}</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-green-400" />
+                <span className="text-green-400">Original: {formData.original_image_url}</span>
+              </div>
             </div>
           )}
         </div>

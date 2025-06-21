@@ -38,19 +38,11 @@ export const useBrowserImageProcessor = () => {
 
   const downloadImageAsFile = async (imageUrl: string): Promise<File | null> => {
     try {
-      // Try direct fetch first
-      console.log('Attempting direct fetch of image:', imageUrl);
-      let response = await fetch(imageUrl);
+      console.log('Downloading image from:', imageUrl);
+      const response = await fetch(imageUrl);
       
       if (!response.ok) {
-        console.log('Direct fetch failed, trying CORS proxy...');
-        // Try with CORS proxy
-        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(imageUrl)}`;
-        response = await fetch(proxyUrl);
-      }
-      
-      if (!response.ok) {
-        console.error('Both direct and proxy fetch failed');
+        console.error('Failed to download image, status:', response.status);
         return null;
       }
       
@@ -106,7 +98,7 @@ export const useBrowserImageProcessor = () => {
     setIsProcessing(true);
 
     try {
-      // Step 1: Download the original image
+      // Step 1: Download the original image and upload to Catbox first
       console.log('Starting image processing for:', imageUrl);
       const originalFile = await downloadImageAsFile(imageUrl);
       if (!originalFile) {
@@ -114,22 +106,11 @@ export const useBrowserImageProcessor = () => {
         return null;
       }
 
-      // Step 2: Compress the image
-      console.log('Downloaded successfully, now compressing...');
-      const compressedFile = await compressImage(originalFile);
-      if (!compressedFile) {
-        console.error('Failed to compress image');
-        return null;
-      }
-
-      // Step 3: Generate filenames with random 4-digit number
+      // Step 2: Upload original to Catbox first
       const randomId = generateRandomId();
       const cleanTitle = title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
-      
       const originalFilename = `${cleanTitle}_original_${randomId}`;
-      const compressedFilename = `${cleanTitle}_compressed_${randomId}`;
-
-      // Step 4: Upload both images to Catbox
+      
       console.log('Uploading original image to Catbox...');
       const originalUrl = await uploadToCatbox(originalFile, originalFilename);
       
@@ -138,6 +119,23 @@ export const useBrowserImageProcessor = () => {
         return null;
       }
 
+      // Step 3: Now download from Catbox URL to avoid CORS and compress
+      console.log('Downloading from Catbox URL for compression...');
+      const catboxFile = await downloadImageAsFile(originalUrl);
+      if (!catboxFile) {
+        console.error('Failed to download from Catbox URL');
+        return null;
+      }
+
+      console.log('Compressing image...');
+      const compressedFile = await compressImage(catboxFile);
+      if (!compressedFile) {
+        console.error('Failed to compress image');
+        return null;
+      }
+
+      // Step 4: Upload compressed image to Catbox
+      const compressedFilename = `${cleanTitle}_compressed_${randomId}`;
       console.log('Uploading compressed image to Catbox...');
       const compressedUrl = await uploadToCatbox(compressedFile, compressedFilename);
       
