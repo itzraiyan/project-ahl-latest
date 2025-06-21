@@ -45,6 +45,7 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
   const [newTag, setNewTag] = useState("");
   const [bulkTags, setBulkTags] = useState("");
   const [hasRatingInteraction, setHasRatingInteraction] = useState(false);
+  const [processingStatus, setProcessingStatus] = useState<string>("");
 
   useEffect(() => {
     if (entry) {
@@ -142,16 +143,22 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
 
   const handleProcessImage = async () => {
     if (!formData.cover_url || !formData.title) {
-      console.log("Cover URL and title are required for image processing");
+      setProcessingStatus("❌ Cover URL and title are required");
       return;
     }
+    
+    setProcessingStatus("🔄 Processing image...");
     const result = await processImage(formData.cover_url, formData.title);
+    
     if (result) {
       setFormData(prev => ({
         ...prev,
         compressed_image_url: result.compressedUrl,
         original_image_url: result.originalUrl
       }));
+      setProcessingStatus("✅ Image processed and uploaded successfully!");
+    } else {
+      setProcessingStatus("❌ Failed to process image. Check console for details.");
     }
   };
 
@@ -290,8 +297,22 @@ export const EntryForm = ({ entry, onSubmit, onCancel }: EntryFormProps) => {
             <Upload className="w-4 h-4" />
             {isProcessing ? "Processing..." : "Process & Upload Image"}
           </Button>
+          
+          {processingStatus && (
+            <p className={`text-sm ${
+              processingStatus.includes('✅') ? 'text-green-400' : 
+              processingStatus.includes('❌') ? 'text-red-400' : 
+              'text-yellow-400'
+            }`}>
+              {processingStatus}
+            </p>
+          )}
+          
           {formData.compressed_image_url && (
-            <p className="text-sm text-green-400">✓ Image processed and uploaded successfully</p>
+            <div className="text-sm space-y-1">
+              <p className="text-green-400">✓ Compressed: {formData.compressed_image_url}</p>
+              <p className="text-green-400">✓ Original: {formData.original_image_url}</p>
+            </div>
           )}
         </div>
       </div>

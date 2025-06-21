@@ -16,6 +16,7 @@ export const useBrowserImageProcessor = () => {
     formData.append('reqtype', 'fileupload');
 
     try {
+      console.log('Uploading to Catbox:', filename);
       const response = await fetch('https://catbox.moe/user/api.php', {
         method: 'POST',
         body: formData,
@@ -23,9 +24,12 @@ export const useBrowserImageProcessor = () => {
 
       if (response.ok) {
         const url = await response.text();
+        console.log('Catbox upload successful:', url.trim());
         return url.trim();
+      } else {
+        console.error('Catbox upload failed with status:', response.status);
+        return null;
       }
-      return null;
     } catch (error) {
       console.error('Catbox upload failed:', error);
       return null;
@@ -34,13 +38,34 @@ export const useBrowserImageProcessor = () => {
 
   const downloadImageAsFile = async (imageUrl: string): Promise<File | null> => {
     try {
-      const response = await fetch(imageUrl);
-      if (!response.ok) return null;
+      // Try direct fetch first
+      console.log('Attempting direct fetch of image:', imageUrl);
+      let response = await fetch(imageUrl);
+      
+      if (!response.ok) {
+        console.log('Direct fetch failed, trying CORS proxy...');
+        // Try with CORS proxy
+        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(imageUrl)}`;
+        response = await fetch(proxyUrl);
+      }
+      
+      if (!response.ok) {
+        console.error('Both direct and proxy fetch failed');
+        return null;
+      }
       
       const blob = await response.blob();
-      const filename = imageUrl.split('/').pop() || 'image';
+      
+      // Validate that we got an image
+      if (!blob.type.startsWith('image/')) {
+        console.error('Downloaded content is not an image, type:', blob.type);
+        return null;
+      }
+      
+      const filename = imageUrl.split('/').pop()?.split('?')[0] || 'image';
       const extension = blob.type.split('/')[1] || 'jpg';
       
+      console.log('Successfully downloaded image:', blob.size, 'bytes');
       return new File([blob], `${filename}.${extension}`, { type: blob.type });
     } catch (error) {
       console.error('Failed to download image:', error);
@@ -58,7 +83,9 @@ export const useBrowserImageProcessor = () => {
     };
 
     try {
+      console.log('Compressing image. Original size:', file.size, 'bytes');
       const compressedFile = await imageCompression(file, options);
+      console.log('Compression successful. Compressed size:', compressedFile.size, 'bytes');
       return compressedFile;
     } catch (err) {
       console.error('Compression failed:', err);
@@ -71,21 +98,24 @@ export const useBrowserImageProcessor = () => {
   };
 
   const processImage = async (imageUrl: string, title: string): Promise<ProcessImageResult | null> => {
-    if (!imageUrl || !title) return null;
+    if (!imageUrl || !title) {
+      console.error('Image URL and title are required');
+      return null;
+    }
 
     setIsProcessing(true);
 
     try {
       // Step 1: Download the original image
-      console.log('Downloading image from URL...');
+      console.log('Starting image processing for:', imageUrl);
       const originalFile = await downloadImageAsFile(imageUrl);
       if (!originalFile) {
-        console.error('Failed to download image');
+        console.error('Failed to download image from URL');
         return null;
       }
 
       // Step 2: Compress the image
-      console.log('Compressing image...');
+      console.log('Downloaded successfully, now compressing...');
       const compressedFile = await compressImage(originalFile);
       if (!compressedFile) {
         console.error('Failed to compress image');
@@ -116,14 +146,17 @@ export const useBrowserImageProcessor = () => {
         return null;
       }
 
-      console.log('Image processing completed successfully');
+      console.log('Image processing completed successfully!');
+      console.log('Original URL:', originalUrl);
+      console.log('Compressed URL:', compressedUrl);
+      
       return {
         originalUrl,
         compressedUrl
       };
 
     } catch (error) {
-      console.error('Image processing failed:', error);
+      console.error('Image processing failed with error:', error);
       return null;
     } finally {
       setIsProcessing(false);
